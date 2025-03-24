@@ -1,217 +1,2274 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.2",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "title": "Runa",
+    "version": "2.0",
+    "description": "The public Runa API",
     "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
+      "name": "Ⓒ Runa"
+    }
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://playground.runa.io/v2",
+      "description": "Playground"
+    },
+    {
+      "url": "https://api.runa.io/v2",
+      "description": "Production"
     }
   ],
-  "security": [
+  "tags": [
     {
-      "bearerAuth": []
+      "name": "balance",
+      "description": "Operations related to account balance."
+    },
+    {
+      "name": "products",
+      "description": "Operations related to products."
+    },
+    {
+      "name": "orders",
+      "description": "Operations related to ordering and orders."
     }
   ],
   "paths": {
-    "/plants": {
+    "/balance": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "operationId": "getBalance",
+        "tags": ["balance"],
+        "summary": "Get Account Balance",
+        "description": "Retrieves the account balance. Returns the balance in a specified currency if the currency parameter is provided. If not, returns all balances greater than 0.",
         "parameters": [
+          { "$ref": "#/components/parameters/X-Api-Version" },
           {
+            "name": "currency",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Z]{3}$"
+            },
+            "description": "The currency of the account, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field.",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "balance": {
+                          "type": "string"
+                        },
+                        "currency": {
+                          "type": "string",
+                          "pattern": "^[A-Z]{3}$",
+                          "description": "The currency of the account, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+                        }
+                      },
+                      "example": {
+                        "balance": "10.0",
+                        "currency": "USD"
+                      }
+                    },
+                    {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "balance": {
+                            "type": "string"
+                          },
+                          "currency": {
+                            "type": "string",
+                            "pattern": "^[A-Z]{3}$",
+                            "description": "The currency of the account, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "balance": "10.0",
+                          "currency": "USD"
+                        },
+                        {
+                          "balance": "8.5",
+                          "currency": "GBP"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/order": {
+      "get": {
+        "operationId": "getListOfOrders",
+        "tags": ["orders"],
+        "summary": "Get a list of orders.",
+        "description": "Get a list of all of your orders.",
+        "parameters": [
+          { "$ref": "#/components/parameters/X-Api-Version" },
+          {
+            "required": false,
             "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
             "in": "query",
-            "description": "The maximum number of results to return",
+            "description": "The number (1&ndash;100) of orders to include in each page of orders. Default: 100."
+          },
+          {
+            "required": false,
+            "name": "before",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "A cursor. Using this parameter will return the page of orders from *before* the cursor (i.e., the _previous_ page). The `before` and `after` cursors are mutually exclusive (you can't use them at the same time). Get this value from the `pagination` section of any page of orders."
+          },
+          {
+            "required": false,
+            "name": "after",
+            "schema": {
+              "type": "string"
+            },
+            "in": "query",
+            "description": "A cursor. Using this parameter will return the page of orders from *after* the cursor (i.e., the _next_ page). The `before` and `after` cursors are mutually exclusive (you can't use them at the same time). Get this value from the `pagination` section of any page of orders."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageableResult_Union_CompletedOrderWithBasicDetails__IncompleteOrder__"
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      },
+      "post": {
+        "operationId": "createOrder",
+        "tags": ["orders"],
+        "summary": "Create a new order.",
+        "description": "Creates a new order.",
+        "parameters": [
+          { "$ref": "#/components/parameters/X-Api-Version" },
+          {
+            "required": true,
+            "name": "X-Idempotency-Key",
+            "schema": {
+              "type": "string"
+            },
+            "in": "header",
+            "description": "A unique string that prevents order duplication."
+          },
+          {
+            "name": "X-Execution-Mode",
+            "schema": {
+              "type": "string",
+              "enum": ["async", "sync"],
+              "default": "async"
+            },
+            "in": "header",
+            "description": "Choose sync if you want to retrieve the payout links directly from the API response. Choose async if you want to poll for your order. The default if unset is async.",
+            "example": "async"
+          }
+        ],
+        "responses": {
+          "102": {
+            "description": "Processing. We cannot replay the response as the original request has not completed yet. Try again shortly.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Response that will be returned in sync execution mode. Order has successfully been completed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncCompletedOrderWithFullDetails"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Response that will be returned in async execution mode. Order has successfully been accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderTask"
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "422": { "$ref": "#/components/responses/ValidationError" },
+          "429": { "$ref": "#/components/responses/RateExceeded" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewOrderDetails"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order/{id}": {
+      "get": {
+        "operationId": "getSingleOrder",
+        "tags": ["orders"],
+        "summary": "Get an order's details and status.",
+        "description": "Get the details and status of a specific order. Use to poll for the status of your order after it's been accepted.",
+        "parameters": [
+          { "$ref": "#/components/parameters/X-Api-Version" },
+          {
+            "required": true,
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "in": "path",
+            "description": "The ID of the order."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CompletedOrderWithFullDetails"
+                    },
+                    {
+                      "$ref": "#/components/schemas/IncompleteOrder"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/order/estimate": {
+      "post": {
+        "operationId": "estimateOrderPrice",
+        "tags": ["orders"],
+        "summary": "Estimate order",
+        "description": "Estimate price for the order.",
+        "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderPriceResponse"
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "422": { "$ref": "#/components/responses/ValidationError" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderPriceRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product": {
+      "get": {
+        "operationId": "getProducts",
+        "tags": ["products"],
+        "summary": "Retrieve products",
+        "parameters": [
+          { "$ref": "#/components/parameters/X-Api-Version" },
+          {
+            "in": "query",
+            "name": "is_orderable",
+            "description": "Filter by products which can be ordered. If `true`, returns only those which can be ordered, if `false`, returns all products.",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "query",
+            "name": "code",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by product code"
+          },
+          {
+            "in": "query",
+            "name": "countries_redeemable_in",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[A-Z]{2}$",
+                "description": "ISO 3166 ALPHA-2 country code"
+              }
+            },
+            "description": "Filter by countries where a product can be redeemed in."
+          },
+          {
+            "in": "query",
+            "name": "after",
+            "description": "A cursor for use in pagination to return the next set of products. The before and after cursors are mutually exclusive (you can't use them at the same time).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "before",
+            "description": "A cursor for use in pagination to return the previous set of products. The before and after cursors are mutually exclusive (you can't use them at the same time).",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "A limit on the number of items to be returned.",
             "schema": {
               "type": "integer",
-              "format": "int32"
+              "default": 500,
+              "minimum": 1,
+              "maximum": 500
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "List of products in your catalog",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
+                  "type": "object",
+                  "properties": {
+                    "catalog": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/Pagination"
+                    }
                   }
                 }
               }
             }
           },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
         }
       }
     },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+    "/product/{product_code}": {
+      "get": {
+        "operationId": "getSingleProduct",
+        "tags": ["products"],
+        "summary": "Retrieve a single product's details",
         "parameters": [
+          { "$ref": "#/components/parameters/X-Api-Version" },
           {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
             "required": true,
+            "name": "product_code",
             "schema": {
-              "type": "integer",
-              "format": "int64"
+              "type": "string"
+            },
+            "in": "path",
+            "description": "The code of the product."
+          },
+          {
+            "name": "content",
+            "in": "query",
+            "required": false,
+            "description": "Defines the format for product content resources. It accepts 'url' (default), 'md', or 'html' to return URLs, raw Markdown, or HTML content, respectively.",
+            "schema": {
+              "type": "string",
+              "enum": ["url", "md", "html"],
+              "default": "url"
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
+          "200": {
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/Product"
                 }
               }
             }
-          }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
         }
       }
-    }
-  },
-  "webhooks": {
-    "/plant/webhook": {
-      "post": {
-        "description": "Information about a new plant added to the store",
-        "requestBody": {
-          "description": "Plant added to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          }
-        },
+    },
+    "/product/countries": {
+      "get": {
+        "operationId": "getProductsCountries",
+        "tags": ["products"],
+        "summary": "Retrieves a list of countries where products are available",
+        "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
         "responses": {
           "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
-          }
+            "description": "A list of countries where products are available",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "countries": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "pattern": "^[A-Z]{2}$",
+                        "description": "ISO 3166 ALPHA-2 country code"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
         }
       }
     }
   },
   "components": {
+    "parameters": {
+      "X-Api-Version": {
+        "name": "X-Api-Version",
+        "description": "The dated version of the API, if not specified a default is used.",
+        "in": "header",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
     "schemas": {
-      "Plant": {
+      "APIErrorResponse": {
+        "title": "APIErrorResponse",
+        "required": ["type", "message"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "title": "Type",
+            "description": "An error code or type.",
+            "type": "string",
+            "example": "not-found"
+          },
+          "message": {
+            "title": "Message",
+            "description": "A human readable summary of the error.",
+            "type": "string",
+            "example": "The requested resource was not found"
+          },
+          "help": {
+            "title": "Help",
+            "description": "Additional information that pertains to the error.",
+            "type": "string",
+            "example": "Please check the resource ID and try again."
+          }
+        },
+        "description": "Generic Runa API error response."
+      },
+      "AccountPayment": {
+        "title": "AccountPayment",
+        "required": ["type"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Account balance payment.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AccountPaymentType"
+              }
+            ]
+          },
+          "currency": {
+            "title": "Currency",
+            "example": "USD",
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "The currency of the account, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+          }
+        },
+        "description": "Account balance payment."
+      },
+      "AccountPaymentType": {
+        "title": "AccountPaymentType",
+        "type": "string",
+        "enum": ["ACCOUNT_BALANCE"],
+        "description": "Account balance payment."
+      },
+      "CompletedOrderItem": {
+        "title": "CompletedOrderItem",
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "description": "The ID of the order item.",
+            "example": "E-NWPEKW4VL",
+            "type": "string"
+          },
+          "distribution_method": {
+            "title": "Distribution Method",
+            "description": "The distribution method used for the payout link.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/EmailDistribution"
+              },
+              {
+                "$ref": "#/components/schemas/LinkDistribution"
+              }
+            ]
+          },
+          "products": {
+            "title": "Products",
+            "description": "The product(s) the end user can redeem the payout link on.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MultipleProduct"
+              },
+              {
+                "$ref": "#/components/schemas/SingleProduct"
+              },
+              {
+                "$ref": "#/components/schemas/PayoutSelectionTemplateDetailed"
+              },
+              {
+                "$ref": "#/components/schemas/UnknownProduct"
+              }
+            ]
+          },
+          "face_value": {
+            "title": "Face Value",
+            "description": "The face value of the payout link.",
+            "example": "10",
+            "type": "number"
+          },
+          "price": {
+            "title": "Price",
+            "description": "The price paid for the payout link.",
+            "example": "10",
+            "type": "number"
+          },
+          "payout": {
+            "title": "Payout",
+            "description": "Payout link details",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PayoutDetails"
+              }
+            ]
+          },
+          "currency": {
+            "title": "Currency",
+            "description": "The currency of the payout link, represented by ISO 4217 currency codes.",
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "example": "USD"
+          }
+        },
         "required": [
-          "name"
+          "id",
+          "distribution_method",
+          "products",
+          "face_value",
+          "price",
+          "payout"
+        ]
+      },
+      "CompletedOrderWithBasicDetails": {
+        "title": "CompletedOrderWithBasicDetails",
+        "required": [
+          "id",
+          "status",
+          "created_at",
+          "payment_method",
+          "currency",
+          "total_price",
+          "total_discount"
         ],
         "type": "object",
         "properties": {
-          "name": {
-            "description": "The name of the plant",
+          "id": {
+            "title": "Id",
+            "description": "The ID of the order.",
+            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
             "type": "string"
           },
-          "tag": {
-            "description": "Tag to specify the type",
+          "status": {
+            "description": "Status of the order.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderStatusEnum"
+              }
+            ]
+          },
+          "created_at": {
+            "title": "Created At",
+            "description": "UTC timestamp, in ISO 8601 format, when the order was submitted.",
+            "type": "string",
+            "format": "date-time"
+          },
+          "completed_at": {
+            "title": "Completed At",
+            "description": "UTC timestamp, in ISO 8601 format, when the order was completed.",
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "title": "Description",
+            "description": "Free format text reference for the order.",
+            "type": "string"
+          },
+          "payment_method": {
+            "title": "Payment Method",
+            "description": "The payment method used for the order.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AccountPayment"
+              }
+            ]
+          },
+          "currency": {
+            "title": "Currency",
+            "example": "USD",
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "The currency of the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+          },
+          "total_price": {
+            "title": "Total Price",
+            "description": "The total price of the order. This _includes_ any applicable fees.",
+            "example": "10",
+            "type": "number"
+          },
+          "total_discount": {
+            "title": "Total Discount",
+            "description": "The total discount of the order.",
+            "type": "number"
+          }
+        },
+        "description": "Used for orders that have completed. This class is typically used when returning\na *list* of orders to the client."
+      },
+      "SyncCompletedOrderWithFullDetails": {
+        "title": "CompletedOrderWithFullDetails",
+        "required": [
+          "id",
+          "status",
+          "created_at",
+          "payment_method",
+          "currency",
+          "total_price",
+          "total_discount",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "description": "The ID of the order.",
+            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
+            "type": "string"
+          },
+          "status": {
+            "description": "Status of the order.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SyncOrderStatusEnum"
+              }
+            ]
+          },
+          "created_at": {
+            "title": "Created At",
+            "description": "UTC timestamp, in ISO 8601 format, when the order was submitted.",
+            "type": "string",
+            "format": "date-time"
+          },
+          "completed_at": {
+            "title": "Completed At",
+            "description": "UTC timestamp, in ISO 8601 format, when the order was completed.",
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "title": "Description",
+            "description": "Free format text reference for the order.",
+            "type": "string"
+          },
+          "payment_method": {
+            "title": "Payment Method",
+            "description": "The payment method used for the order.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AccountPayment"
+              }
+            ]
+          },
+          "currency": {
+            "title": "Currency",
+            "example": "USD",
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "The currency that was used to pay for the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+          },
+          "total_price": {
+            "title": "Total Price",
+            "description": "The total price of the order. This _includes_ any applicable fees. This is represented in the payment currency.",
+            "example": "10",
+            "type": "number"
+          },
+          "total_discount": {
+            "title": "Total Discount",
+            "description": "The total discount of the order. This is represented in the payment currency.",
+            "type": "number"
+          },
+          "items": {
+            "title": "Items",
+            "description": "The list of items that were included in the order. Each _item_ represents a single payout link.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompletedOrderItem"
+            }
+          },
+          "transaction_detail": {
+            "$ref": "#/components/schemas/TransactionDetail"
+          }
+        },
+        "description": "Used for an order that has completed. This class is typically used when returning\na *single order* to the client."
+      },
+      "RateExceededResponse": {
+        "title": "RateExceededResponse",
+        "required": ["error"],
+        "type": "object",
+        "properties": {
+          "error": {
+            "title": "Error",
+            "description": "A human readable error message describing the error.",
+            "type": "string",
+            "example": "rate exceeded"
+          }
+        },
+        "description": "API rate limited error response."
+      },
+      "SyncOrderStatusEnum": {
+        "title": "SyncOrderStatusEnum",
+        "type": "string",
+        "enum": ["COMPLETED"],
+        "description": "The status of the order."
+      },
+      "CompletedOrderWithFullDetails": {
+        "title": "CompletedOrderWithFullDetails",
+        "required": [
+          "id",
+          "status",
+          "created_at",
+          "payment_method",
+          "currency",
+          "total_price",
+          "total_discount",
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "description": "The ID of the order.",
+            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
+            "type": "string"
+          },
+          "status": {
+            "description": "Status of the order.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderStatusEnum"
+              }
+            ]
+          },
+          "created_at": {
+            "title": "Created At",
+            "description": "UTC timestamp, in ISO 8601 format, when the order was submitted.",
+            "type": "string",
+            "format": "date-time"
+          },
+          "completed_at": {
+            "title": "Completed At",
+            "description": "UTC timestamp, in ISO 8601 format, when the order was completed.",
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "title": "Description",
+            "description": "Free format text reference for the order.",
+            "type": "string"
+          },
+          "payment_method": {
+            "title": "Payment Method",
+            "description": "The payment method used for the order.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AccountPayment"
+              }
+            ]
+          },
+          "currency": {
+            "title": "Currency",
+            "example": "USD",
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "The currency of the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+          },
+          "total_price": {
+            "title": "Total Price",
+            "description": "The total price of the order. This _includes_ any applicable fees.",
+            "example": "10",
+            "type": "number"
+          },
+          "total_discount": {
+            "title": "Total Discount",
+            "description": "The total discount of the order.",
+            "type": "number"
+          },
+          "items": {
+            "title": "Items",
+            "description": "The list of items that were included in the order. Each _item_ represents a single payout link.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CompletedOrderItem"
+            }
+          },
+          "transaction_detail": {
+            "$ref": "#/components/schemas/TransactionDetail"
+          }
+        },
+        "description": "Used for an order that has completed. This class is typically used when returning\na *single order* to the client."
+      },
+      "EmailDistribution": {
+        "title": "EmailDistribution",
+        "required": ["type", "email_address"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/EmailDistributionType"
+          },
+          "email_address": {
+            "title": "Email Address",
+            "description": "The email address of the end user to send the payout link to.",
+            "example": "fred@bloggs.com",
+            "type": "string",
+            "format": "email"
+          },
+          "template_id": {
+            "title": "Template ID",
+            "description": "The template ID for a User Redemption Template.",
+            "example": "DT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
+            "type": "string"
+          }
+        },
+        "description": "Email distribution. Send the payout link to the end user directly via email."
+      },
+      "EmailDistributionType": {
+        "title": "EmailDistributionType",
+        "type": "string",
+        "enum": ["", "EMAIL"],
+        "description": "Supported email distribution types."
+      },
+      "IncompleteOrder": {
+        "title": "IncompleteOrder",
+        "required": ["id", "status", "message"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "description": "The ID of the order.",
+            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
+            "type": "string"
+          },
+          "status": {
+            "description": "Status of the order.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderStatusEnum"
+              }
+            ]
+          },
+          "message": {
+            "title": "Message",
+            "description": "Human readable message describing the status of the order.",
+            "type": "string"
+          }
+        },
+        "description": "Order that has been accepted but is not complete."
+      },
+      "LinkDistribution": {
+        "title": "LinkDistribution",
+        "required": ["type"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/LinkDistributionType"
+          },
+          "template_id": {
+            "title": "Template ID",
+            "description": "The template ID for a User Redemption Template.",
+            "example": "DT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
+            "type": "string"
+          }
+        },
+        "description": "Link distribution. Send the payout link to the end user yourself."
+      },
+      "LinkDistributionType": {
+        "title": "LinkDistributionType",
+        "type": "string",
+        "enum": ["", "PAYOUT_LINK"],
+        "description": "Supported link distribution types."
+      },
+      "MultipleProduct": {
+        "title": "MultipleProduct",
+        "required": ["type", "values"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/MultipleProductType"
+          },
+          "values": {
+            "title": "Values",
+            "description": "The codes for the products the end user can choose from when redeeming their payout link. All products _must_ use the same currency.",
+            "example": ["AMZ-US", "AIRBNB-US"],
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "description": "Multiple products. The end user will be able to split the payout link's value\nbetween these products."
+      },
+      "MultipleProductType": {
+        "title": "MultipleProductType",
+        "type": "string",
+        "enum": ["", "MULTIPLE"],
+        "description": "Multiple products. When more than one product code is provided."
+      },
+      "PayoutSelectionTemplate": {
+        "title": "PayoutSelectionTemplate",
+        "required": ["type", "template_id"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/PayoutSelectionTemplateType"
+          },
+          "template_id": {
+            "title": "Template ID",
+            "description": "The template ID for a Payout Selection Template.",
+            "example": "PT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
+            "type": "string"
+          }
+        },
+        "description": "Payout selection template. Template having predefined set of products."
+      },
+      "PayoutSelectionTemplateDetailed": {
+        "title": "PayoutSelectionTemplateDetailed",
+        "required": ["type", "template_id"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/PayoutSelectionTemplateType"
+          },
+          "template_id": {
+            "title": "Template ID",
+            "description": "The template ID for a Payout Selection Template.",
+            "example": "PT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
+            "type": "string"
+          },
+          "values": {
+            "title": "Values",
+            "description": "The codes for products selected for Payout Selection Template.",
+            "example": ["AMZ-US", "AIRBNB-US"],
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "description": "Payout selection template. Template having predefined set of products."
+      },
+      "PayoutSelectionTemplateType": {
+        "title": "PayoutSelectionTemplateType",
+        "type": "string",
+        "enum": ["", "TEMPLATE"],
+        "description": "Payout Selection Template"
+      },
+      "NewAccountPayment": {
+        "title": "NewAccountPayment",
+        "required": ["type", "currency"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "description": "Account balance payment method.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AccountPaymentType"
+              }
+            ]
+          },
+          "currency": {
+            "title": "Currency",
+            "example": "USD",
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "The currency of the account, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+          }
+        },
+        "description": "Pay using your account balance."
+      },
+      "NewOrderDetails": {
+        "title": "NewOrderDetails",
+        "required": ["payment_method", "items"],
+        "type": "object",
+        "properties": {
+          "payment_method": {
+            "title": "Payment Method",
+            "description": "Payment method for the order. Select the `ACCOUNT_BALANCE` you want to pay for the order from",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NewAccountPayment"
+              }
+            ]
+          },
+          "items": {
+            "title": "Items",
+            "description": "The list of items to be included in the order. Each item ordered results in a single payout link. The maximum number of items per order is 200.",
+            "minItems": 1,
+            "maxItems": 200,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NewOrderItemDetails"
+            }
+          },
+          "description": {
+            "title": "Description",
+            "description": "Free format text reference for the order. Maximum length is 128 characters.",
+            "maxLength": 128,
             "type": "string"
           }
         }
       },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
+      "NewOrderItemDetails": {
+        "title": "NewOrderItemDetails",
+        "required": ["face_value", "distribution_method", "products"],
+        "type": "object",
+        "properties": {
+          "face_value": {
+            "title": "Face Value",
+            "description": "Face value of the payout link.",
+            "minimum": 0.01,
+            "example": 10,
+            "type": "number"
           },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
+          "distribution_method": {
+            "title": "Distribution Method",
+            "description": "Distribution method to send end users the payout link. Choose `EMAIL` if you want Runa to send the payout link to the end user directly. Choose `PAYOUT_LINK` if you want to send the payout link to the end user yourself.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/EmailDistribution"
+              },
+              {
+                "$ref": "#/components/schemas/LinkDistribution"
               }
+            ]
+          },
+          "products": {
+            "title": "Products",
+            "description": "Choose `SINGLE` if you want the end user to redeem the face value on a single specific product. Choose `MULTIPLE` if the end user can choose to spend the face value across multiple products.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MultipleProduct"
+              },
+              {
+                "$ref": "#/components/schemas/SingleProduct"
+              },
+              {
+                "$ref": "#/components/schemas/PayoutSelectionTemplate"
+              }
+            ]
+          }
+        }
+      },
+      "OrderItemDiscount": {
+        "title": "OrderItemDiscount",
+        "required": ["products", "face_value", "price", "discount_multiplier"],
+        "type": "object",
+        "properties": {
+          "products": {
+            "title": "Products",
+            "description": "Choose `SINGLE` if you want the end user to redeem the face value on a single specific product. Choose `MULTIPLE` if the end user can choose to spend the face value across multiple products.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MultipleProduct"
+              },
+              {
+                "$ref": "#/components/schemas/SingleProduct"
+              }
+            ]
+          },
+          "face_value": {
+            "title": "Face Value",
+            "description": "Face value of the reward link.",
+            "example": 10,
+            "type": "number"
+          },
+          "price": {
+            "title": "Price",
+            "description": "The price of the order item.",
+            "type": "number"
+          },
+          "discount_multiplier": {
+            "title": "Discount Multiplier",
+            "description": "The discount multiplier of the order item. 0 means no discount and 0.1 means 10% discount. The discount is applied on the price of the order item before any fees are applied.",
+            "type": "number"
+          }
+        },
+        "description": "The computed discount for an order item."
+      },
+      "OrderItemPriceRequest": {
+        "title": "OrderItemPriceRequest",
+        "required": ["products", "face_value"],
+        "type": "object",
+        "properties": {
+          "products": {
+            "title": "Products",
+            "description": "Choose `SINGLE` if you want the end user to redeem the face value on a single specific product. Choose `MULTIPLE` if the end user can choose to spend the face value across multiple products.",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MultipleProduct"
+              },
+              {
+                "$ref": "#/components/schemas/SingleProduct"
+              }
+            ]
+          },
+          "face_value": {
+            "title": "Face Value",
+            "description": "Face value of the reward link.",
+            "example": 10,
+            "type": "number"
+          }
+        },
+        "description": "A proposed order item within an order price request."
+      },
+      "OrderPriceRequest": {
+        "title": "OrderPriceRequest",
+        "required": ["payment_method", "items"],
+        "type": "object",
+        "properties": {
+          "payment_method": {
+            "title": "Payment Method",
+            "description": "Payment method for the order. Select the `ACCOUNT_BALANCE` you want to pay for the order from.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NewAccountPayment"
+              }
+            ]
+          },
+          "items": {
+            "title": "Items",
+            "description": "List of order items for price estimation.",
+            "minItems": 1,
+            "maxItems": 500,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemPriceRequest"
             }
           }
-        ]
+        },
+        "description": "Request for a price estimate for an order."
       },
-      "Error": {
+      "OrderPriceResponse": {
+        "title": "OrderPriceResponse",
         "required": [
-          "error",
-          "message"
+          "payment_method",
+          "items",
+          "currency",
+          "total_discount",
+          "total_price"
         ],
         "type": "object",
         "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
+          "payment_method": {
+            "title": "Payment Method",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AccountPayment"
+              }
+            ]
+          },
+          "items": {
+            "title": "Items",
+            "description": "List of order items with price and discount.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderItemDiscount"
+            }
+          },
+          "currency": {
+            "title": "Currency",
+            "example": "USD",
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "The currency of the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+          },
+          "total_discount": {
+            "title": "Total Discount",
+            "description": "Total discount on the entire order.",
+            "type": "number"
+          },
+          "total_price": {
+            "title": "Total Price",
+            "description": "Total price of the entire order.",
+            "type": "number"
+          }
+        },
+        "description": "Response object for a order price estimate."
+      },
+      "OrderStatusEnum": {
+        "title": "OrderStatusEnum",
+        "type": "string",
+        "enum": ["COMPLETED", "FAILED", "PROCESSING"],
+        "description": "The status of the order."
+      },
+      "TransactionDetail": {
+        "title": "TransactionDetail",
+        "description": "A hashmap subtotal of the order using the payout currency as a key.",
+        "type": "object",
+        "example": {
+          "USD": {
+            "value": "10.00",
+            "fx": null
+          }
+        },
+        "additionalProperties": {
+          "$ref": "#/components/schemas/TransactionDetailEntry"
+        }
+      },
+      "TransactionDetailEntry": {
+        "type": "object",
+        "title": "TransactionDetailEntry",
+        "description": "A subtotal of the value purchased and associated fees and data about the transaction.",
+        "properties": {
+          "value": {
+            "title": "Value",
+            "description": "The total value purchased of a payout link currency.",
+            "type": "string",
+            "example": "10.00"
+          },
+          "fx": {
+            "$ref": "#/components/schemas/TransactionDetailFXDetails"
+          }
+        },
+        "required": ["value"]
+      },
+      "TransactionDetailFXDetails": {
+        "type": "object",
+        "title": "TransactionDetailFxDetails",
+        "description": "Provides details on fx conversion for an order transaction detail. Present when the payment method currency is different from the transaction detail currency.",
+        "properties": {
+          "rate": {
+            "title": "FX Rate",
+            "description": "The FX rate received for the transaction between the payout currency and payment currency.",
+            "type": "string",
+            "example": "1.234"
+          },
+          "rate_symbol": {
+            "title": "FX Rate symbol",
+            "description": "The currency pair associated with the FX transaction.",
+            "type": "string",
+            "example": "GBPUSD"
+          },
+          "fee": {
+            "title": "Fee",
+            "description": "The fee charged for making this transaction.",
+            "type": "object",
+            "properties": {
+              "value": {
+                "title": "Value",
+                "description": "The value of the fee.",
+                "type": "string",
+                "example": "0.00"
+              },
+              "currency": {
+                "title": "Currency",
+                "description": "The currency of the fee.",
+                "type": "string",
+                "example": "USD"
+              }
+            },
+            "required": ["value", "currency"]
+          }
+        },
+        "required": ["rate", "rate_symbol", "fee"]
+      },
+      "OrderTask": {
+        "title": "OrderTask",
+        "required": ["id", "status"],
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "Id",
+            "description": "The ID of your new order.",
+            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
+            "type": "string"
+          },
+          "status": {
+            "description": "The status of your order.",
+            "example": "PROCESSING",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderStatusEnum"
+              }
+            ]
+          }
+        }
+      },
+      "Page": {
+        "title": "Page",
+        "type": "object",
+        "properties": {
+          "limit": {
+            "title": "Limit",
+            "description": "How many records the current page is limited to.",
+            "example": 100,
+            "type": "integer"
+          }
+        }
+      },
+      "PageCursors": {
+        "title": "PageCursors",
+        "type": "object",
+        "properties": {
+          "after": {
+            "title": "After",
+            "description": "Cursor to query the next page.",
+            "example": "ZXhhbXBsZW9mYWN1cnNvcg==",
+            "type": "string"
+          },
+          "before": {
+            "title": "Before",
+            "description": "Cursor to query the previous page.",
+            "example": "ZXhhbXBsZW9mYWN1cnNvcg==",
+            "type": "string"
+          }
+        }
+      },
+      "PageableMeta": {
+        "title": "PageableMeta",
+        "required": ["cursors", "page"],
+        "type": "object",
+        "properties": {
+          "cursors": {
+            "title": "Cursors",
+            "description": "Pagination cursors.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PageCursors"
+              }
+            ]
+          },
+          "page": {
+            "title": "Page",
+            "description": "Page metadata.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Page"
+              }
+            ]
+          }
+        }
+      },
+      "PageableResult_Union_CompletedOrderWithBasicDetails__IncompleteOrder__": {
+        "title": "PageableResult[Union[CompletedOrderWithBasicDetails, IncompleteOrder]]",
+        "required": ["items", "pagination"],
+        "type": "object",
+        "properties": {
+          "items": {
+            "title": "Items",
+            "description": "The list of items that were queried for.",
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
+                },
+                {
+                  "$ref": "#/components/schemas/IncompleteOrder"
+                }
+              ]
+            }
+          },
+          "pagination": {
+            "title": "Pagination",
+            "description": "Metadata of the result page.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PageableMeta"
+              }
+            ]
+          }
+        }
+      },
+      "SingleProduct": {
+        "title": "SingleProduct",
+        "required": ["type", "value"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/SingleProductType"
+          },
+          "value": {
+            "title": "Value",
+            "description": "The code for the product the end user will get when redeeming their payout link.",
+            "minLength": 1,
+            "example": "AMZ-US",
+            "type": "string"
+          }
+        },
+        "description": "Single product. The end user will be able to redeem the payout link for this\nspecific product."
+      },
+      "SingleProductType": {
+        "title": "SingleProductType",
+        "type": "string",
+        "enum": ["", "SINGLE"],
+        "description": "Single product. When only one product code is provided."
+      },
+      "UnknownProduct": {
+        "title": "UnknownProduct",
+        "type": "object",
+        "properties": {
+          "type": {
+            "title": "Type",
+            "description": "It is not currently possible to determine which products were selected when this item was ordered.",
+            "default": "UNKNOWN",
+            "type": "string"
+          }
+        },
+        "description": "Product(s) unknown. It was not possible to determine which products were included\nin the order."
+      },
+      "PayoutStatus": {
+        "title": "Payout status",
+        "description": "Current status of the payout link. An `ACTIVE` link is live but has not been claimed yet, it will change to `CLAIMED` once that has happened. If you request a cancellation the status will reflect this as `CANCELLED`. Finally if your account is configured with expiry, when a link expires it will be marked as `EXPIRED`.",
+        "enum": ["ACTIVE", "CLAIMED", "CANCELLED", "EXPIRED"]
+      },
+      "PayoutDetails": {
+        "title": "PayoutDetails",
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/PayoutStatus"
+          },
+          "status_updated_at": {
+            "title": "Status Updated At",
+            "description": "Time that the payout link status was last updated",
+            "type": "string",
+            "format": "date-time"
+          },
+          "url": {
+            "title": "Url",
+            "description": "The URL (payout link) the end user uses to redeem.",
+            "type": "string"
+          },
+          "expiry_date": {
+            "title": "Expiry Date",
+            "description": "The date that the payout link expires.",
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": ["status", "status_updated_at", "url"]
+      },
+      "ValidationErrorItem": {
+        "title": "ValidationErrorItem",
+        "required": ["type", "message", "location"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "title": "Type",
+            "description": "The type of error encountered.",
+            "type": "string",
+            "example": "value_error.number.not_ge"
           },
           "message": {
+            "title": "Message",
+            "description": "A human readable summary of the error.",
+            "type": "string",
+            "example": "ensure this value is greater than or equal to 1"
+          },
+          "location": {
+            "title": "Location",
+            "description": "The location of the error in the submitted entity.",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["items", "0", "face_value"]
+          }
+        },
+        "description": "A single validation error. The type indicates the error type and the message provides a human readable summary of the error. The location provides a path to the key in the request body."
+      },
+      "ValidationErrorResponse": {
+        "title": "ValidationErrorResponse",
+        "required": ["type", "message", "details"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "title": "Type",
+            "description": "An error code or type.",
+            "type": "string",
+            "example": "validation_error"
+          },
+          "message": {
+            "title": "Message",
+            "description": "A human readable summary of the error.",
+            "type": "string",
+            "example": "There were one or more problems processing your request, see details key."
+          },
+          "help": {
+            "title": "Help",
+            "description": "Additional information that pertains to the error.",
+            "type": "string",
+            "example": null
+          },
+          "details": {
+            "title": "Details",
+            "description": "Additional details regarding the error.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationErrorItem"
+            }
+          }
+        },
+        "description": "A validation error response. Returned when the request failed validation. This response can contain multiple validation errors, see the details key for each."
+      },
+      "Assets": {
+        "type": "object",
+        "properties": {
+          "card_image_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "icon_image_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "primary_color": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$",
+            "nullable": true
+          }
+        }
+      },
+      "BasePayoutTypeDetails": {
+        "type": "object",
+        "properties": {
+          "assets": {
+            "$ref": "#/components/schemas/Assets"
+          },
+          "balance_check_url": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "description": "URL to check the gift card balance."
+          },
+          "content_resources": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ContentResources"
+              },
+              {
+                "$ref": "#/components/schemas/ContentResourcesMarkdown"
+              },
+              {
+                "$ref": "#/components/schemas/ContentResourcesHTML"
+              }
+            ]
+          },
+          "expiry": {
+            "$ref": "#/components/schemas/Expiry"
+          },
+          "redeemable_at": {
+            "description": "Defines where the gift card can be redeemed. Options are 'all' for both online and in-store, 'in-store' for in-store only, and 'online' for online only.",
+            "type": "string",
+            "enum": ["all", "online", "in-store"]
+          },
+          "website_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true
+          },
+          "barcode_format": {
+            "type": "string",
+            "enum": [
+              "code-128",
+              "code-39",
+              "QR",
+              "ean-13",
+              "pdf417",
+              "ITF",
+              "DATA_MATRIX",
+              "other"
+            ],
+            "nullable": true,
+            "description": "The barcode format of the product."
+          },
+          "e_code_usage_type": {
+            "type": "string",
+            "enum": ["undefined", "url-recommended", "url-only"],
+            "description": "The e-code usage type of the product."
+          }
+        }
+      },
+      "ContentResources": {
+        "type": "object",
+        "required": [
+          "description_markdown_url",
+          "disclaimer_markdown_url",
+          "refund_policy_markdown_url",
+          "reissuance_policy_markdown_url",
+          "terms_buyer_markdown_url",
+          "terms_consumer_markdown_url",
+          "redemption_instructions_markdown_url",
+          "locale"
+        ],
+        "properties": {
+          "description_markdown_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": false,
+            "description": "A URL pointing to a markdown file that contains the description of the resource."
+          },
+          "disclaimer_markdown_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "A URL pointing to a markdown file that contains the disclaimer information."
+          },
+          "refund_policy_markdown_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "A URL pointing to a markdown file that outlines the refund policy, if applicable."
+          },
+          "reissuance_policy_markdown_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "A URL pointing to a markdown file that details the reissuance policy for the resource."
+          },
+          "terms_buyer_markdown_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "A URL pointing to a markdown file that contains the terms and conditions applicable to buyers."
+          },
+          "terms_consumer_markdown_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "A URL pointing to a markdown file that contains the terms and conditions applicable to consumers."
+          },
+          "redemption_instructions_markdown_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "description": "A URL pointing to a markdown file that provides instructions for redeeming the resource."
+          },
+          "locale": {
+            "type": "string",
+            "description": "ISO2 format locale code. It denotes what locale the markdown urls are."
+          }
+        }
+      },
+      "ContentResourcesMarkdown": {
+        "type": "object",
+        "required": [
+          "description_md",
+          "disclaimer_md",
+          "refund_policy_md",
+          "reissuance_policy_md",
+          "terms_buyer_md",
+          "terms_consumer_md",
+          "redemption_instructions_md",
+          "locale"
+        ],
+        "properties": {
+          "description_md": {
+            "type": "string",
+            "description": "Markdown content for the resource description.",
+            "nullable": false
+          },
+          "disclaimer_md": {
+            "type": "string",
+            "nullable": true,
+            "description": "Markdown content for the disclaimer information."
+          },
+          "refund_policy_md": {
+            "type": "string",
+            "nullable": true,
+            "description": "Markdown content outlining the refund policy, if applicable."
+          },
+          "reissuance_policy_md": {
+            "type": "string",
+            "nullable": true,
+            "description": "Markdown content detailing the reissuance policy for the resource."
+          },
+          "terms_buyer_md": {
+            "type": "string",
+            "nullable": true,
+            "description": "Markdown content containing terms and conditions applicable to buyers."
+          },
+          "terms_consumer_md": {
+            "type": "string",
+            "nullable": true,
+            "description": "Markdown content containing terms and conditions applicable to consumers."
+          },
+          "redemption_instructions_md": {
+            "type": "string",
+            "nullable": true,
+            "description": "Markdown instructions for redeeming the resource."
+          },
+          "locale": {
+            "type": "string",
+            "description": "Locale code for the markdown content, in ISO2 format."
+          }
+        }
+      },
+      "ContentResourcesHTML": {
+        "type": "object",
+        "required": [
+          "description_html",
+          "disclaimer_html",
+          "refund_policy_html",
+          "reissuance_policy_html",
+          "terms_buyer_html",
+          "terms_consumer_html",
+          "redemption_instructions_html",
+          "locale"
+        ],
+        "properties": {
+          "description_html": {
+            "type": "string",
+            "format": "html",
+            "nullable": false,
+            "description": "HTML content for the resource description."
+          },
+          "disclaimer_html": {
+            "type": "string",
+            "format": "html",
+            "nullable": true,
+            "description": "HTML content for the disclaimer information."
+          },
+          "refund_policy_html": {
+            "type": "string",
+            "format": "html",
+            "nullable": true,
+            "description": "HTML content outlining the refund policy, if applicable."
+          },
+          "reissuance_policy_html": {
+            "type": "string",
+            "format": "html",
+            "nullable": true,
+            "description": "HTML content detailing the reissuance policy for the resource."
+          },
+          "terms_buyer_html": {
+            "type": "string",
+            "format": "html",
+            "nullable": true,
+            "description": "HTML content containing terms and conditions applicable to buyers."
+          },
+          "terms_consumer_html": {
+            "type": "string",
+            "format": "html",
+            "nullable": true,
+            "description": "HTML content containing terms and conditions applicable to consumers."
+          },
+          "redemption_instructions_html": {
+            "type": "string",
+            "format": "html",
+            "nullable": true,
+            "description": "HTML instructions for redeeming the resource."
+          },
+          "locale": {
+            "type": "string",
+            "description": "Locale code for the HTML content, in ISO2 format."
+          }
+        }
+      },
+      "CustomerService": {
+        "type": "object",
+        "description": "Contact information for customer service related to the product.",
+        "properties": {
+          "phone_number": {
+            "type": "string",
+            "nullable": true,
+            "description": "The customer service phone number."
+          },
+          "website_url": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "description": "The customer service website URL."
+          }
+        }
+      },
+      "Denominations": {
+        "type": "object",
+        "description": "Defines the denomination options available for the product, including ranges and types.",
+        "properties": {
+          "available_list": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "decimal"
+            },
+            "nullable": true,
+            "description": "A list of available denominations for the product. Null if `type` is `OPEN`."
+          },
+          "maximum_value": {
+            "type": "string",
+            "format": "decimal",
+            "description": "The maximum denomination value available for the product."
+          },
+          "minimum_value": {
+            "type": "string",
+            "format": "decimal",
+            "description": "The minimum denomination value available for the product."
+          },
+          "type": {
+            "type": "string",
+            "enum": ["open", "fixed"],
+            "description": "The type of denomination. Can be open or fixed. Open is Any amount between min and max value. Fixed is limited to those returned in the available_list."
+          }
+        }
+      },
+      "Expiry": {
+        "type": "object",
+        "properties": {
+          "date_policy": {
+            "type": "string",
+            "nullable": true,
+            "description": "Text description of the policy."
+          },
+          "in_months": {
+            "type": "integer",
+            "description": "Specifies the number of months until the gift expires."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "from-last-use",
+              "from-last-balance-check",
+              "from-issue-date",
+              "indefinite",
+              "do-not-show"
+            ],
+            "x-enumDescriptions": {
+              "from-last-use": "The expiration period starts after the gift is used for a purchase.",
+              "from-last-balance-check": "The expiration period starts after the gift balance is checked using phone or online tools.",
+              "from-issue-date": "The expiration period starts from the date the gift was purchased.",
+              "indefinite": "The gift card does not expire and remains valid indefinitely.",
+              "do-not-show": "No expiration information is displayed."
+            }
+          }
+        }
+      },
+      "SubscriptionPlan": {
+        "type": "object",
+        "properties": {
+          "length_unit": {
+            "description": "The unit of time for the subscription plan. Currently only DAYS and MONTHS are supported.",
+            "type": "string",
+            "enum": ["DAYS", "MONTHS"]
+          },
+          "length": {
+            "type": "integer"
+          },
+          "name": {
             "type": "string"
+          },
+          "price": {
+            "type": "string",
+            "format": "decimal"
+          },
+          "subscription_plan_code": {
+            "description": "Use this code during order creation, rather than the top level code that is part of Product.",
+            "type": "string"
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "description": "Base schema for all product types, containing common fields.",
+        "properties": {
+          "approval_state": {
+            "type": "string",
+            "enum": [
+              "REQUIRES_CUSTOMER_ACTION",
+              "INFORMATION_REQUESTED",
+              "PENDING",
+              "APPROVED",
+              "DENIED"
+            ],
+            "description": "Indicates weather product should be enabled for a customer based on customer supplied data. Currently only returning `APPROVED` products."
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of the categories that the product belongs to. Examples of values (not comprehensive): `department-stores` `home-and-diy` `toys-and-games` `supermarkets` `booksellers` `experiences` `fashion` `electricals` `entertainment` `travel` `leisure-and-sports` `food-and-drink` `beauty-and-lifestyle` `jewellers` `prepaid-card`"
+          },
+          "code": {
+            "type": "string",
+            "description": "A unique code identifying the product. You can filter for a specific product using this code, or use it for order creation - see SubscriptionPlan for more details on ordering subscription products."
+          },
+          "countries_redeemable_in": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$",
+              "description": "ISO 3166 ALPHA-2 country code"
+            },
+            "description": "Countries where the payout can be spent."
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "The currency of the product, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+          },
+          "customer_service": {
+            "$ref": "#/components/schemas/CustomerService"
+          },
+          "discount_multiplier": {
+            "type": "string",
+            "description": "A multiplier used to calculate the price of your order."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the product."
+          },
+          "state": {
+            "type": "string",
+            "enum": ["LIVE", "TEMPORARILY_DISABLED", "TEMPORARILY_DEGRADED"],
+            "description": "The current state of the product."
+          },
+          "is_orderable": {
+            "type": "boolean",
+            "description": "Indicates whether or not you are able to order the product. You should use this detail to determine whether or not to display the product to your end users."
+          },
+          "payout_type": {
+            "type": "string",
+            "description": "The type of payout - this field will tell you the key of the additional object details that correspond to each payout type. It can be either `gift_card`, `subscription`, or `payment` for now, however, it will be extended to more types in the future, your implementation should account for it. Please check the Payout Type section in the guidelines for how to use this field."
+          },
+          "availability": {
+            "type": "string",
+            "enum": ["stocked", "realtime"],
+            "description": "The availability type of the product."
+          },
+          "gift_card": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BasePayoutTypeDetails"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "denominations": {
+                    "$ref": "#/components/schemas/Denominations"
+                  }
+                }
+              }
+            ]
+          },
+          "subscription": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BasePayoutTypeDetails"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "subscription_plans": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/SubscriptionPlan"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "payment": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Payment"
+              }
+            ]
+          }
+        },
+        "required": [
+          "approval_state",
+          "categories",
+          "code",
+          "countries_redeemable_in",
+          "currency",
+          "customer_service",
+          "discount_multiplier",
+          "name",
+          "state",
+          "is_orderable",
+          "payout_type"
+        ]
+      },
+      "Pagination": {
+        "type": "object",
+        "properties": {
+          "cursors": {
+            "type": "object",
+            "description": "Cursor-based pagination allows clients to navigate through a collection of items by providing 'after' or 'before' cursors.",
+            "properties": {
+              "after": {
+                "type": "string",
+                "description": "A cursor that points to the end of the page of data that has been returned. Passing this cursor on a subsequent request returns the next page of data."
+              },
+              "before": {
+                "type": "string",
+                "description": "A cursor that points to the start of the page of data that has been returned. Passing this cursor on a subsequent request returns the previous page of data."
+              }
+            }
+          },
+          "page": {
+            "type": "object",
+            "description": "Page-based pagination provides a way to request a specific page of items.",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "description": "Specifies the maximum number of items to return in the response. This can be used to control the size of each page of data. By default, each page of results will contain 500 items."
+              }
+            }
+          }
+        }
+      },
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "assets": {
+            "type": "object",
+            "required": ["icon_image_url", "primary_color"],
+            "properties": {
+              "icon_image_url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "primary_color": {
+                "type": "string",
+                "pattern": "^#[0-9A-Fa-f]{6}$"
+              }
+            }
+          },
+          "denominations": {
+            "type": "object",
+            "required": ["minimum_value", "maximum_value"],
+            "properties": {
+              "maximum_value": {
+                "type": "string",
+                "format": "decimal",
+                "description": "The maximum denomination value available for the product."
+              },
+              "minimum_value": {
+                "type": "string",
+                "format": "decimal",
+                "description": "The minimum denomination value available for the product."
+              }
+            }
+          },
+          "content_resources": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ContentResources"
+              },
+              {
+                "$ref": "#/components/schemas/ContentResourcesMarkdown"
+              },
+              {
+                "$ref": "#/components/schemas/ContentResourcesHTML"
+              }
+            ]
+          }
+        },
+        "required": ["assets", "denominations"]
+      }
+    },
+    "responses": {
+      "InternalServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/APIErrorResponse"
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Bad request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/APIErrorResponse"
+            }
+          }
+        }
+      },
+      "RateExceeded": {
+        "description": "Rate limit exceeded",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RateExceededResponse"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/APIErrorResponse"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/APIErrorResponse"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/APIErrorResponse"
+            }
+          }
+        }
+      },
+      "ValidationError": {
+        "description": "Request failed validation",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ValidationErrorResponse"
+            }
           }
         }
       }
     },
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Api-Key"
       }
     }
+  },
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ],
+  "x-readme": {
+    "explorer-enabled": true,
+    "proxy-enabled": true,
+    "samples-enabled": true
   }
 }
