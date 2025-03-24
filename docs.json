@@ -7,7 +7,7 @@
     "light": "#62AA57",
     "dark": "#3B6634"
   },
-  "favicon": "https://brand-assets.runa.io/favicon.svg",
+  "favicon": "/favicon.svg",
   "navigation": {
     "tabs": [
       {
