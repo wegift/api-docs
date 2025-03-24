@@ -44,12 +44,26 @@
             ]
           },
           {
-            "group": "Endpoint Examples",
+            "group": "Orders",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/endpoint/orders/create",
+              "api-reference/endpoint/orders/get",
+              "api-reference/endpoint/orders/list",
+              "api-reference/endpoint/orders/estimate"
+            ]
+          },
+          {
+            "group": "Products",
+            "pages": [
+              "api-reference/endpoint/products/list",
+              "api-reference/endpoint/products/get",
+              "api-reference/endpoint/products/countries"
+            ]
+          },
+          {
+            "group": "Balance",
+            "pages": [
+              "api-reference/endpoint/balance/get"
             ]
           }
         ]
