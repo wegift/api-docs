@@ -1,0 +1,146 @@
+---
+name: "Synchronous mode"
+icon: "arrow-right-arrow-left"
+---
+
+This guide aims to walk you through the process of making your first API order.
+
+## Place your order
+
+To successfully place an order, you need to include the following headers in your API request:
+
+- `x-idempotency-key` - This header requires a unique value that the server utilizes to prevent duplicate purchases. Ensure that each request you make includes a distinct idempotency key.
+
+> 📘 Note on x-idempotency-key:
+>
+> When the server receives a request that includes an `x-idempotency-key` header matching an existing order, it will not generate a new order. Instead, it will return the details of the original order. This mechanism ensures that each order is unique. It also prevents clients from submitting duplicate orders in the events such as HTTP request retries.
+>
+> Idempotency keys should be distinct from order IDs or any other identifiers already in use within the system. These keys are designed to be unique tokens for safely retrying requests without duplicating operations, and thus, should not overlap with existing data identifiers. We recommend generating idempotency keys using V4 UUIDs or another method that ensures a high level of randomness and entropy, specifically to prevent any possibility of collision with existing identifiers such as order IDs.
+
+- `X-Api-Key` - To authenticate your API requests, you need to include a secret token in this header. You can generate an API key by visiting https://app.runa.io/api-keys.
+
+- `X-Api-Version` - This header requires a valid API version to be specified. For this particular version of the API, please use "2024-02-05". You can learn more about how API versioning is implemented on the Runa API Platform by referring to the [API versioning](https://developer.runa.io/v2023-07-27/docs/api-versioning) documentation.
+
+- `X-Execution-Mode` - Set the value of this header to `sync`.
+
+### Distribute the payout link via email
+
+This section illustrates how to send out the rewards directly to the end user via email.
+
+`payment_method` - Specify the preferred balance you want to use on the order. If you haven't done so already, please ensure that you have sufficient [balance in your account](https://developer.runa.io/v2023-07-27/docs/getting-an-api-key#topping-up-your-account-balance).
+
+- `type` - Set the payment method type as `ACCOUNT_BALANCE`.
+- `currency` - Specify the currency of the account to be used for payment.
+
+`items` - This is an array of items to be included in your order. Beware that the order API will only accept a single order item in the synchronous execution mode. Each item represents a payout link and consists of the following fields:
+
+- `face_value` - Indicate the face value of the payout link you wish to order. The currency will be based on the selected product.
+- `distribution_method` - Define how you want to distribute the payout links to your end users. For this example, the payout links will be send directly to the end users via email.
+  - `type` - Set the distribution method type as `EMAIL`.
+  - `email_address` - Set the email address you want to send this payout link to.
+- `products` - Specify the merchants where the end user can redeem their payout link. In this example, we will select a single product, Amazon UK.
+  - `type` - Set the product type as `SINGLE`.
+  - `value` - Provide the product code. In this case, the code for Amazon UK is `AMZ-GB`.
+
+For more details or to quickly try out the endpoint, navigate to the [API reference for the Create Order endpoint](https://developer.runa.io/reference/createorder).
+
+![](https://files.readme.io/abc9a76-image.png)
+
+Here's an example of a basic request body:
+
+```json
+{
+  "payment_method": {
+    "type": "ACCOUNT_BALANCE",
+    "currency": "GBP"
+  },
+  "items": [
+    {
+      "face_value": 1,
+      "distribution_method": {
+        "type": "EMAIL",
+        "email_address": "fred@bloggs.com"
+      },
+      "products": {
+        "type": "SINGLE",
+        "value": "AMZ-GB"
+      }
+    }
+  ]
+}
+```
+
+If all went well the order was successfully processed and the client receives the following response which will be returned with `200 OK`:
+
+```json
+{
+  "id": "O-01234567890ABCDEFGHIJK",
+  "status": "COMPLETED",
+  "created_at": "2023-11-14T14:37:54.093824+00:00",
+  "completed_at": "2023-11-14T15:25:07.728788+00:00",
+  "description": "My first order.",
+  "payment_method": {
+    "type": "ACCOUNT_BALANCE"
+  },
+  "currency": "GBP",
+  "total_discount": "0.0",
+  "total_price": "1.0",
+  "items": [
+    {
+      "id": "E-0123456789ABCDEFG",
+      "distribution_method": {
+        "type": "EMAIL",
+        "email_address": "fred@bloggs.com"
+      },
+      "products": {
+        "type": "SINGLE",
+        "value": "AMZ-GB"
+      },
+      "face_value": "1.0",
+      "price": "1.0",
+      "redemption_url": "https://payout.runa.io/ej99mjdmf958324d2f38",
+      "payout": {
+        "status": "ACTIVE",
+        "status_updated_at": "2024-02-28T17:21:03.543262+00:00",
+        "url": "https://example-test.spend.runa.io/055306f2-466b-4fc4-8b59-9538eaf1be92",
+        "expiry_date": null
+      }
+    }
+  ]
+}
+```
+
+If you opted for email distribution, the payout links will have been delivered to the recipient's email inbox from `noreply@mail.runa.io`.
+
+<Card img='https://files.readme.io/a6e3c1d-image.png'>
+Example email that end users receive in their inbox.
+</Card>
+
+### Distribute the payout yourself
+
+If you're interested in obtaining the payout link to distribute it independently through your platform or any other channel, you can simply change the `distribution_method.type` to `PAYOUT_LINK`.
+
+Here's an example of a basic request body:
+
+```json
+{
+  "payment_method": {
+    "type": "ACCOUNT_BALANCE",
+    "currency": "GBP"
+  },
+  "items": [
+    {
+      "face_value": 1,
+      "distribution_method": {
+        "type": "PAYOUT_LINK"
+      },
+      "products": {
+        "type": "SINGLE",
+        "value": "AMZ-GB"
+      }
+    }
+  ]
+}
+```
+
+Now you can simply retrieve the payout links from the order response to further process them.

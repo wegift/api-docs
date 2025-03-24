@@ -1,0 +1,166 @@
+---
+title: "Asynchronous mode"
+icon: "rotate"
+---
+
+To initiate an order using the Runa API you need to follow two steps:
+
+1. Placing your order: Begin by submitting your order. Once the order is ready to be accepted, a response will be sent back to the client. Please note that order processing is carried out asynchronously.
+2. Retrieving the order details: Because order processing takes place asynchronously, you'll need to periodically check for updates on the order details. This involves polling for the necessary information.
+
+This guide aims to walk you through the process of making your first API order.
+
+## Place your order
+
+To successfully place an order, you need to include the following headers in your API request:
+
+- `x-idempotency-key` - This header requires a unique value that the server utilizes to prevent duplicate purchases. Ensure that each request you make includes a distinct idempotency key.
+
+> 📘 Note on x-idempotency-key:
+>
+> When the server receives a request that includes an `x-idempotency-key` header matching an existing order, it will not generate a new order. Instead, it will return the details of the original order. This mechanism ensures that each order is unique. It also prevents clients from submitting duplicate orders in the events such as HTTP request retries.
+
+- `X-Api-Key` - To authenticate your API requests, you need to include a secret token in this header. You can generate an API key by visiting https://app.runa.io/api-keys.
+
+- `X-Api-Version` - This header requires a valid API version to be specified. For this particular version of the API, please use "2024-02-05". Optionally, you can learn more about how API versioning is implemented on the Runa API Platform by referring to the [API versioning](https://developer.runa.io/v2023-07-27/docs/api-versioning) documentation.
+
+- `X-Execution-Mode` - Set the value of this header to `async`.
+
+### Distribute the payout link via email
+
+This section illustrates how to send out the rewards directly to the end user via email.
+
+`payment_method` - Specify the preferred balance you want to use on the order. If you haven't done so already, please ensure that you have sufficient [balance in your account](https://developer.runa.io/v2023-07-27/docs/getting-an-api-key#topping-up-your-account-balance).
+
+- `type` - Set the payment method type as `ACCOUNT_BALANCE`.
+- `currency` - Specify the currency of the account to be used for payment.
+
+`items` - This is an array of items to be included in your order. Each item represents a payout link and consists of the following fields:
+
+- `face_value` - Indicate the face value of the payout link you wish to order. The currency will be based on the selected product.
+- `distribution_method` - Define how you want to distribute the payout links to your end users. For this example, the payout links will be send directly to the end users via email.
+  - `type` - Set the distribution method type as `EMAIL`.
+  - `email_address` - Set the email address you want to send this payout link to.
+- `products` - Specify the merchants where the end user can redeem their payout link. In this example, we will select a single product, Amazon UK.
+  - `type` - Set the product type as `SINGLE`.
+  - `value` - Provide the product code. In this case, the code for Amazon UK is `AMZ-GB`.
+
+For more details or to quickly try out the endpoint, navigate to the [API reference for the Create Order endpoint](https://developer.runa.io/reference/createorder).
+
+![](https://files.readme.io/abc9a76-image.png)
+
+Here's an example of a basic request body:
+
+```json
+{
+  "payment_method": {
+    "type": "ACCOUNT_BALANCE",
+    "currency": "GBP"
+  },
+  "items": [
+    {
+      "face_value": 1,
+      "distribution_method": {
+        "type": "EMAIL",
+        "email_address": "fred@bloggs.com"
+      },
+      "products": {
+        "type": "SINGLE",
+        "value": "AMZ-GB"
+      }
+    }
+  ]
+}
+```
+
+Here's an example of a successful response:
+
+```json
+{
+  "id": "O-ABC123",
+  "status": "PROCESSING"
+}
+```
+
+If the order has been processed successfully and the payout links will have been delivered to the recipient's email inbox from `noreply@mail.runa.io`.
+
+<Card img="https://files.readme.io/a6e3c1d-image.png">
+Example email that end users receive in their inbox.
+</Card>
+
+### Distribute the payout yourself
+
+If you're interested in obtaining the payout link to distribute it independently through your platform or any other channel, you can simply change the `distribution_method.type` to `PAYOUT_LINK`.
+
+Here's an example of a basic request body:
+
+```json
+{
+  "payment_method": {
+    "type": "ACCOUNT_BALANCE",
+    "currency": "GBP"
+  },
+  "items": [
+    {
+      "face_value": 1,
+      "distribution_method": {
+        "type": "PAYOUT_LINK"
+      },
+      "products": {
+        "type": "SINGLE",
+        "value": "AMZ-GB"
+      }
+    }
+  ]
+}
+```
+
+Now you can simply retrieve the payout links from the order details response to further process them.
+
+## Retrieving your order details
+
+You can use our [Order Completion webhook](https://developer.runa.io/docs/order-completion) to be notified when an order has completed processing.
+
+Alternatively, you can poll the [Get Order](https://developer.runa.io/reference/getsingleorder) endpoint in order to verify the successful order processing. You will need the order ID obtained from the response received after calling the [Create Order](https://developer.runa.io/v2023-07-27/reference/createorder) endpoint. In the example response provided above, the order ID is `O-ABC123`. Simply include this order ID as a path parameter in the following URL format: `https://api.runa.io/v2/order/{id}`. Replace `{id}` with your specific order ID.
+
+To try out this endpoint, you can visit the [Get Order](https://developer.runa.io/reference/getsingleorder) page and insert your order ID into the id path parameter.
+
+![](https://files.readme.io/7c68558-image.png)
+
+Upon a successful request, the order details will be returned to you and the status of the order is updated to `COMPLETED`. The redemption url of the payout link can be found in the `url` field of the `payout` object within `items`. Below is an example of a successful response:
+
+```json JSON
+{
+  "id": "O-ABC123",
+  "status": "COMPLETED",
+  "created_at": "2023-07-10T17:12:34.389392+00:00",
+  "completed_at": "2023-07-10T17:13:34.389392+00:00",
+  "description": null,
+  "payment_method": {
+    "type": "ACCOUNT_BALANCE"
+  },
+  "currency": "GBP",
+  "total_price": "1.0",
+  "items": [
+    {
+      "id": "E-12345",
+      "redemption_url": "https://spend.runa.io/55555-555-55-0000-555",
+      "distribution_method": {
+        "type": "PAYOUT_LINK"
+      },
+      "products": {
+        "type": "SINGLE",
+        "value": "AMZ-GB"
+      },
+      "face_value": "1.0",
+      "price": "1.0",
+      "payout": {
+        "status": "ACTIVE",
+        "status_updated_at": "2024-02-28T17:21:03.543262+00:00",
+        "url": "https://example-test.spend.runa.io/055306f2-466b-4fc4-8b59-9538eaf1be92",
+        "expiry_date": null
+      }
+    }
+  ]
+}
+```

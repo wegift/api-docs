@@ -1,0 +1,32 @@
+---
+title: "Authentication"
+icon: "key"
+---
+
+The Runa API uses API keys to authenticate requests. You can view and manage your API keys in the [API keys section of the portal](https://app.runa.io/api-keys).
+
+API keys are sent via the `X-Api-Key` header in the request. Here's an example of how to include the API key in your request:
+
+```http
+GET https://api.runa.io/v2/orders HTTP/2
+X-Api-Key: YOUR_API_KEY
+```
+
+# Structure of an API key
+
+![API key example showing the key wgABC123.abc12345678defghijklmnopqrst~XYZ](https://files.readme.io/28eff297bd7a40f8cd374062f4871eca43f0760a9eb5e3afa663299e1b86a85c-api-key-parts.png)
+
+Runa API keys while a single string are made of two parts separated by a dot. The short **prefix** uniquely identifies the key. It's shown in the list of keys in the web portal and may be shared with Runa support to diagnose issues. The rest of the key is the **secret** and must be kept confidential.
+
+We only ever show you the entire key once, when you create it. If you lose it, you must create a new one and revoke the old key.
+
+# Types of API key
+
+There are two types of API key:
+
+- **Production keys** used for live transactions. These keys are prefixed with `wg`.
+- **Playground keys** used for testing in the playground environment. These keys are prefixed with `XX`.
+
+# Single or multiple keys
+
+You can have multiple keys for different environments or applications. You should create new key for each use case. This allows you to revoke a key without affecting other integrations. If a key is shared revoking it will affect all users of that key.

@@ -7,22 +7,53 @@
     "light": "#62AA57",
     "dark": "#3B6634"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "https://brand-assets.runa.io/favicon.svg",
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "API Guides",
         "groups": [
           {
-            "group": "Get Started",
+            "group": "Runa Developer",
+            "pages": ["introduction", "quickstart", "development", "changelog"]
+          },
+          {
+            "group": "Getting Started",
             "pages": [
-              "introduction",
-              "quickstart",
-              "development"
+              "getting-started/getting-started",
+              "getting-started/steps",
+              {
+                "group": "Your first order",
+                "icon": "paper-plane-top",
+                "pages": [
+                  "getting-started/first-order/which-mode",
+                  "getting-started/first-order/sync",
+                  "getting-started/first-order/async"
+                ]
+              }
             ]
           },
           {
-            "group": "Essentials",
+            "group": "Features",
+            "pages": [
+              "features/balances"
+            ]
+          },
+          {
+            "group": "Best Practices",
+            "pages": [
+              "best-practices/best-practices",
+              "best-practices/authentication",
+              "best-practices/security",
+              "best-practices/idempotency",
+              "best-practices/handling-errors",
+              "best-practices/rate-limits",
+              "best-practices/api-versioning"
+
+            ]
+          },
+          {
+            "group": "Mintlify Essentials",
             "pages": [
               "essentials/markdown",
               "essentials/code",
@@ -36,35 +67,49 @@
       },
       {
         "tab": "API Reference",
-        "groups": [
+        "versions": [
           {
-            "group": "API Documentation",
-            "pages": [
-              "api-reference/introduction",
-              "api-reference/errors"
+            "version": "2024-02-05",
+            "groups": [
+              {
+                "group": "API Documentation",
+                "pages": [
+                  "api-reference/2024-02-05/introduction",
+                  "api-reference/2024-02-05/errors"
+                ]
+              },
+              {
+                "group": "Orders",
+                "pages": [
+                  "api-reference/2024-02-05/endpoint/orders/create",
+                  "api-reference/2024-02-05/endpoint/orders/get",
+                  "api-reference/2024-02-05/endpoint/orders/list",
+                  "api-reference/2024-02-05/endpoint/orders/estimate"
+                ]
+              },
+              {
+                "group": "Products",
+                "pages": [
+                  "api-reference/2024-02-05/endpoint/products/list",
+                  "api-reference/2024-02-05/endpoint/products/get",
+                  "api-reference/2024-02-05/endpoint/products/countries"
+                ]
+              },
+              {
+                "group": "Balance",
+                "pages": ["api-reference/2024-02-05/endpoint/balance/get"]
+              }
             ]
           },
           {
-            "group": "Orders",
-            "pages": [
-              "api-reference/endpoint/orders/create",
-              "api-reference/endpoint/orders/get",
-              "api-reference/endpoint/orders/list",
-              "api-reference/endpoint/orders/estimate"
-            ]
-          },
-          {
-            "group": "Products",
-            "pages": [
-              "api-reference/endpoint/products/list",
-              "api-reference/endpoint/products/get",
-              "api-reference/endpoint/products/countries"
-            ]
-          },
-          {
-            "group": "Balance",
-            "pages": [
-              "api-reference/endpoint/balance/get"
+            "version": "2023-07-27",
+            "groups": [
+              {
+                "group": "API Documentation",
+                "pages": [
+                  "api-reference/2023-07-27/introduction"
+                ]
+              }
             ]
           }
         ]
@@ -73,18 +118,13 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
+          "anchor": "Back to app",
+          "href": "https://app.runa.io",
+          "icon": "arrow-left"
         },
         {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
+          "anchor": "Runa Blog",
+          "href": "https://runa.io/blog",
           "icon": "newspaper"
         }
       ]
@@ -103,8 +143,8 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "label": "Back to app",
+      "href": "https://app.runa.io"
     }
   },
   "footer": {
