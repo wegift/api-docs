@@ -1,5 +1,6 @@
 ---
 title: "Idempotency"
+description: "Safe retrying of requests without accidentally performing the same operation twice"
 icon: 'fingerprint'
 ---
 
@@ -7,8 +8,9 @@ The API endpoints support idempotency for safely retrying requests without accid
 
 Runa's idempotency works by storing the request body and response in a cache for a 30 day period. If the same request is made again with the same key, the response is returned or replayed from the cache instead of processing the request again. This behaviour is the same for any response regardless of whether it succeeds of fails. Subsequent requests with the same body and key return the same result including `4xx` and `5xx` errors.
 
-> ⚠ We only retain this cache for **30 days**
-> Orders requested using the same key after this period will result in a new order being placed.
+<Warning>
+We only retain this cache for **30 days**. Orders requests using the same key after this period will result in a new order being placed.
+</Warning>
 
 # Choosing a key
 
