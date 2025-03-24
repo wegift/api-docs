@@ -75,7 +75,8 @@
                 "group": "API Documentation",
                 "pages": [
                   "api-reference/2024-02-05/introduction",
-                  "api-reference/2024-02-05/errors"
+                  "api-reference/2024-02-05/errors",
+                  "api-reference/2024-02-05/playground"
                 ]
               },
               {
@@ -110,6 +111,25 @@
                   "api-reference/2023-07-27/introduction"
                 ]
               }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Changelogs",
+        "groups": [
+          {
+            "group": "API",
+            "pages": [
+              "changelog/api"
+            ]
+          },
+          {
+            "group": "Network",
+            "pages": [
+              "changelog/network/additions",
+              "changelog/network/changes",
+              "changelog/network/removals"
             ]
           }
         ]
