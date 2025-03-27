@@ -18,10 +18,11 @@
             "pages": ["introduction", "quickstart", "development", "changelog"]
           },
           {
-            "group": "Getting Started",
+            "group": "Getting started",
             "pages": [
-              "getting-started/getting-started",
               "getting-started/steps",
+              "getting-started/api-key",
+              "getting-started/the-environments",
               {
                 "group": "Your first order",
                 "icon": "paper-plane-top",
@@ -30,17 +31,24 @@
                   "getting-started/first-order/sync",
                   "getting-started/first-order/async"
                 ]
-              }
+              },
+              "getting-started/topping-up"
             ]
           },
           {
             "group": "Features",
             "pages": [
-              "features/balances"
+              "features/product-catalog",
+              "features/estimate",
+              "features/balances",
+              "features/limiting-available-products",
+              "features/redemption-templates",
+              "features/merchant-selection-template",
+              "features/embedded-fx"
             ]
           },
           {
-            "group": "Best Practices",
+            "group": "Before you go live",
             "pages": [
               "best-practices/best-practices",
               "best-practices/authentication",
@@ -50,17 +58,6 @@
               "best-practices/rate-limits",
               "best-practices/api-versioning"
 
-            ]
-          },
-          {
-            "group": "Mintlify Essentials",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
             ]
           }
         ]
