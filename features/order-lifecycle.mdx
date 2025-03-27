@@ -1,0 +1,13 @@
+---
+title: "Order lifecycle"
+icon: "clock"
+description: "Learn about the order lifecycle in Runa"
+---
+
+```mermaid
+flowchart LR
+    New --> IP[In Progress]
+    New --> Invalid
+    IP --> Completed
+    IP --> Failed
+```

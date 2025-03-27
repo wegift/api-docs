@@ -38,6 +38,7 @@
           {
             "group": "Features",
             "pages": [
+              "features/order-lifecycle",
               "features/product-catalog",
               "features/estimate",
               "features/balances",
