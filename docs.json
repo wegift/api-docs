@@ -21,8 +21,8 @@
             "group": "Getting started",
             "pages": [
               "getting-started/steps",
+              "getting-started/environments",
               "getting-started/api-key",
-              "getting-started/the-environments",
               {
                 "group": "Your first order",
                 "icon": "paper-plane-top",
