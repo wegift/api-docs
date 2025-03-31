@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Runa Developer Hub",
   "colors": {
     "primary": "#7BD46C",
     "light": "#62AA57",
