@@ -3,3 +3,291 @@ title: "Product catalog"
 description: "Fetch the latest catalog of products available for use in payouts"
 icon: "grid"
 ---
+Whether you're showing the latest product offering to your customers, or verifying constraints during your order process, you'll want the latest catalogue details.
+
+# Getting a list of countries that you can order in
+
+To create a payout link in the ordering process, you'll need to provide a list of products that are all redeemable in the same country. [The list of countries endpoint](/api-reference/2024-02-05/endpoint/products/countries) will provide you with a dynamic list with all of the countries in which you have available payout types.
+
+This will return a list of ISO3166 ALPHA-2 country codes. We'll be modifying this list over time, so your implementation should handle the addition and removal of countries from this list.
+
+You can use this to aggregate products that belong to a country for ordering by using the `countries_redeemable_in` query parameter, in the endpoint described below.
+
+<Card
+    title="List all countries"
+    icon="earth-europe"
+    href="/api-reference/2024-02-05/endpoint/products/countries"
+    horizontal
+  >
+    Endpoint details for listing all supported countries
+  </Card>
+
+# Retrieving your catalog
+
+We've updated our catalog to provide you with even more details than before, with improved filtering, pagination, and performance across the board.
+
+We've added new levels of granularity to payout types - differentiating between `gift_card`, `subscription`, and `payment` type products, and we'll be looking to add to these in the future. At the bottom of this page, in the Example response section, there are examples of a few permutations of responses.
+
+We recommend that you poll the [list endpoint](/api-reference/2024-02-05/endpoint/products/list) to retrieve full catalog details hourly and in any critical journeys where you [fetch the details of an individual product](/api-reference/2024-02-05/endpoint/products/get) by using the `code` query parameter to return the latest details of a product in a timely manner.
+
+<CardGroup cols={2}>
+  <Card
+    title="List all products"
+    icon="grid"
+    href="/api-reference/2024-02-05/endpoint/products/list"
+    horizontal
+  >
+    Endpoint details for listing all products, filterable by country
+  </Card>
+  <Card
+    title="Get details of a specific product"
+    icon="square"
+    href="/api-reference/2024-02-05/endpoint/products/get"
+    horizontal
+  >
+    Endpoint details for getting details of a specific product by its code
+  </Card>
+</CardGroup>
+
+## Field usage guidance
+
+In this section, we'll detail a few of the key fields that should influence your implementation.
+
+### Generic fields
+
+#### `is_orderable`
+
+This field indicates whether you are currently able to order a product or not. We recommend that you only ever display products to people placing orders when this field is `true` - we will reject any orders placed for products where this is `false` . You can pass this as a query parameter as part of your request.
+
+#### `currency & countries_redeemable_in`
+
+As detailed in the Currencies section of this guide - we're constantly expanding our network to increase the payouts we can offer you and your customers. Your implementation should handle additions to these fields in their respective ISO formats.
+
+#### `discount_multiplier`
+
+The discount is represented as a decimal between 0 & 1. e.g. a discount_multiplier of 0.10 would be a 10% discount.
+
+#### `payout_type`
+
+You'll notice in the API specification that there are currently three fields, `gift_card`, `subscription`, and `payment` that are nullable and will not be present in certain responses. The `payout_type` field will indicate which of these fields is present, and your implementation should then use this key to extract the relevant required details.
+
+We'll be adding more payout types in the future, and your implementation should handle these additions gracefully.
+
+#### `categories`
+
+Used for categorising the products.
+
+Examples of values (not comprehensive): `department-stores` `home-and-diy` `toys-and-games` `supermarkets` `booksellers` `experiences` `fashion` `electricals` `entertainment` `travel` `leisure-and-sports` `food-and-drink` `beauty-and-lifestyle` `jewellers` `prepaid-card`.
+
+#### `content_resources`
+
+The URL fields in this response object will contain URL's to markdown files containing their respective content. You can use this markdown and render it with your own styling as you wish.
+
+The fields will be `null` when the text has been removed, and present when added. We'll update this content semi-regularly; a `403` / `404` will be returned, should this content have been removed. Your implementation should handle this.
+
+### Gift card specific fields
+
+#### `denominations`
+
+This field will return you the constraints of values that you can order.
+
+The example responses below contain the different responses that the API can return, whether the denominations are `open` or `fixed` :
+
+- `open` products will include `minimum_value` and `maximum_value` fields. This means that you can order gift cards within the range of `minimum_value` and `maximum_value`.
+- `fixed` products will include a list of values in the `available_denominations` field. You can only order values contained in the list that is returned to you.
+
+### Subscription specific fields
+
+#### `subscription_plans`
+
+Subscriptions each come with a list of subscription plans, detailing things such as the duration of the subscription and the price it costs to order each of the subscription plans - this is without your discount applied.
+
+**subscription_plan_code** is returned as part of the subscription plan - use this code, not the top-level object code as part of your order. We'll add more subscription plans for your customers to order over time.
+
+### Payment specific fields
+
+#### `denominations`
+
+Similar to gift cards, payments have denomination constraints with `minimum_value` and `maximum_value` fields that define the allowed payment ranges, but will always be open denomination. Therefore, we don't have the list of available denominations here.
+
+## Example Response
+
+```Text JSON
+{
+    "catalog": [
+        {
+            "approval_state": "APPROVED",
+            "categories": [
+                "experiences"
+            ],
+            "code": "EXAMPLEFIXED-US",
+            "countries_redeemable_in": [
+                "US"
+            ],
+            "currency": "USD",
+            "customer_service": {
+                "phone_number": "+1 (123) 456-7890",
+                "website_url": "https:/example.com/contact"
+            },
+            "discount_multiplier": "0.1000",
+            "is_orderable": true,
+            "name": "Example Fixed Denominations US",
+            "payout_type": "gift_card",
+            "state": "LIVE",
+            "gift_card": {
+                "assets": {
+                    "card_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEFIXED-US/EXAMPLEFIXED-US-card.png",
+                    "icon_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEFIXED-US/EXAMPLEFIXED-US-icon.png",
+                    "primary_color": "#FFFFFF"
+                },
+                "balance_check_url": "https://example.com/balance-check-url",
+                "content_resources": {
+                    "description_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/description.md",
+                    "disclaimer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/disclaimer.md",
+                    "locale": "en_US",
+                    "redemption_instructions_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/redemption_instructions.md",
+                    "refund_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/refund_policy.md",
+                    "reissuance_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/reissuance_policy.md",
+                    "terms_buyer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/terms_buyer.md",
+                    "terms_consumer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/terms_consumer.md"
+                },
+                "denominations": {
+                    "available_list": [
+                        "0.5",
+                        "1",
+                        "5",
+                        "10",
+                        "25",
+                        "50",
+                        "100"
+                    ],
+                    "maximum_value": "100",
+                    "minimum_value": "0.5",
+                    "type": "fixed"
+                },
+                "expiry": {
+                    "date_policy": "Does not expire",
+                    "in_months": 0,
+                    "type": "indefinite"
+                },
+                "redeemable_at": "online",
+                "website_url": "https://example.com"
+            }
+        },
+        {
+            "approval_state": "APPROVED",
+            "categories": [
+                "electricals"
+            ],
+            "code": "EXAMPLEOPEN-US",
+            "countries_redeemable_in": [
+                "US"
+            ],
+            "currency": "USD",
+            "customer_service": {
+                "phone_number": "+1 (123) 456-7890",
+                "website_url": "https:/example.com/contact"
+            },
+            "discount_multiplier": "0.3",
+            "is_orderable": true,
+            "name": "Example Open Denominations US",
+            "payout_type": "gift_card",
+            "state": "TEMPORARILY_DISABLED",
+            "gift_card": {
+                "assets": {
+                    "card_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEOPEN-US/EXAMPLEOPEN-US-card.png",
+                    "icon_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEOPEN-US/EXAMPLEOPEN-US-icon.png",
+                    "primary_color": "#FFFFFF"
+                },
+                "balance_check_url": "https://example.com/balance-check-url",
+                "content_resources": {
+                    "description_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/description.md",
+                    "disclaimer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/disclaimer.md",
+                    "locale": "en_US",
+                    "redemption_instructions_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/redemption_instructions.md",
+                    "refund_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/refund_policy.md",
+                    "reissuance_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/reissuance_policy.md",
+                    "terms_buyer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/terms_buyer.md",
+                    "terms_consumer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/terms_consumer.md"
+                },
+                "denominations": {
+                    "available_list": null,
+                    "maximum_value": "500.00",
+                    "minimum_value": "15",
+                    "type": "open"
+                },
+                "expiry": {
+                    "date_policy": "Does not expire",
+                    "in_months": 0,
+                    "type": "indefinite"
+                },
+                "redeemable_at": "all",
+                "website_url": "https://example.com"
+            }
+        },
+        {
+            "approval_state": "APPROVED",
+            "categories": [
+                "beauty-and-fashion"
+            ],
+            "code": "SUBSCRIPTION-GB",
+            "countries_redeemable_in": [
+                "GN"
+            ],
+            "currency": "GBP",
+            "customer_service": {
+                "phone_number": "+4420 1234 5678",
+                "website_url": "https://example.com/subscription-customer-service"
+            },
+            "discount_multiplier": "0.1940",
+            "is_orderable": true,
+            "name": "Subscription Example GB",
+            "payout_type": "subscription",
+            "state": "LIVE",
+            "subscription": {
+                "assets": {
+                    "card_image_url": "https:/gift.runa.io/static/product_assets/SUBSCRIPTION-GB/SUBSCRIPTION-GB-card.png",
+                    "icon_image_url": "https:/gift.runa.io/static/product_assets/SUBSCRIPTION-GB/SUBSCRIPTION-GB-icon.png",
+                    "primary_color": "#FFFFFF"
+                },
+                "balance_check_url": "https://example.com/subscription-balance-check-url",
+                "content_resources": {
+                    "description_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/description.md",
+                    "disclaimer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/disclaimer.md",
+                    "locale": "es_ES",
+                    "redemption_instructions_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/redemption_instructions.md",
+                    "refund_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/refund_policy.md",
+                    "reissuance_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/reissuance_policy.md",
+                    "terms_buyer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/terms_buyer.md",
+                    "terms_consumer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/terms_consumer.md"
+                },
+                "expiry": {
+                    "date_policy": "Expires 1 year from issue date",
+                    "in_months": 12,
+                    "type": "from-issue-date"
+                },
+                "redeemable_at": "online",
+                "subscription_plans": [
+                    {
+                        "length": 6,
+                        "length_unit": "MONTHS",
+                        "name": "Subscription Example 6 months",
+                        "price": 107.94,
+                        "subscription_plan_code": "SUBSCRIPTION-GB"
+                    }
+                ],
+                "website_url": "https://example.com/subscription-details"
+            }
+        }
+    ],
+    "pagination": {
+        "cursors": {
+            "after": "After Cursor",
+            "before": "Before Cursor"
+        },
+        "page": {
+            "limit": 500
+        }
+    }
+}
+```
