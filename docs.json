@@ -134,18 +134,7 @@
       }
     ],
     "global": {
-      "anchors": [
-        {
-          "anchor": "Back to app",
-          "href": "https://app.runa.io",
-          "icon": "arrow-left"
-        },
-        {
-          "anchor": "Runa Blog",
-          "href": "https://runa.io/blog",
-          "icon": "newspaper"
-        }
-      ]
+      "anchors": []
     }
   },
   "logo": {
@@ -154,12 +143,7 @@
   },
   "banner": { "content": "⚠️ These are pre-release docs. For the latest stable version, visit [developer.runa.io](https://developer.runa.io)." },
   "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
+    "links": [],
     "primary": {
       "type": "button",
       "label": "Back to app",
