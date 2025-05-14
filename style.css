@@ -4,6 +4,10 @@
     color: white !important;
   }
 
+#navbar-transition {
+    background: black !important;
+}
+
 #navbar .text-gray-800, #navbar .text-gray-600 {
     color: white !important;
 }
