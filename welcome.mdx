@@ -1,0 +1,133 @@
+---
+title: Welcome
+mode: custom
+---
+
+<div style={{
+    minHeight: "89vh",
+  background: "black",
+  color: "white",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "flex-start",
+}}>
+  {/* Logo and Title */}
+  <div style={{ 
+    flexGrow: 1,
+    display: "flex", 
+    flexDirection: "column",
+    alignItems: "center",
+    backgroundImage: "url(/assets/branding/bubbles-dark-1.png)",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    width: "100%", padding: "6rem 0"
+    }}>
+  <div style={{
+    background: "rgba(0,0,0,0.8)",
+    backdropFilter: "blur(6px)",
+    padding: "2rem 3rem",
+    borderRadius: 16,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center"
+    }}>
+    <img src="https://brand-assets.runa.io/logo-horizontal-white.svg" width={240} alt="Runa logo" />
+    <p style={{ marginTop: "1em", fontSize: "1.25rem", fontWeight: 800, textAlign: "center" }}>
+      Send instant B2C payments your recipients will love
+    </p>
+    <a
+      href="/introduction"
+      style={{
+        marginTop: 24,
+        padding: "0.75rem 2rem",
+        border: "2px solid #4fff7b",
+        borderRadius: 24,
+        color: "#fff",
+        background: "transparent",
+        fontWeight: 600,
+        textDecoration: "none",
+        fontSize: "1rem",
+        transition: "background 0.2s, color 0.2s",
+        textTransform: "uppercase"
+      }}
+    >
+      Explore our documentation
+    </a>
+    </div>
+  </div>
+
+{/* Tools and Guides */}
+
+  <div style={{
+    flexGrow: 2,
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "6rem 0"
+  }}>
+  <div style={{
+        maxWidth: 1100,
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  }}>
+    <h2 style={{ fontSize: "1.5rem", fontWeight: 600, marginBottom: "2rem" }}>
+      Get started with our tools and guides
+    </h2>
+    <CardGroup cols={3} rows={2}>
+  <Card
+    title="Get started"
+    icon="flag-swallowtail"
+    href="/introduction"
+    style={{
+      backgroundColor: "#000",
+      color: "#fff",
+      border: "2px solid #4fff7b",
+      borderRadius: 24,
+      padding: "0.75rem 2rem",
+    }}
+  >
+    Plearn the basics and set up your integration in minutes
+  </Card>
+  <Card
+    title="API Guides"
+    icon="book"
+    href="/getting-started/steps"
+  >
+    Step-by-step guides to help you build and test fast
+  </Card>
+  <Card
+    title="API Reference"
+    icon="gear"
+    href="/api-reference"
+  >
+    Detailed reference documentation for every endpoint, request, and response
+  </Card>
+  <Card
+    title="Features"
+    icon="list"
+    href="/introduction"
+  >
+    Discover key tools and features available in the Runa API
+  </Card>
+  <Card
+    title="Make your first order"
+    icon="paper-plane"
+    href="/getting-started/first-order/which-mode"
+  >
+    Follow a simple flow to place your first order with Runa
+  </Card>
+  <Card
+    title="Before you go live"
+    icon="ballot-check"
+    href="/best-practices/before-you-go-live"
+  >
+    Final checks to ensure you can launch with confidence
+  </Card>
+</CardGroup>
+</div>
+  </div>
+</div>

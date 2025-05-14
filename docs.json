@@ -11,11 +11,15 @@
   "navigation": {
     "tabs": [
       {
+        "tab": "Welcome",
+        "pages": ["welcome"]
+      },
+      {
         "tab": "API Guides",
         "groups": [
           {
             "group": "Runa Developer",
-            "pages": ["introduction", "quickstart", "development", "changelog"]
+            "pages": ["introduction"]
           },
           {
             "group": "Getting started",
@@ -51,7 +55,7 @@
           {
             "group": "Before you go live",
             "pages": [
-              "best-practices/best-practices",
+              "best-practices/before-you-go-live",
               "best-practices/authentication",
               "best-practices/security",
               "best-practices/idempotency",
