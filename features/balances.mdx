@@ -3,3 +3,59 @@ title: "Managing your balance"
 description: "Check your balance using the API and set up alerts to notify you when your balance is low"
 icon: "coins"
 ---
+
+Balances empower you to monitor available funds across [all supported currencies](/api-reference/countries) in your account. It's crucial to maintain adequate balances, as insufficient funds may lead to order failures. Regularly checking your balances can help prevent such issues and we recommend setting up an alert in your system so that the relevant teams can be notified.
+
+Refer to our list of supported currencies for a comprehensive understanding of available options.
+
+This guide serves as documentation for developers, providing instructions on utilizing the Runa API to [fetch balances](/api-reference/2024-02-05/endpoint/balance/get).
+
+# Checking all available balances  
+
+To retrieve information on all balances associated with your account, initiate a GET request to the `/v2/balance` endpoint. 
+
+Each object in the array represents the total available balance for a specific currency:  
+
+- `balance` denotes the current available funding for the specified currency
+- `currency` is represented by the ISO4217 three-letter currency code
+
+```json
+[
+  {
+    "balance": "1200.00",
+    "currency": "CAD"
+  },
+  {
+    "balance": "500.00",
+    "currency": "EUR"
+  },
+  {
+    "balance": "12500.00",
+    "currency": "GBP"
+  },
+  {
+    "balance": "45000",
+    "currency": "JPY"
+  },
+  {
+    "balance": "19.50",
+    "currency": "USD"
+  }
+]
+```
+
+# Checking the balance for a single currency
+
+To obtain the balance for a specific currency, include the three-letter currency code in the GET request: `/v2/balance/?currency=[CURRENCY]`
+
+For example, a request to `/v2/balance/?currency=GBP` will yield a single object in response. This API responds to other currencies with a value of 0, as long as the currency is supported on our platform.
+
+- `balance` denotes the current available funding for the specified currency
+- `currency` is represented by the ISO4217 three-letter currency code
+
+```json
+{
+  "balance": "1200.00",
+  "currency": "CAD"
+}
+```
