@@ -4,8 +4,8 @@
   "name": "Runa Developer Hub",
   "colors": {
     "primary": "#7BD46C",
-    "light": "#62AA57",
-    "dark": "#3B6634"
+    "light": "#4fff7b",
+    "dark": "#3dd463"
   },
   "favicon": "/favicon.svg",
   "navigation": {

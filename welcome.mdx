@@ -4,9 +4,7 @@ mode: custom
 ---
 
 <div style={{
-    minHeight: "89vh",
-  background: "black",
-  color: "white",
+    minHeight: "85vh",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -18,29 +16,29 @@ mode: custom
     display: "flex", 
     flexDirection: "column",
     alignItems: "center",
-    backgroundImage: "url(/assets/branding/bubbles-dark-1.png)",
-    backgroundSize: "cover",
+    backgroundColor: "black",
+    backgroundImage: "url(https://brand-assets.runa.io/bubbles-dark-1.png)",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
-    width: "100%", padding: "6rem 0"
-    }}>
+    width: "100%", padding: "6rem 0",
+    boxShadow: "0 0 20px 2px rgba(0, 0, 0, 0.4)",
+    }} className='dark'>
   <div style={{
     background: "rgba(0,0,0,0.8)",
-    backdropFilter: "blur(6px)",
+    backdropFilter: "blur(6px) saturate(70%)",
     padding: "2rem 3rem",
     borderRadius: 16,
     display: "flex",
     flexDirection: "column",
     alignItems: "center"
     }}>
-    <img src="https://brand-assets.runa.io/logo-horizontal-white.svg" width={240} alt="Runa logo" />
-    <p style={{ marginTop: "1em", fontSize: "1.25rem", fontWeight: 800, textAlign: "center" }}>
+    <img src="https://brand-assets.runa.io/logo-horizontal-white.svg" width={240} alt="Runa logo" style={{pointerEvents: "none"}} />
+    <p style={{ margin: "1.25em 0", fontSize: "1.25rem", fontWeight: 800, textAlign: "center", color: "#fff" }}>
       Send instant B2C payments your recipients will love
     </p>
     <a
       href="/introduction"
       style={{
-        marginTop: 24,
         padding: "0.75rem 2rem",
         border: "2px solid #4fff7b",
         borderRadius: 24,
@@ -74,7 +72,7 @@ mode: custom
     flexDirection: "column",
     alignItems: "center",
   }}>
-    <h2 style={{ fontSize: "1.5rem", fontWeight: 600, marginBottom: "2rem" }}>
+    <h2 style={{ fontSize: "1.5rem", fontWeight: 600, marginBottom: "2rem" }} className='text-black dark:text-white'>
       Get started with our tools and guides
     </h2>
     <CardGroup cols={3} rows={2}>
