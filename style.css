@@ -1,0 +1,26 @@
+#navbar {
+    background: black !important;
+    color-scheme: dark;
+    color: white !important;
+  }
+
+#navbar .text-gray-800, #navbar .text-gray-600 {
+    color: white !important;
+}
+
+.nav-logo.hidden {
+    display: block !important;
+}
+
+.nav-logo.block {
+    display: none !important;
+}
+
+/* :root {
+    --background-light: red
+} */
+
+#search-bar-entry {
+    background: black !important;
+    color: white !important;
+}
