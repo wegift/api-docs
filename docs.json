@@ -2,6 +2,7 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Runa Developer Hub",
+  "description": "Send instant B2C payments your recipients will love",
   "colors": {
     "primary": "#7BD46C",
     "light": "#4fff7b",
@@ -160,5 +161,8 @@
       "website": "https://runa.io",
       "linkedin": "https://linkedin.com/company/runapay"
     }
+  },
+  "contextual": {
+    "options": ["copy", "view", "chatgpt", "claude"]
   }
 }
