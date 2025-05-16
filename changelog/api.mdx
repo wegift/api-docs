@@ -3,7 +3,7 @@ title: "API Updates"
 icon: newspaper
 ---
 
-<Update label="March 2025">
+<Update label="March 2025" tags={["Feature", "Payment"]}>
 ## New payment payout type added
 To support the release of [Runa Pay to Card](https://runa.io/products/pay-to-card) a new payout type of `payment` has been added to the product catalogue. This new type joins the existing types of `gift_card` and `subscription`. For `payment` type products the new `payment` key will contain specific details about the product.
 
@@ -15,7 +15,7 @@ To support the release of [Runa Pay to Card](https://runa.io/products/pay-to-car
 - [Retrieve a single product's details](ref:getsingleproduct)
   - When `payout_type` is `payment` the `payment` key will contain specific details about the products assets, denominations and resources.
 </Update>
-<Update label="February 2025">
+<Update label="February 2025" tags={["Removal", "Version"]}>
 ## 2023-01-16 API version end-of-life
 As of **31 January 2025** the **2023-01-16** version of the API is no longer available.
 
@@ -25,7 +25,7 @@ All affected customers were notified ahead of time. As of today requests for the
 
 For more details on our versioning strategy see the [API versioning](doc:api-versioning) page.
 </Update>
-<Update label="January 2025">
+<Update label="January 2025" tags={["Feature", "Catalogue"]}>
 ## Product orderable state now supported in the Product Update webhook
 You can now receive programmatic real-time updates to the availability of products, the `is_orderable` field is now a supported field in the [Product Update webhook](ref:product-update).
 
@@ -60,7 +60,7 @@ The webhook sends you both the previous and the new state of the product so you 
 
 If you're not already using webhooks to receive real-time updates from Runa about the product catalogue or the state of orders you can [read about getting started here](https://developer.runa.io/docs/webhooks).
 </Update>
-<Update label="December 2024">
+<Update label="December 2024" tags={["Feature"]}>
 ## Additional currencies supported for Embedded FX
 
 We're happy to announce ten new currencies are now supported for embedded FX orders, bringing the total number to 31. You can use the [embedded FX](doc:using-embedded-fx-embedded-fx-order) feature to seamlessly pay for orders across different countries all from your preferred currency balance.
@@ -82,7 +82,7 @@ Do note these new currencies only support orders where **USD** is the source of 
 
 For the full listing of what we support see the [currencies documentation page](doc:currencies).
 </Update>
-<Update label="September 2024">
+<Update label="September 2024" tags={["Feature"]}>
 ## Embedded FX is now available on Production
 
 Introducing Embedded FX! It allows you to top up your balance in your preferred currency and seamlessly pay for orders across different countries.
@@ -95,7 +95,7 @@ You can view more on how to use this new feature in [our guide](https://develope
 - This change applies exclusively to single-item sync orders.
 - Additional properties from `POST /v2/order` in sync mode and `GET /v2/order/{orderId}` will be returned for all orders (`order.items[n].currency` and `order.transaction_detail`)
 </Update>
-<Update label="August 2024">
+<Update label="August 2024" tags={["Feature"]}>
 ## Embedded FX is now available on Playground
 
 Introducing Embedded FX! This is currently a preview for playground only. It allows you to top up your balance in your preferred currency and seamlessly pay for orders across different countries.
@@ -109,7 +109,7 @@ You can view more on how to use this new feature in [our guide](https://develope
 - This addition allows for testing and development in preparation for embedded FX orders in production
 - Additional properties from `POST /v2/order` in sync mode and `GET /v2/order/{orderId}` will be returned for all orders (`order.items[n].currency` and `order.subtotal`)
 </Update>
-<Update label="February 2024">
+<Update label="February 2024" tags={["Feature", "Version"]}>
 ## API version 2024-02-05 released
 
 - Changes to product listing: This version improves the product listing endpoint to return a more complete response, allowing for filtering by different parameter
@@ -141,7 +141,7 @@ We are excited about these updates and look forward to hearing your feedback. As
 - Removal of `redemption_url` field in order responses, it is replaced by the `payout` field.
   - This field was deprecated in 2023-07-27. It should now be treated as removed.
 </Update>
-<Update label="July 2023">
+<Update label="July 2023" tags={["Feature", "Version"]}>
 ## API verion 2023-07-27 released
 
 - Changes to request and response for Order operations: This version includes significant updates to the request and response mechanisms for creating, retrieving, and listing orders. Please refer to the updated API documentation for new structures and fields.
