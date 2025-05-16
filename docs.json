@@ -9,6 +9,16 @@
     "dark": "#3dd463"
   },
   "favicon": "/favicon.svg",
+  "fonts": {
+    "body": {
+      "family": "Inter"
+    },
+    "heading": {
+      "family": "F37 Lineca",
+      "format": "woff2",
+      "source": "https://brand-assets.runa.io/design-system/fonts/f37lineca/F37Lineca-Regular.woff2"
+    }
+  },
   "navigation": {
     "tabs": [
       {
