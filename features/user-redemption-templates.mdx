@@ -9,7 +9,7 @@ You can customize the redemption experience for your users by incorporating bran
 The template will only be applied to the parts of the redemption experience you use on orders. If you do not send emails via Runa your customised email template will not be sent to your recipients.
 
 <Info>
-**Templates do not have an effect on the Playground API**
+**User Redemption Templates do not have an effect in the Playground environment**
 
 We do not currently support templates as part of Playground orders. If you place an order with a template ID on the Playground, the redemption experience will use the default Runa styling. Your API response will show the template ID if one was used.
 </Info>
@@ -26,9 +26,9 @@ We do not currently support templates as part of Playground orders. If you place
     After creating a template, you will be assigned a unique template ID. This ID is crucial for associating your customized template with specific orders on the Runa API.
   </Step>
   <Step title="Use the template ID in your order request">
-    When placing an order set the `template_id` in the `distribution_method` payload to the ID you have obtained from the previous step. See the [order request reference](http://localhost:3000/reference/2024-02-05/endpoint/orders/create#body-distribution-method-template-id) for more details.
+    When placing an order set the `template_id` field in the `distribution_method` payload to the ID you have obtained from the previous step.
 
-    ```json Request example
+    ```json Request example {16}
     {
         "payment_method": {
             "type": "ACCOUNT_BALANCE",
@@ -50,6 +50,8 @@ We do not currently support templates as part of Playground orders. If you place
         ]
     }
     ```
+
+    See the [order request reference](/reference/2024-02-05/endpoint/orders/create#body-distribution-method-template-id) for more details.
   </Step>
 </Steps>
 
