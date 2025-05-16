@@ -3,11 +3,223 @@ title: "API Updates"
 icon: newspaper
 ---
 
-<Update label="2024-10-12" description="v0.1.1">
-  This is how you use a changelog with a label 
-  and a description.
+<Update label="March 2025">
+## New payment payout type added
+To support the release of [Runa Pay to Card](https://runa.io/products/pay-to-card) a new payout type of `payment` has been added to the product catalogue. This new type joins the existing types of `gift_card` and `subscription`. For `payment` type products the new `payment` key will contain specific details about the product.
+
+[Runa Pay to Card](https://runa.io/products/pay-to-card) enables you to push funds to global cards and bank accounts instantly. Funds can be sent instantly to billions of users in 190 countries, powered by Visa Direct and Mastercard. Existing customers should contact their account manager for more details.
+
+### Updated endpoints
+- [Retrieve products](ref:getproducts)
+  - When `payout_type` is `payment` the `payment` key will contain specific details about the products assets, denominations and resources.
+- [Retrieve a single product's details](ref:getsingleproduct)
+  - When `payout_type` is `payment` the `payment` key will contain specific details about the products assets, denominations and resources.
 </Update>
-<Update label="2024-10-11" description="v0.1.0">
-  This is how you use a changelog with a label 
-  and a description.
+<Update label="February 2025">
+## 2023-01-16 API version end-of-life
+As of **31 January 2025** the **2023-01-16** version of the API is no longer available.
+
+Our new API versions have improved reliability and performance, plus additional features such as embedded foreign exchange at time of ordering.
+
+All affected customers were notified ahead of time. As of today requests for the specific version using the `X-Api-Version` header will respond with a `410 Gone` error code. Requests without this header will default to the current API version.
+
+For more details on our versioning strategy see the [API versioning](doc:api-versioning) page.
+</Update>
+<Update label="January 2025">
+## Product orderable state now supported in the Product Update webhook
+You can now receive programmatic real-time updates to the availability of products, the `is_orderable` field is now a supported field in the [Product Update webhook](ref:product-update).
+
+### Use cases
+
+- Updating a local replica or cache of product availability. If you keep a copy of your product catalogue the availability of products could become out of sync. Using the product update webhook you can update this copy in real-time ensuring your customers don't face ordering issues for unavailable products.
+- Getting live quicker with new products and products awaiting approval. The moment a product is ready for you to use the webhook will let you know.
+- Notifying your customers of the availability of products in the Runa network.
+
+### Example
+
+The webhook sends you both the previous and the new state of the product so you can take action on what has changed. Note here the product has gone from unorderable to orderable.
+
+```json
+{
+  "product_code": "PRCODE-GB",
+  "old_state": {
+    "price_multiplier": "0.9",
+    "is_orderable": false
+  },
+  "new_state": {
+    "price_multiplier": "0.8",
+    "is_orderable": true
+  },
+  "timestamp": "2024-04-10T17:11:26.601254"
+}
+```
+
+ Check the [Product Update webhook reference](ref:product-update) for full details.
+
+### Getting started with webhooks
+
+If you're not already using webhooks to receive real-time updates from Runa about the product catalogue or the state of orders you can [read about getting started here](https://developer.runa.io/docs/webhooks).
+</Update>
+<Update label="December 2024">
+## Additional currencies supported for Embedded FX
+
+We're happy to announce ten new currencies are now supported for embedded FX orders, bringing the total number to 31. You can use the [embedded FX](doc:using-embedded-fx-embedded-fx-order) feature to seamlessly pay for orders across different countries all from your preferred currency balance.
+
+Do note these new currencies only support orders where **USD** is the source of funds.
+
+| ISO 4217 Code | Currency Name        | Embedded FX Supported |
+| ------------- | -------------------- | --------------------- |
+| AED           | Arab Emirates Dirham | ✅ _from USD only_     |
+| ARS           | Argentine Peso       | ✅ _from USD only_     |
+| BGN           | Bulgarian Lev        | ✅ _from USD only_     |
+| BRL           | Brazilian Real       | ✅ _from USD only_     |
+| CLP           | Chielan Peso         | ✅ _from USD only_     |
+| COP           | Colombian Peso       | ✅ _from USD only_     |
+| INR           | Indian Rupee         | ✅ _from USD only_     |
+| MYR           | Malaysian Ringgit    | ✅ _from USD only_     |
+| PEN           | Peruvian Sol         | ✅ _from USD only_     |
+| SAR           | Saudi Riyal          | ✅ _from USD only_     |
+
+For the full listing of what we support see the [currencies documentation page](doc:currencies).
+</Update>
+<Update label="September 2024">
+## Embedded FX is now available on Production
+
+Introducing Embedded FX! It allows you to top up your balance in your preferred currency and seamlessly pay for orders across different countries.
+
+You can view more on how to use this new feature in [our guide](https://developer.runa.io/docs/using-embedded-fx-embedded-fx-order)
+
+### Changes
+
+- Relaxed rule: Payment method currency can now differ from the country/currency of the payout link.
+- This change applies exclusively to single-item sync orders.
+- Additional properties from `POST /v2/order` in sync mode and `GET /v2/order/{orderId}` will be returned for all orders (`order.items[n].currency` and `order.transaction_detail`)
+</Update>
+<Update label="August 2024">
+## Embedded FX is now available on Playground
+
+Introducing Embedded FX! This is currently a preview for playground only. It allows you to top up your balance in your preferred currency and seamlessly pay for orders across different countries.
+
+You can view more on how to use this new feature in [our guide](https://developer.runa.io/docs/using-embedded-fx-embedded-fx-order)
+
+### Changes
+
+- Relaxed rule: Payment method currency can now differ from the country/currency of the payout link.
+- This change applies exclusively to single-item orders and currently only in playground.
+- This addition allows for testing and development in preparation for embedded FX orders in production
+- Additional properties from `POST /v2/order` in sync mode and `GET /v2/order/{orderId}` will be returned for all orders (`order.items[n].currency` and `order.subtotal`)
+</Update>
+<Update label="February 2024">
+## API version 2024-02-05 released
+
+- Changes to product listing: This version improves the product listing endpoint to return a more complete response, allowing for filtering by different parameter
+- Addition of a new endpoint: This version includes a new endpoint you can use to return the currently supported countries.
+
+We are excited about these updates and look forward to hearing your feedback. As always, please refer to the updated API documentation for detailed information and guidance on how to implement these changes in your applications.
+
+### Impacted endpoints
+
+- **GET /v2/product**
+- **GET /v2/product/countries**
+
+### Changes
+
+- **New Request Structure for Product Listing retrieval**
+  - The following query parameters are now allowed:
+    - `is_orderable`: Only return products that can be ordered. So if a product has been disabled, it will not be returned
+    - `code`: Retrieve a single product's details
+    - `countries_redeemable_in`: Filter by all the countries that this product can be redeemed in
+  - Pagination has been added with:
+    - `after`: A cursor for use in pagination to return the next set of products. The before and after cursors are mutually exclusive (you can't use them at the same time).
+    - `before`: A cursor for use in pagination to return the previous set of products. The before and after cursors are mutually exclusive (you can't use them at the same time).
+    - `limit`: A limit on the number of items to be returned.
+  - You no longer need to pass in a mandatory country code
+- **New Response structure for Product Listing retrieval**
+  - Only Returns products that have been Approved. Included as `approval_state`
+  - Returns `categories` that the product belongs to
+  - Includes Expiry and Redemption instructions as sub-objects within each item
+- Removal of `redemption_url` field in order responses, it is replaced by the `payout` field.
+  - This field was deprecated in 2023-07-27. It should now be treated as removed.
+</Update>
+<Update label="July 2023">
+## API verion 2023-07-27 released
+
+- Changes to request and response for Order operations: This version includes significant updates to the request and response mechanisms for creating, retrieving, and listing orders. Please refer to the updated API documentation for new structures and fields.
+- Removal of Get Links operation: To streamline our API and improve efficiency, we have removed the 'get links' operation previously used to retrieve payout links of an order. This change reduces the required API calls to place and retrieve a payout link order from three to two.
+- New Payment Method: As part of our ongoing effort to enhance user experience, we are now enabling payment with account balance on the Runa API. This new feature adds to our existing payment methods, providing more flexibility and convenience for our users.
+- Product Selection Flexibility: We have modified our product selection feature to allow item-specific product selection. Previously, product selection applied to the entire order, but now it can be specified per item. This change provides you with greater flexibility and control over your orders.
+
+We are excited about these updates and look forward to hearing your feedback. As always, please refer to the updated API documentation for detailed information and guidance on how to implement these changes in your applications.
+
+### Impacted endpoints
+
+- **POST /v2/order**
+- **GET /v2/order/\{id}**
+- **GET /v2/order**
+- **GET /v2/order/\{id}/links**
+
+### Changes
+
+- **Added new fields to the create order API request**
+  - Payment method can be defined:
+    - `payment_method.type` which can be set to `CARD` or `ACCOUNT_BALANCE`
+    - `payment_method.card_id`
+    - `payment_method.currency` which supports `EUR`, `GBP`, `USD`, and `CAD`
+  - Distribution method can be defined in item level:
+    - `items.distribution_method.type` which can be set to  `EMAIL` or `PAYOUT_LINK`
+    - `items.distribution_method.email_address`
+  - Products can be defined on item level, now every payout link in the order can contain different product selections:
+    - `items.products.type` which can be set to `SINGLE` or `MULTIPLE`
+    - `items.products.value`
+    - `items.products.values`
+- **Removed fields from the create order API request**
+  - `products`
+  - `idempotency_key`
+  - `items.country`
+- **Added new headers to the create order API**
+  - `x-api-version`
+  - `x-idempotency-key`
+- **Added new fields from the create order API response**
+  - `status` which is either `COMPLETED`, `PROCESSING` or `FAILED`
+- **Removed all order details fields from the create order API response**
+- **Added new get order API response models**
+  - For a complete order the response will contain all the order details.
+    - `status`
+    - `completed_at`
+    - `redemption_url`
+    - `payment_method.type` which can be set to `CARD` or `ACCOUNT_BALANCE`
+    - `payment_method.card_id`
+    - `payment_method.currency` which supports `EUR`, `GBP`, `USD`, and `CAD`
+    - `items.distribution_method.type` which can be set to  `EMAIL` or `PAYOUT_LINK`
+    - `items.distribution_method.email_address`
+    - `items.products.type` which can be set to `SINGLE` or `MULTIPLE`
+    - `items.products.value`
+    - `items.products.values`
+  - For an incomplete order the response will contain
+    - `status`
+    - `id`
+    - `message`
+- **Added new headers to the get order API**
+  - `x-api-version`
+- **Removed fields from get order API response**
+  - `is_complete`
+  - `countries`
+  - `initial_values` object
+  - `final_values` object
+  - `product_count`
+  - `items.order_id`
+  - `items.discount_multiplier`
+  - `items.delivery_email`
+  - `items.current_token`
+  - `tokens` object
+- The above changes in the get order API response are also reflected in the list order API. The API is still paginated and contains query parameters to control the cursor:
+  - `limit`
+  - `before`
+  - `after`
+- **Added new headers to the list order API**
+  - `x-api-version`
+- **Removed the GET /v2/order/\{id}/links endpoint**
+  - This API is replaced by adding the `redemption_url` to the items in the response of `GET /v2/order/{id}`
+- **Added new headers to the list products API**
+  - `x-api-version`
 </Update>
