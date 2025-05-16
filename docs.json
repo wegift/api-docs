@@ -85,7 +85,7 @@
             "version": "2024-02-05",
             "groups": [
               {
-                "group": "API Documentation",
+                "group": "Reference",
                 "pages": [
                   "reference/2024-02-05/introduction",
                   "reference/2024-02-05/errors",
