@@ -1,8 +1,140 @@
 ---
 name: "Playground"
-description: "Test your integration with the Runa API"
-icon: "playground"
+description: "Test your integration with the Runa API Playground"
+icon: "puzzle-piece-simple"
 ---
 
-Docs about playground
+The Playground environment allows you to safely and effortlessly test our API without any real transactions or expenses. It's a controlled environment where you can freely experiment with the API and familiarize yourself with its functionalities.
 
+This guide will walk you through on how to access the Playground environment, testing the order endpoints, and provide information about its limitations.
+
+It's important to note that no real orders will be created in the Playground, although you will be able to retrieve the data you submitted, and follow redemption links to perform a fake redemption which looks and feels exactly like the real thing.
+Accessing the Playground environment
+
+# Base URL
+
+To access the Playground environment, use `https://playground.runa.io/v2 ` as the base URL for your requests.
+
+# API key
+
+The playground uses a different API key from the production environment. You can generate a playground API key in the [API keys section of the dashboard](https://app.runa.io/api-keys). For security reasons, the API key will only be displayed to you at the time of generation, if you loose the key you will need to generate a new one.
+
+You cannot use a production key on playground, nor can you use a playground key on production.
+
+# Versioning
+
+The playground environment only supports the latest version of the API. If you set the `X-Api-Version` header it must match the [latest version of the API](/best-practices/api-versioning#what-is-the-latest-version).
+
+# Supported endpoints & behaviour
+
+The supported APIs in the Playground environment will have the same request and response structure to the production API, but there are some exceptions regarding the values that can be used for testing purposes. Some endpoints are not available in the playground environment.
+
+<Accordion title="Create an order">
+  The [Create Order endpoint](/reference/2024-02-05/endpoint/orders/create) lets you create playground orders. When creating Playground orders the behaviour will closely resemble the production API, but there are a few limitations to consider:
+
+  - Use of account balance to pay for an order will always be accepted. There is no need to top-up or maintain a balance on the playground.
+  - You can place as many orders as you want without reaching a fund limit. We are working on ways to simulate the errors you would get if you reached this limit, to be released in a future version.
+  - When performing an Embedded FX order in the playground, please note that the exchange rates and fees are not reflective of the real rates you would encounter in production. The exchange rates are arbitrary and fixed for simulation purposes, and the fee is set at a standard 1.9%, regardless of any custom fees you may have agreed upon in the production environment.
+
+  It's important to note that **no real orders** will be created in the Playground, although you will be able to retrieve the data you submitted. If you select an email distribution type, emails will be sent, but please note the important message below about how this works.
+  
+  ## Sending emails
+  By default no emails are sent for playground orders. If you want to enable email sending you should send a custom header `X-Send-Email: true`. The response will contain the same header.
+
+  When enabled, we will only send an email for the **first order item** that has an email distribution type. This enables you to test large orders with email testing but without actually sending an excessive number of emails.
+
+  When testing orders with the header `X-Send-Email: true` you must ensure that the email addresses you use are valid and messages sent to them will not bounce. We monitor deliverability and may remove this feature from your account for repeat violations. For safety you can use emails ending in .invalid or .test, for example name@domain.invalid, which will never trigger email delivery.
+
+  ## Default product selection templates
+
+  You can use the following curated template IDs in the `products` field while creating a playground order. The actual payout types will be present in the response when you retrieve your order. Note that, the randomised products for some of the countries are for representational purpose, it is not a real functionality on production environment.
+
+  | Currency | Template ID | Payout types |
+  | -------- | ----------- | ------------ |
+  | `USD` | `PT-01HQ12PV4B8XMBRTK281JM54KK` | Randomised 10 payout types |
+  | `GBP` | `PT-01HPPT8ME05693EG77RCGKMX7N` | Randomised 10 payout types |
+  | `EUR` | `PT-01HQ130AHCKRRB45Z5XV2Y8W9K` | Randomised 10 payout types |
+  | `CAD` | `PT-01HQ12SMX2964BVXG2N69K8HF3` | Randomised 10 payout types |
+  
+
+</Accordion>
+<Accordion title="Get order details">
+  The [Get Order endpoint](/reference/2024-02-05/endpoint/orders/get) lets you retrieve the details of orders you created using your Playground API key. The redemption URLs in the response can be followed, and will lead to a page where you can test out a simulated redemption, to a fake gift card for the selected product.
+
+  <Note>
+    In Playground mode, the customer name on redemption link pages will show as PlaygroundCustomer: C-ABC (with your customer ID). In production, this will show your customer name instead.
+  </Note>
+</Accordion>
+<Accordion title="Get a list of orders">
+  The [List Orders endpoint](/reference/2024-02-05/endpoint/orders/list) lets you retrieve a list of orders you created in the Playground environment.
+</Accordion>
+<Accordion title="List products">
+  The [List Products endpoint](/reference/2024-02-05/endpoint/products/list) lets you retrieve a list of products you can create orders for.
+
+  This catalogue of produsts in playground is static and corresponds to our base product selection without additional product approval. You may have access to a broader range of products when using the production API. You can only place Playground orders with the products returned from this endpoint.
+</Accordion>
+<Accordion title="Get a list of countries where products are available">
+  The [List Countries endpoint](/reference/2024-02-05/endpoint/countries/list) lets you retrieve a list of countries where products are available.
+
+  This list of countries is static and corresponds to our base product selection without additional product approval. You may have access to a broader range of countries when using the production API.
+</Accordion>
+
+# Unsupported endpoints
+
+- The [estimate endpoint](/reference/2024-02-05/endpoint/orders/estimate) is not available in the playground environment.
+
+# Error responses
+
+There are some differences in the human readable messages in some request validation responses. We guarantee the top-level `type` of the error will match production however the `details` object may differ from what you see in production.
+
+This is due to a version difference in the validation library we use which will be harmonised at a later date.
+
+<Tabs>
+  <Tab title="Production validation error">
+    For example, if you pass in an invalid currency when creating an order, production will return the following.
+    ```json
+    {
+        "type": "validation_error",
+        "message": "There were one or more problems processing your request, see details key.",
+        "help": null,
+        "details": [
+            {
+                "type": "type_error.enum",
+                "message": "value is not a valid enumeration member; permitted: 'GBP', 'EUR', 'USD', 'CAD'",
+                "location": ["payment_method", "currency"]
+            }
+        ]
+    }
+    ```
+  </Tab>
+  <Tab title="Playground validation error">
+    Whereas playground will return the same `type` but with a different `details` object.
+    ```json {5-11}
+    {
+        "type": "validation_error",
+        "message": "There were one or more problems processing your request, see details.",
+        "help": null,
+        "details": [
+            {
+                "type": "enum",
+                "message": "Input should be 'GBP', 'EUR', 'USD' or 'CAD'",
+                "location": ["body", "payment_method", "currency"]
+            }
+        ]
+    }
+    ```
+</Tab>
+</Tabs>
+
+# Triggering certain errors
+
+Some errors cannot be triggered in playground through incorrect formatting or request inputs. For these errors, you can simulate them by adding a `X-Trigger-Error` header with the value set to one of the error types below:
+
+| Error type | Description |
+|------------|-------------|
+| `insufficient_funds` | The account balance you're trying to use to pay for your order does not have enough funds. |
+| `internal_server_error` | An unknown error occurred in our services. |
+
+# Continuous improvement
+
+We are continuously enhancing the Playground environment to better serve your needs for experimenting and testing integrations. Expect ongoing improvements and more features to be added over time.
