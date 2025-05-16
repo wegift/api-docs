@@ -58,7 +58,7 @@
               "features/estimate",
               "features/balances",
               "features/limiting-available-products",
-              "features/redemption-templates",
+              "features/user-redemption-templates",
               "features/merchant-selection-template",
               "features/embedded-fx"
             ]

@@ -1,0 +1,58 @@
+---
+title: Customizing and brand the redemption experience
+description: Add your own branding and customize the redemption experience for your recipients
+icon: gift
+---
+
+You can customize the redemption experience for your users by incorporating branding, colors, and imagery. By applying a template to your order, you can integrate your brand identity into the Runa redemption experience.
+
+The template will only be applied to the parts of the redemption experience you use on orders. If you do not send emails via Runa your customised email template will not be sent to your recipients.
+
+<Info>
+**Templates do not have an effect on the Playground API**
+
+We do not currently support templates as part of Playground orders. If you place an order with a template ID on the Playground, the redemption experience will use the default Runa styling. Your API response will show the template ID if one was used.
+</Info>
+
+# Using redemption templates
+
+<Steps>
+  <Step title="Creating a custom template">
+    Visit [User Redemption templates](https://app.runa.io/customization/user-redemption) in Runa portal to create a custom template for your redemption experience. This template allows you to define the look and feel of the email and user redemption pages, including branding elements.
+
+    Note while an email preview is shown, this will only be used if you opt to send emails via Runa as part of the order request.
+  </Step>
+  <Step title="Grab the template ID">
+    After creating a template, you will be assigned a unique template ID. This ID is crucial for associating your customized template with specific orders on the Runa API.
+  </Step>
+  <Step title="Use the template ID in your order request">
+    When placing an order set the `template_id` in the `distribution_method` payload to the ID you have obtained from the previous step. See the [order request reference](http://localhost:3000/reference/2024-02-05/endpoint/orders/create#body-distribution-method-template-id) for more details.
+
+    ```json Request example
+    {
+        "payment_method": {
+            "type": "ACCOUNT_BALANCE",
+            "currency": "GBP"
+        },
+        "items": [
+            {
+                "face_value": 10,
+                "products": {
+                    "type": "SINGLE",
+                    "value": "AMZ-GB"
+                },
+                "distribution_method": {
+                    "type": "EMAIL",
+                    "email_address": "name@domain.test",
+                    "template_id": "YOUR_TEMPLATE_ID"
+                }
+            }
+        ]
+    }
+    ```
+  </Step>
+</Steps>
+
+# Limitations
+
+We currently support a maximum of 10 unique redemption templates usage per order. Please talk to your Account Managers if you need support with this.
