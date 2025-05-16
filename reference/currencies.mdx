@@ -1,0 +1,46 @@
+---
+title: "Currencies"
+icon: "coins"
+---
+
+The `currency` field used throughout API specification represents a dynamic set of currencies that are supported on the Runa platform. As we expand into new markets, the list of currencies we support will expand. As a result your implementation will need to handle the addition of new values returned in this field, for example as part of the [list products](/reference/2024-02-05/endpoint/products/list) endpoint, as well as using only those specified below as part of your requests.
+
+A list of currently supported currencies is below, we'll update this as we add more to our platform, however as mentioned prior, your implementation should gracefully handle these additions.
+
+<Note>
+For currencies labelled _from USD only_, products purchased in these currencies using Embedded FX must use USD as payment method.
+</Note>
+
+| ISO 4217 Code   | Currency Name        | Embedded FX Supported |
+| --------------- | -------------------- | --------------------- |
+| `AED`           | Arab Emirates Dirham | ✅ _from USD only_    |
+| `ARS`           | Argentine Peso       | ✅ _from USD only_    |
+| `AUD`           | Australian Dollar    | ✅                    |
+| `BGN`           | Bulgarian Lev        | ✅ _from USD only_    |
+| `BRL`           | Brazilian Real       | ✅ _from USD only_    |
+| `CAD`           | Canadian Dollar      | ✅                    |
+| `CHF`           | Swiss Franc          | ✅                    |
+| `CLP`           | Chielan Peso         | ✅ _from USD only_    |
+| `CNY`           | Chinese Yuan         | ✅                    |
+| `COP`           | Colombian Peso       | ✅ _from USD only_    |
+| `CZK`           | Czech Koruna         | ✅                    |
+| `DKK`           | Danish Krone         | ✅                    |
+| `EUR`           | Euro                 | ✅                    |
+| `GBP`           | British Pound        | ✅                    |
+| `HUF`           | Hungarian Forint     | ✅                    |
+| `ILS`           | Israeli Shekel       | ✅                    |
+| `INR`           | Indian Rupee         | ✅ _from USD only_    |
+| `JPY`           | Japanese Yen         | ✅                    |
+| `KRW`           | South Korean Won     | ✅                    |
+| `MXN`           | Mexican Peso         | ✅                    |
+| `MYR`           | Malaysian Ringgit    | ✅ _from USD only_    |
+| `NOK`           | Norwegian Krone      | ✅                    |
+| `NZD`           | New Zealand Dollar   | ✅                    |
+| `PEN`           | Peruvian Sol         | ✅ _from USD only_    |
+| `PLN`           | Polish Zloty         | ✅                    |
+| `RON`           | Romanian Leu         | ✅                    |
+| `SAR`           | Saudi Riyal          | ✅ _from USD only_    |
+| `SEK`           | Swedish Krona        | ✅                    |
+| `SGD`           | Singapore Dollar     | ✅                    |
+| `USD`           | United States Dollar | ✅                    |
+| `ZAR`           | South African Rand   | ✅                    |
