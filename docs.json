@@ -175,5 +175,8 @@
   },
   "contextual": {
     "options": ["copy", "view", "chatgpt", "claude"]
-  }
+  },
+  "redirects": [
+    {"source": "/docs", "destination": "/introduction"}
+  ]
 }
