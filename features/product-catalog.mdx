@@ -7,7 +7,7 @@ Whether you're showing the latest product offering to your customers, or verifyi
 
 # Getting a list of countries that you can order in
 
-To create a payout link in the ordering process, you'll need to provide a list of products that are all redeemable in the same country. [The list of countries endpoint](/api-reference/2024-02-05/endpoint/products/countries) will provide you with a dynamic list with all of the countries in which you have available payout types.
+To create a payout link in the ordering process, you'll need to provide a list of products that are all redeemable in the same country. [The list of countries endpoint](/reference/2024-02-05/endpoint/products/countries) will provide you with a dynamic list with all of the countries in which you have available payout types.
 
 This will return a list of ISO3166 ALPHA-2 country codes. We'll be modifying this list over time, so your implementation should handle the addition and removal of countries from this list.
 
@@ -16,7 +16,7 @@ You can use this to aggregate products that belong to a country for ordering by 
 <Card
     title="List all countries"
     icon="earth-europe"
-    href="/api-reference/2024-02-05/endpoint/products/countries"
+    href="/reference/2024-02-05/endpoint/products/countries"
     horizontal
   >
     Endpoint details for listing all supported countries
@@ -28,13 +28,13 @@ We've updated our catalog to provide you with even more details than before, wit
 
 We've added new levels of granularity to payout types - differentiating between `gift_card`, `subscription`, and `payment` type products, and we'll be looking to add to these in the future. At the bottom of this page, in the Example response section, there are examples of a few permutations of responses.
 
-We recommend that you poll the [list endpoint](/api-reference/2024-02-05/endpoint/products/list) to retrieve full catalog details hourly and in any critical journeys where you [fetch the details of an individual product](/api-reference/2024-02-05/endpoint/products/get) by using the `code` query parameter to return the latest details of a product in a timely manner.
+We recommend that you poll the [list endpoint](/reference/2024-02-05/endpoint/products/list) to retrieve full catalog details hourly and in any critical journeys where you [fetch the details of an individual product](/reference/2024-02-05/endpoint/products/get) by using the `code` query parameter to return the latest details of a product in a timely manner.
 
 <CardGroup cols={2}>
   <Card
     title="List all products"
     icon="grid"
-    href="/api-reference/2024-02-05/endpoint/products/list"
+    href="/reference/2024-02-05/endpoint/products/list"
     horizontal
   >
     Endpoint details for listing all products, filterable by country
@@ -42,7 +42,7 @@ We recommend that you poll the [list endpoint](/api-reference/2024-02-05/endpoin
   <Card
     title="Get details of a specific product"
     icon="square"
-    href="/api-reference/2024-02-05/endpoint/products/get"
+    href="/reference/2024-02-05/endpoint/products/get"
     horizontal
   >
     Endpoint details for getting details of a specific product by its code
