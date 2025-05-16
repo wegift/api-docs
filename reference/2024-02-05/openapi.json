@@ -196,16 +196,6 @@
           }
         ],
         "responses": {
-          "102": {
-            "description": "Processing. We cannot replay the response as the original request has not completed yet. Try again shortly.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIErrorResponse"
-                }
-              }
-            }
-          },
           "200": {
             "description": "Response that will be returned in sync execution mode. Order has successfully been completed.",
             "content": {
@@ -249,8 +239,8 @@
       "get": {
         "operationId": "getSingleOrder",
         "tags": ["orders"],
-        "summary": "Get an order's details and status.",
-        "description": "Get the details and status of a specific order. Use to poll for the status of your order after it's been accepted.",
+        "summary": "Get an order's details",
+        "description": "Get the details and status of a specific order. Can be used for checking the status of an async order after it's been accepted.",
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           {

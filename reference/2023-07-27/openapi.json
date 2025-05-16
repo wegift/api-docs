@@ -242,16 +242,6 @@
             }
           ],
           "responses": {
-            "102": {
-              "description": "Processing. We cannot replay the response as the original request has not completed yet. Try again shortly.",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/APIErrorResponse"
-                  }
-                }
-              }
-            },
             "200": {
               "description": "Response that will be returned in sync execution mode. Order has successfully been completed.",
               "content": {
