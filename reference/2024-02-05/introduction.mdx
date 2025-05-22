@@ -1,33 +1,68 @@
 ---
 title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+description: 'Introduction to the API reference documentation'
+icon: 'book'
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the reference folder.
-</Note>
+# Welcome
 
-## Welcome
+This section documents the API endpoints available in the Runa API. The API follows RESTful patterns and provides a set of endpoints for interacting with the Runa platform. Each endpoint is documented in a page with a description of its purpose, the HTTP method to use, the URL path, and the request and response formats.
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+# Environments
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+<CardGroup cols={2} rows={1}>
+  <Card
+    title="Production"
+    icon="gear"
+  >
+    The production API is the live environment where you can process real transactions. The base URL for the production API is:
+    <br/>
+    **`https://api.runa.io/v2`**
+  </Card>
+  <Card
+    title="Playground"
+    icon="puzzle-piece-simple"
+  >
+    A simulated environment where you can experiment with the API without real transactions or expenses. It is available at:
+    <br/>
+    **`https://playground.runa.io/v2`**
+  </Card>
+</CardGroup>
+
+<Info>
+Do note that the playground environment is not a complete replica of the production environment. Some endpoints are not available in the playground, and some features may behave differently. See the [playground reference](/reference/2024-02-05/playground) for more information.
+</Info>
+
+# Requests & Responses
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All API endpoints are authenticated using API keys. You can generate API keys in the Runa web app. The API key must be included in the `X-Api-Key` header of each request.
 
-```json
-"security": [
-  {
-    "bearerAuth": []
-  }
-]
+```http
+X-Api-Key: YOUR_API_KEY
 ```
+
+See the [authentication guide](/best-practices/authentication) for more information on how to create and use API keys. The keys used for production and playground environments are different. You can tell which type of key you have by the prefix. Production keys start with `wg` whereas playground keys start with `xx`.
+
+Once you're ready to start using production your should refer to the [security best practices guide](/best-practices/security) to ensure you're using and storing your keys securely.
+
+## Responses
+
+API responses can vary in type but will be consistent per HTTP status code. You should use the HTTP status code to determine how to interpret the response.
+
+<Frame caption="The status code dropdown in the response section switches between the different response types.">
+  <img className="block dark:hidden" src="/assets/screenshots/response-dropdown-light.png" />
+  <img className="hidden dark:block" src="/assets/screenshots/response-dropdown-dark.png" />
+</Frame>
+  
+For example the `POST /v2/order` response returns a different structure for the `200 OK` and `202 Accepted` status codes. The `200 OK` response returns the whole order object, while the `202 Accepted` response returns a minimal object containing only the order ID and status when using the `async` ordering mode.
+
+Error status code starting `4xx` and `5xx` have a consistent error response structure. See the guide on [handling errors](/best-practices/handling-errors) for more information and best practices on how to handle errors.
+
+# Test endpoints in the browser
+<img className="inline dark:hidden m-0 ml-4 mb-4 h-10" align="right" src="/assets/screenshots/try-it-light.png" />
+<img className="hidden dark:inline m-0 ml-4 mb-4 h-10" align="right" src="/assets/screenshots/try-it-dark.png" />
+Using the **try it** button you can interact directly with the Runa API from the documentation. This is a great way to test the API and see how it works without having to write any code.
+
+You'll need to provide an API key to use the try it button. The API key is stored in your browser's local storage so it's recommended to use the playground environment and to remove the key when you're done testing.
