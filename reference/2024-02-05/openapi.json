@@ -529,6 +529,13 @@
         },
         "description": "Generic Runa API error response."
       },
+      "OrderDescription": {
+        "title": "Description",
+        "description": "Free format text reference for the order. Not visible to the end user. Will be visible to you in the Runa web portal.",
+        "type": "string",
+        "maxLength": 128,
+        "example": "Your own reference text"
+      },
       "AccountPayment": {
         "title": "AccountPayment",
         "required": ["type"],
@@ -675,12 +682,7 @@
             "type": "string",
             "format": "date-time"
           },
-          "description": {
-            "title": "Description",
-            "description": "Free format text reference for the order.",
-            "type": "string",
-            "example": "A free text description of the order for your reference"
-          },
+          "description": { "$ref": "#/components/schemas/OrderDescription" },
           "payment_method": {
             "title": "Payment Method",
             "description": "The payment method used for the order.",
@@ -751,12 +753,7 @@
             "type": "string",
             "format": "date-time"
           },
-          "description": {
-            "title": "Description",
-            "description": "Free format text reference for the order.",
-            "type": "string",
-            "example": "A free text description of the order for your reference"
-          },
+          "description": { "$ref": "#/components/schemas/OrderDescription" },
           "payment_method": {
             "title": "Payment Method",
             "description": "The payment method used for the order.",
@@ -858,12 +855,7 @@
             "type": "string",
             "format": "date-time"
           },
-          "description": {
-            "title": "Description",
-            "description": "Free format text reference for the order.",
-            "type": "string",
-            "example": "A free text description of the order for your reference"
-          },
+          "description": { "$ref": "#/components/schemas/OrderDescription" },
           "payment_method": {
             "title": "Payment Method",
             "description": "The payment method used for the order.",
@@ -1111,13 +1103,7 @@
               "$ref": "#/components/schemas/NewOrderItemDetails"
             }
           },
-          "description": {
-            "title": "Description",
-            "description": "Free format text reference for the order. Maximum length is 128 characters.",
-            "maxLength": 128,
-            "type": "string",
-            "example": "A free text description of the order for your reference"
-          }
+          "description": { "$ref": "#/components/schemas/OrderDescription" }
         }
       },
       "NewOrderItemDetails": {
