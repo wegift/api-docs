@@ -929,7 +929,7 @@
       "EmailDistributionType": {
         "title": "EmailDistributionType",
         "type": "string",
-        "enum": ["", "EMAIL"],
+        "enum": ["EMAIL"],
         "description": "Supported email distribution types."
       },
       "IncompleteOrder": {
@@ -979,7 +979,7 @@
       "LinkDistributionType": {
         "title": "LinkDistributionType",
         "type": "string",
-        "enum": ["", "PAYOUT_LINK"],
+        "enum": ["PAYOUT_LINK"],
         "description": "Supported link distribution types."
       },
       "MultipleProduct": {
@@ -1007,7 +1007,7 @@
       "MultipleProductType": {
         "title": "MultipleProductType",
         "type": "string",
-        "enum": ["", "MULTIPLE"],
+        "enum": ["MULTIPLE"],
         "description": "Multiple products. When more than one product code is provided."
       },
       "PayoutSelectionTemplate": {
@@ -1058,7 +1058,7 @@
       "PayoutSelectionTemplateType": {
         "title": "PayoutSelectionTemplateType",
         "type": "string",
-        "enum": ["", "TEMPLATE"],
+        "enum": ["TEMPLATE"],
         "description": "Payout Selection Template"
       },
       "NewAccountPayment": {
@@ -1499,7 +1499,7 @@
       "SingleProductType": {
         "title": "SingleProductType",
         "type": "string",
-        "enum": ["", "SINGLE"],
+        "enum": ["SINGLE"],
         "description": "Single product. When only one product code is provided."
       },
       "UnknownProduct": {
