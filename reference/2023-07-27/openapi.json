@@ -1687,11 +1687,6 @@
       {
         "ApiKeyAuth": []
       }
-    ],
-    "x-readme": {
-      "explorer-enabled": true,
-      "proxy-enabled": true,
-      "samples-enabled": true
-    }
+    ]
   }
   
