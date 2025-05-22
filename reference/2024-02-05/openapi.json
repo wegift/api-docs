@@ -181,7 +181,7 @@
               "type": "string"
             },
             "in": "header",
-            "description": "A unique string that prevents order duplication."
+            "description": "A unique string that prevents order duplication. See [Idempotency](/best-practices/idempotency) for more information."
           },
           {
             "name": "X-Execution-Mode",
@@ -191,7 +191,7 @@
               "default": "async"
             },
             "in": "header",
-            "description": "Choose sync if you want to retrieve the payout links directly from the API response. Choose async if you want to poll for your order. The default if unset is async.",
+            "description": "Whether to process the order synchronously or asynchronously. If this header is omitted we default to async. See [which mode to use](/getting-started/first-order/which-mode) to help you decide which execution mode is right for your use case. Sync orders are limited to a single order item.",
             "example": "async"
           }
         ],
@@ -494,7 +494,7 @@
     "parameters": {
       "X-Api-Version": {
         "name": "X-Api-Version",
-        "description": "The dated version of the API, if not specified a default is used.",
+        "description": "The dated version of the API, if not specified a default is used. See [API versioning](/best-practices/api-versioning) for more information.",
         "in": "header",
         "required": false,
         "schema": {
@@ -678,7 +678,8 @@
           "description": {
             "title": "Description",
             "description": "Free format text reference for the order.",
-            "type": "string"
+            "type": "string",
+            "example": "A free text description of the order for your reference"
           },
           "payment_method": {
             "title": "Payment Method",
@@ -753,7 +754,8 @@
           "description": {
             "title": "Description",
             "description": "Free format text reference for the order.",
-            "type": "string"
+            "type": "string",
+            "example": "A free text description of the order for your reference"
           },
           "payment_method": {
             "title": "Payment Method",
@@ -859,7 +861,8 @@
           "description": {
             "title": "Description",
             "description": "Free format text reference for the order.",
-            "type": "string"
+            "type": "string",
+            "example": "A free text description of the order for your reference"
           },
           "payment_method": {
             "title": "Payment Method",
@@ -1112,7 +1115,8 @@
             "title": "Description",
             "description": "Free format text reference for the order. Maximum length is 128 characters.",
             "maxLength": 128,
-            "type": "string"
+            "type": "string",
+            "example": "A free text description of the order for your reference"
           }
         }
       },
@@ -2247,7 +2251,8 @@
       "ApiKeyAuth": {
         "type": "apiKey",
         "in": "header",
-        "name": "X-Api-Key"
+        "name": "X-Api-Key",
+        "description": "Your API key. See the [API key](/getting-started/api-key) page on details of how to generate and store your keys."
       }
     }
   },
