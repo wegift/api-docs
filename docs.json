@@ -119,14 +119,7 @@
           },
           {
             "version": "2023-07-27",
-            "groups": [
-              {
-                "group": "API Documentation",
-                "pages": [
-                  "reference/2023-07-27/introduction"
-                ]
-              }
-            ]
+            "openapi": "/reference/2023-07-27/openapi.json"
           }
         ]
       },
