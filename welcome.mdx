@@ -4,8 +4,10 @@ description: Send instant B2C payments your recipients will love
 mode: custom
 ---
 
+import styles from "./welcome.css";
+
 <div style={{
-    minHeight: "85vh",
+  minHeight: "85vh",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -13,45 +15,53 @@ mode: custom
 }}>
   {/* Logo and Title */}
   <div style={{ 
-    flexGrow: 1,
     display: "flex", 
     flexDirection: "column",
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "black",
     backgroundImage: "url(https://brand-assets.runa.io/api-hero-background.png)",
     backgroundPosition: "top",
-    backgroundSize: "90%",
+    backgroundSize: "contain",
     backgroundRepeat: "no-repeat",
-    width: "100%", padding: "6rem 0",
+    width: "100%", padding: "4rem 0",
     boxShadow: "0 0 20px 2px rgba(0, 0, 0, 0.4)",
     }} className='dark'>
   <div style={{
     background: "rgba(0,0,0,0.2)",
     backdropFilter: "blur(6px) saturate(70%)",
-    padding: "2rem 3rem",
+    padding: "1rem 2rem",
     borderRadius: 16,
     display: "flex",
     flexDirection: "column",
     alignItems: "center"
     }}>
     <img src="https://brand-assets.runa.io/logo-horizontal-white.svg" width={240} alt="Runa logo" style={{pointerEvents: "none"}} />
-    <h2 style={{ margin: "1.25em 0", fontSize: "1.25rem", fontWeight: 800, textAlign: "center", color: "#fff" }}>
-      Send instant B2C payments your recipients will love
+    <h2 
+      style={{
+        margin: "1.25rem 0 0.25rem 0",
+        fontSize: "1.25rem",
+        fontWeight: 800,
+        textAlign: "center",
+        color: "#fff"
+      }}
+    >
+      Start building smarter payouts
     </h2>
+    <p
+      style={{
+        margin: "0 0 1.5rem 0",
+        fontSize: "1rem",
+        fontWeight: 500,
+        textAlign: "center",
+        color: "#aaa",
+      }}
+    >
+    Get up and running with the Runa API - global, flexible, built for scale
+    </p>
     <a
       href="/introduction"
-      style={{
-        padding: "0.75rem 2rem",
-        border: "2px solid #4fff7b",
-        borderRadius: 24,
-        color: "#fff",
-        background: "transparent",
-        fontWeight: 600,
-        textDecoration: "none",
-        fontSize: "1rem",
-        transition: "background 0.2s, color 0.2s",
-        textTransform: "uppercase"
-      }}
+      className='hero-button'
     >
       Explore our documentation
     </a>
@@ -61,13 +71,13 @@ mode: custom
 {/* Tools and Guides */}
 
   <div style={{
-    flexGrow: 2,
+    flexGrow: 3,
     width: "100%",
+    maxWidth: "90vw",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
-    padding: "6rem 0"
-  }}>
+    alignItems: "center"
+  }} className='pt-12 lg:pt-24'>
   <div style={{
         maxWidth: 1100,
     display: "flex",
@@ -81,7 +91,7 @@ mode: custom
   <Card
     title="Get started"
     icon="flag-swallowtail"
-    href="/introduction"
+    href="/getting-started"
     style={{
       backgroundColor: "#000",
       color: "#fff",
@@ -90,14 +100,14 @@ mode: custom
       padding: "0.75rem 2rem",
     }}
   >
-    Plearn the basics and set up your integration in minutes
+    Make your first API call in minutes
   </Card>
   <Card
     title="API Guides"
     icon="book"
-    href="/getting-started/steps"
+    href="/introduction"
   >
-    Step-by-step guides to help you build and test fast
+    Walkthroughs for building payout flows with Runa
   </Card>
   <Card
     title="API Reference"
@@ -105,27 +115,6 @@ mode: custom
     href="/reference"
   >
     Detailed reference documentation for every endpoint, request, and response
-  </Card>
-  <Card
-    title="Features"
-    icon="list"
-    href="/introduction"
-  >
-    Discover key tools and features available in the Runa API
-  </Card>
-  <Card
-    title="Make your first order"
-    icon="paper-plane"
-    href="/getting-started/first-order/which-mode"
-  >
-    Follow a simple flow to place your first order with Runa
-  </Card>
-  <Card
-    title="Before you go live"
-    icon="ballot-check"
-    href="/best-practices/before-you-go-live"
-  >
-    Final checks to ensure you can launch with confidence
   </Card>
 </CardGroup>
 </div>

@@ -1,0 +1,21 @@
+.hero-button {
+  background:
+    linear-gradient(black, black) padding-box,
+    linear-gradient(to top right, #76fba7, #f1fc6f) border-box;
+  border-radius: 50em;
+  border: 2px solid transparent;
+  border-radius: 3rem;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all 0.3s ease-in-out;
+}
+
+.hero-button:hover {
+  background:
+    linear-gradient(black, black) padding-box,
+    linear-gradient(to right, white, white) border-box;
+}
