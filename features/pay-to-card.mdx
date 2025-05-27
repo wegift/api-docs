@@ -1,0 +1,128 @@
+---
+title: "Getting started with Pay to Card"
+description: "Provide faster access to funds for your recipients by pushing funds to cards."
+icon: "credit-card"
+---
+
+Powered by Visa Direct and Mastercard Send, Runa Pay to Card is the fastest and simplest way to send funds directly to your recipients’ bank account.
+
+Pay to Card facilitates instant transfers to other accounts, powering use cases like gig worker payments, rewards, incentives insurance claims, corporate rebates, payroll, government aid, and reimbursements.
+
+Sending payouts with Runa is simple and straightforward. If you already have a Runa account, you can skip straight to sending your first payment. If you are new to Runa, you will need to [create an account to get started](https://app.runa.io/signup).
+
+Before you go live with Runa Pay to Card you will need to sign updated T&Cs. Please reach out to your Account Manager or email [support@runa.io](mailto:support@runa.io) to complete this step.
+
+# 1️⃣ Getting started
+
+- Ensure you have [created an API key](/docs/getting-an-api-key).
+- Ensure you have funded your account with the required balance to cover the payments you intend to make. You can use the [balances endpoint](/docs/balances) to check your account balance.
+- Retrieve the Pay to Card products using the [product list endpoint](/reference/getproducts). You can identify these products by the `payout_type` field, which will be set to `payment`. Each Pay to Card product supports a specific currency and country. You can refer to the [product listing guide](/docs/product-listing-guide) for more information on this endpoint.
+- Familiarize yourself with the [ordering endpoint](/docs/make-your-first-order). To make an order for a payment you simply specify the Pay to Card product code for the currency and country you wish to send funds in.
+- Place an order for a pay to card payment. You can opt for us to send the payment to the recipient's email address by using the `EMAIL` distribution method or you can send the payment link to the recipient yourself by using the `LINK` method.
+
+## Example pay to card order
+
+The following is an example of a pay to card order for a $10 payment to a recipient in the US. The payment will be sent to the recipient's email address.
+
+```http
+POST https://api.runa.io/v2/order
+Content-Type: application/json
+X-Api-Key: <your API key>
+
+{
+    "payment_method": {
+        "type": "ACCOUNT_BALANCE",
+        "currency": "USD"
+    },
+    "items": [
+        {
+            "face_value": 10,
+            "distribution_method": {
+                "type": "EMAIL",
+                "email_address": "<your recipient's email address>"
+            },
+            "products": {
+                "type": "SINGLE",
+                "values": ["P2C-US"]
+            }
+        }
+    ]
+}
+```
+
+Refer to the [order endpoint reference](/reference/createorder) for more information on the request schema and other options available.
+
+# 💳 Pay to Card redemption experience
+
+<img src="https://files.readme.io/2762a396699a34a065c99bd63868fc5f13315d6e96f2892c6a6cb9c88781a127-p2c-flow-diagram.png" />
+
+When a recipient opens the payment they will be guided through the following flow on their first redemption:
+
+1. Enter their email address to authenticate
+2. Securely enter their card details
+3. Receive funds in their bank account
+
+For a returning recipient, they will only need to enter their email address to authenticate. The previously used card details are saved for future redemptions.
+
+# 🛟 Support
+
+We've categorized potential errors into three distinct areas, and for each, we've developed specific contingency plans and operational procedures.
+
+## 👤 User errors
+
+These are errors that can be self-corrected by recipients
+
+### Payment details
+
+1. Issue with the card number
+   - User will see the error message: The card number you have entered is incorrect.
+2. Card is unsupported
+   - User will see the error message: The card you have entered is not supported. Please use a Visa or Mastercard debit card.
+
+### Returning user
+
+1. Returning user lands on the first page but has already redeemed the balance.
+   - User will see the error message: You have already redeemed the balance.
+
+## 🖥️ Order errors
+
+These are faults that will require your input to resolve
+
+### Insufficient funds
+
+1. Insufficient balance at order time
+   - If your account has insufficient balance you will be unable to create the order for the payment. The API response with a 400 status code, the error message body will contain the type `insufficient_funds`. Check the [order endpoint reference](/reference/createorder) for more information.
+
+### User ineligible
+
+1. Payments cannot be sent to anyone under 18 years old.
+   - User will see the error message: We cannot send funds to anyone under the age of 18.
+2. Payments cannot be sent to anyone who appears on a sanctions list.
+   - User will see the error message: There’s been an unexpected issue, please contact the issuer of this link.
+   - Runa will send you an email to inform you that this has happened, with our reasoning attached.
+3. Card issue
+   - Payment sent to a user who doesn’t have an eligible debit card with Visa/Mastercard.
+   - User will see the error message: We can only send funds to a Visa or Mastercard debit card.
+
+## ⚙ Processing errors
+
+### In-journey errors
+
+1. Authentication error: Recipient hasn’t received email with code
+   - User will need to contact Runa for us to investigate what might have gone wrong with authentication.
+2. Authentication error: Code that recipient has received not working.
+   - User will need to contact Runa for us to investigate what might have gone wrong with authentication.
+3. Card issue: The recipient’s saved card has expired.
+   - User will see the error message: “Card expired” and will be able to contact Runa for us to delete their original card so they can add a new one.
+   - _Note: from early April recipients will be able to self-serve editing their existing cards_
+4. Card issue: The recipient’s saved card has expired.
+   - User will see the error message: “Card expired” and will be able to contact Runa for us to delete their original card so they can add a new one.
+   - _Note: from early April recipients will be able to self-serve editing their existing cards_
+5. Fraud Suspected
+   - If fraud is suspected, we will hold on sending out the payout until we have established that the payment isn’t fraudulent. During this time, we will either ask the end recipient to share additional information, or we will have to cancel the payment and inform you that it’s been cancelled with a reason as to why.
+6. Recipient bank has rejected payment
+   - The most common payment issue we are likely to experience is the recipient's bank rejecting the payment we send them. If this happens we will send the recipient an email to say their bank has rejected the payment, with advice to either resolve this with their bank or to contact us to manually delete their card so they can try a different card.
+
+## All other issues
+
+Your point of contact for any other issues: support@runa.io

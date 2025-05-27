@@ -1,0 +1,113 @@
+---
+title: "Getting started with Reloadable Prepaid Cards"
+description: "Reloadable Prepaid Cards are ideal for recurring payouts, global contractors, or any high-frequency use case where speed and ease matter."
+icon: "credit-card"
+---
+
+Once a card is activated, you can reload it again and again - without re-registration, delays, or extra steps. That makes them ideal for recurring payouts, global contractors, or any high-frequency use case where speed and ease matter.
+
+Sending payouts with Runa is simple and straightforward. If you already have a Runa account, you can skip straight to sending your first payment. If you are new to Runa, you will need to [create an account to get started](https://app.runa.io/signup).
+
+Before you go live with Reloadable Prepaid Cards, you will need to sign updated T&Cs. Please reach out to your Account Manager or email [support@runa.io](mailto:support@runa.io) to complete this step.
+
+# 1️⃣ Getting started
+
+- Ensure you have [created an API key](https://developer.runa.io/docs/getting-an-api-key).
+- Ensure you have funded your account with the required balance to cover the payments you intend to make. You can use the [balances endpoint](https://developer.runa.io/docs/balances) to check your account balance.
+- Retrieve the Reloadable Prepaid Card products using the [product list endpoint](https://developer.runa.io/reference/getproducts). You can identify these products by the `payout_type` field, which will be set to `payment`. Each Reloadable Prepaid Card product supports a specific currency and country. You can refer to the [product listing guide](https://developer.runa.io/docs/product-listing-guide) for more information on this endpoint.
+- Familiarize yourself with the [ordering endpoint](https://developer.runa.io/docs/make-your-first-order). To make an order for a payment you simply specify the Reloadable Prepaid Card product code for the currency and country you wish to send funds in.
+- Place an order for a Reloadable Prepaid Card. You should use the `RECIPIENT` distribution method and specify a unique `recipient_reference` which will be used for subsequent payments to the same recipient.
+- For subsequent payments simply specify the same `recipient_reference` to reload the existing card issued to the recipient.
+
+## Example Reloadable Prepaid Card order
+
+```json
+{
+  "payment_method": {
+    "type": "ACCOUNT_BALANCE",
+    "currency": "USD"
+  },
+  "items": [
+    {
+      "face_value": "5",
+      "products": {
+        "type": "SINGLE",
+        "value": "VISA-RE-US"
+      },
+      "distribution_method": {
+        "type": "RECIPIENT",
+        "recipient_reference": "random-recipient-id",
+        "email_address": "recipient_email@runa.io"
+      }
+    }
+  ]
+}
+```
+
+To make a second payment to the same recipient you should make a very similar order ensuring you use the same `recipient_reference`. We use this identifier to match the payment to the existing recipient. All other details in the order can be the same.
+
+Refer to the [order endpoint reference](https://developer.runa.io/reference/createorder) for more information on the request schema and other options available.
+
+# 💳 Reloadable Prepaid Card redemption experience
+
+<img className="block dark:hidden" src="/assets/graphics/reloadable-first-light.png" />
+<img className="hidden dark:block" src="/assets/graphics/reloadable-first-dark.png" />
+
+When a recipient opens the payment, they will be guided through the following flow on their first redemption:
+
+1. Enter their email address to authenticate with Runa
+2. Enter their email address to authenticate with our payment partner
+3. Create a password
+4. Verify their phone number
+5. Add their name and billing address
+6. The virtual card information will be shown to them, and they will be able to spend the funds where the Visa virtual card is accepted
+
+For a subsequent payment, the card will be automatically reloaded with the payout amount. If the recipient wishes to see their card details again, the confirmation email will contain a link where the card details will be securely presented upon authentication.
+
+<img className="block dark:hidden" src="/assets/graphics/reloadable-reload-light.png" />
+<img className="hidden dark:block" src="/assets/graphics/reloadable-reload-dark.png" />
+
+# 🛟 Support
+
+## 👤 User errors
+
+### Multiple Payments to Unactivated Card
+
+When you send multiple payments to a consumer who has not yet activated their reloadable prepaid card:
+
+**TODO content here pending discussion**
+
+### Issues with entering the recipient address
+
+Due to limitations on our payment partner’s side, the country field in the recipient address can only be set to the United States (US). However, this does not mean that the recipient has to be based in the US, they can enter their home address while ignoring the country field (by setting it to US).
+
+## 🖥️ Order errors
+
+These are faults that will require your input to resolve
+
+### Insufficient funds
+
+Insufficient balance at order time
+
+- If your account has insufficient balance you will be unable to create the order for the payment. The API response with a 400 status code, the error message body will contain the type `insufficient_funds`. Check the [order endpoint reference](https://developer.runa.io/reference/createorder) for more information.
+
+### User ineligible
+
+Payments cannot be sent to anyone who appears on a sanctions list.
+
+- The user will see the error message: “There’s been an unexpected issue, please contact the issuer of this link.”
+
+## ⚙ Processing errors
+
+### In-journey errors
+
+1. Authentication error: Recipient hasn’t received email with code
+   - The recipient will need to contact Runa for us to investigate what might have gone wrong with authentication.
+2. Authentication error: The verification code that the recipient has received is not working.
+   - The recipient will need to contact Runa for us to investigate what might have gone wrong with authentication.
+3. Fraud Suspected
+   - If fraud is suspected, we will hold on sending out the payout until we have established that the payment isn’t fraudulent. During this time, we will either ask the end recipient to share additional information, or we will have to cancel the payment and inform you that it’s been cancelled with a reason as to why.
+
+## All other issues
+
+Your point of contact for any other issues: [support@runa.io](mailto:support@runa.io)
