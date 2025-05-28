@@ -4,7 +4,7 @@
   "name": "Runa Developer Hub",
   "description": "Send instant B2C payments your recipients will love",
   "colors": {
-    "primary": "#7BD46C",
+    "primary": "#62cc50",
     "light": "#4fff7b",
     "dark": "#3dd463"
   },
@@ -74,7 +74,6 @@
               "best-practices/handling-errors",
               "best-practices/rate-limits",
               "best-practices/api-versioning"
-
             ]
           }
         ]
@@ -129,9 +128,7 @@
         "groups": [
           {
             "group": "API",
-            "pages": [
-              "changelog/api"
-            ]
+            "pages": ["changelog/api"]
           },
           {
             "group": "Network",
@@ -152,7 +149,9 @@
     "light": "https://brand-assets.runa.io/logo-horizontal-black.svg",
     "dark": "https://brand-assets.runa.io/logo-horizontal-white.svg"
   },
-  "banner": { "content": "⚠️ These are pre-release docs. For the latest stable version, visit [developer.runa.io](https://developer.runa.io)." },
+  "banner": {
+    "content": "⚠️ These are pre-release docs. For the latest stable version, visit [developer.runa.io](https://developer.runa.io)."
+  },
   "navbar": {
     "links": [],
     "primary": {
@@ -170,7 +169,5 @@
   "contextual": {
     "options": ["copy", "view", "chatgpt", "claude"]
   },
-  "redirects": [
-    {"source": "/docs", "destination": "/introduction"}
-  ]
+  "redirects": [{ "source": "/docs", "destination": "/introduction" }]
 }
