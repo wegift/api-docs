@@ -33,3 +33,14 @@
 .nav-tabs [class*="h-[1.5px]"] {
     height:3px !important
 }
+
+/* Add gradient to header button */
+#navbar a[href="https://app.runa.io"] .bg-primary-dark
+{
+  background: linear-gradient(to top right, #76fba7, #f1fc6f) border-box;
+}
+
+#navbar a[href="https://app.runa.io"] .text-white, #navbar a[href="https://app.runa.io"] svg
+{
+  color: black;
+}
