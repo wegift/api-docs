@@ -1,3 +1,8 @@
+html {
+    /* Force scrollbar to always appear to prevent content jumps */
+    overflow-y: scroll;
+}
+
 #navbar {
     background: black !important;
     color-scheme: dark;
