@@ -71,15 +71,22 @@ For a subsequent payment, the card will be automatically reloaded with the payou
 
 ## 👤 User errors
 
+If there are any errors during our payment partner's experience, the user will be able to use the “Contact Us” button to contact their team.
+
 ### Multiple Payments to Unactivated Card
 
-When you send multiple payments to a consumer who has not yet activated their reloadable prepaid card:
+If a consumer receives multiple payment emails for the same reloadable card, but this card is not activated yet, each email must be opened to load its associated funds.
 
-**TODO content here pending discussion**
+- When the consumer clicks one link and activates the card, only that payment is loaded.
+- To receive the full balance, they must also click the second link (the order doesn't matter).
+
+<Info>
+Each payment is attached to its own activation link. The card must first be activated before any funds are loaded.
+</Info>
 
 ### Issues with entering the recipient address
 
-Due to limitations on our payment partner’s side, the country field in the recipient address can only be set to the United States (US). However, this does not mean that the recipient has to be based in the US, they can enter their home address while ignoring the country field (by setting it to US).
+Due to limitations on our payment partner's side, the country field in the recipient address can only be set to the United States (US). However, this does not mean that the recipient has to be based in the US, they can enter their home address while ignoring the country field (by setting it to US).
 
 ## 🖥️ Order errors
 
@@ -95,18 +102,18 @@ Insufficient balance at order time
 
 Payments cannot be sent to anyone who appears on a sanctions list.
 
-- The user will see the error message: “There’s been an unexpected issue, please contact the issuer of this link.”
+- The user will see the error message: “There's been an unexpected issue, please contact the issuer of this link.”
 
 ## ⚙ Processing errors
 
 ### In-journey errors
 
-1. Authentication error: Recipient hasn’t received email with code
+1. Authentication error: Recipient hasn't received email with code
    - The recipient will need to contact Runa for us to investigate what might have gone wrong with authentication.
 2. Authentication error: The verification code that the recipient has received is not working.
    - The recipient will need to contact Runa for us to investigate what might have gone wrong with authentication.
 3. Fraud Suspected
-   - If fraud is suspected, we will hold on sending out the payout until we have established that the payment isn’t fraudulent. During this time, we will either ask the end recipient to share additional information, or we will have to cancel the payment and inform you that it’s been cancelled with a reason as to why.
+   - If fraud is suspected, we will hold on sending out the payout until we have established that the payment isn't fraudulent. During this time, we will either ask the end recipient to share additional information, or we will have to cancel the payment and inform you that it's been cancelled with a reason as to why.
 
 ## All other issues
 
