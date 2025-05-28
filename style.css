@@ -27,6 +27,7 @@
 #search-bar-entry {
     background: black !important;
     color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.9);
 }
 
 /* Override the default height of the active tab indicator, too thin when we have a black header on white page */
