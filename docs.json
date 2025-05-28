@@ -15,8 +15,9 @@
     },
     "heading": {
       "family": "F37 Lineca",
+      "weight": 600,
       "format": "woff2",
-      "source": "https://brand-assets.runa.io/design-system/fonts/f37lineca/F37Lineca-Regular.woff2"
+      "source": "https://brand-assets.runa.io/design-system/fonts/f37lineca/F37Lineca-Bold.woff2"
     }
   },
   "navigation": {
