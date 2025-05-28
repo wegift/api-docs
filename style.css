@@ -37,7 +37,7 @@
 /* Add gradient to header button */
 #navbar a[href="https://app.runa.io"] .bg-primary-dark
 {
-  background: linear-gradient(to top right, #76fba7, #f1fc6f) border-box;
+   background: linear-gradient(20deg, #00FFA3, #93FF82, #EEFC51) border-box;
 }
 
 #navbar a[href="https://app.runa.io"] .text-white, #navbar a[href="https://app.runa.io"] svg

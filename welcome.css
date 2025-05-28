@@ -1,7 +1,7 @@
 .hero-button {
   background:
     linear-gradient(black, black) padding-box,
-    linear-gradient(to top right, #76fba7, #f1fc6f) border-box;
+    linear-gradient(to top right, #00FFA3, #93FF82, #EEFC51) border-box;
   border-radius: 50em;
   border: 2px solid transparent;
   border-radius: 3rem;
