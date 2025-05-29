@@ -5,7 +5,9 @@ title: "Which mode to use?"
 description: "The Runa API supports synchronous & asynchronous modes of ordering. Which is the right mode depends on your use case."
 ---
 
-To offer customers maximum flexibility in integration and ensure consistent performance, the Runa API provides two execution modes: **synchronous** and **asynchronous**.
+The Runa API provides two execution modes: **synchronous** and **asynchronous**. Synchronous does all the work in one go and returns a response with the payout links. Asynchronous on the other hand returns earlier with just the order id and then you can poll or listen for a completed event.
+
+The limiting factor for the synchronous mode is that you can only create one payout per transaction.
 
 <CardGroup cols="2">
   <Card title="Synchronous" icon="arrow-right-arrow-left" href="/getting-started/first-order/sync">

@@ -9,19 +9,20 @@ The Playground environment allows you to safely and effortlessly test our API wi
 This guide will walk you through on how to access the Playground environment, testing the order endpoints, and provide information about its limitations.
 
 It's important to note that no real orders will be created in the Playground, although you will be able to retrieve the data you submitted, and follow redemption links to perform a fake redemption which looks and feels exactly like the real thing.
-Accessing the Playground environment
 
-# Base URL
+# Accessing the Playground environment
+
+## Base URL
 
 To access the Playground environment, use `https://playground.runa.io/v2 ` as the base URL for your requests.
 
-# API key
+## API key
 
 The playground uses a different API key from the production environment. You can generate a playground API key in the [API keys section of the dashboard](https://app.runa.io/api-keys). For security reasons, the API key will only be displayed to you at the time of generation, if you loose the key you will need to generate a new one.
 
 You cannot use a production key on playground, nor can you use a playground key on production.
 
-# Versioning
+## Versioning
 
 The playground environment only supports the latest version of the API. If you set the `X-Api-Version` header it must match the [latest version of the API](/best-practices/api-versioning#what-is-the-latest-version).
 

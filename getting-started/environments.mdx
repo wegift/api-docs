@@ -3,3 +3,29 @@ title: "Environments"
 icon: "tree"
 description: "Learn about the different API environments available in Runa"
 ---
+
+There are two environments available for the Runa API:
+
+- **Production**: The default environment for live operations. Requests here create real-world transactions and incur charges.
+- **Playground**: A simulated environment where you can test without creating real transactions or expenses.
+
+We recommend using the Playground environment for testing and development purposes and moving to Production when you're ready to start processing real transactions. This guide will assume you're using the Playground environment.
+
+# Selecting an Environment
+
+Each environment has a unique base URL:
+
+- **Production**: `https://api.runa.io`
+- **Playground**: `https://playground.runa.io`
+
+In addition the API key you use will be different for each environment. Production keys begin with `wg` whereas Playground keys begin with `XX`.
+
+# Playground caveats
+
+As the playground environment is a simulated environment, there are some differences from production. You should refer to the [Playground reference](/reference/2024-02-05/playground) documentation for more details.
+
+<br/>
+<Card horizontal icon="arrow-right" title="Next step: Create an API key" href="/getting-started/api-key">
+    Now you understand the different environments let's create an API key.
+</Card>
+  
