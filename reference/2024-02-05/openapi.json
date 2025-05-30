@@ -126,10 +126,13 @@
             "required": false,
             "name": "limit",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500,
+              "default": 100
             },
             "in": "query",
-            "description": "The number (1&ndash;100) of orders to include in each page of orders. Default: 100."
+            "description": "The number (1&ndash;500) of orders to include in each page of orders. Default: 100."
           },
           {
             "required": false,
