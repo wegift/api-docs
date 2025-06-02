@@ -39,6 +39,10 @@ html {
     color: black !important;
 }
 
+#chat-assistant-sheet {
+    border-left: 1px solid #e5e7eb;
+}
+
 /* Override the default height of the active tab indicator, too thin when we have a black header on white page */
 .nav-tabs [class*="h-[1.5px]"] {
     height:3px !important
