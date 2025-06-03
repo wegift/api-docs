@@ -22,7 +22,7 @@ To successfully place an order, you need to include the following headers in you
 
 - `X-Api-Key` - To authenticate your API requests, you need to include a secret token in this header. You can generate an API key by visiting https://app.runa.io/api-keys.
 
-- `X-Api-Version` - This header requires a valid API version to be specified. For this particular version of the API, please use "2024-02-05". Optionally, you can learn more about how API versioning is implemented on the Runa API Platform by referring to the [API versioning](https://developer.runa.io/v2023-07-27/docs/api-versioning) documentation.
+- `X-Api-Version` - This header requires a valid API version to be specified. For this particular version of the API, please use "2024-02-05". Optionally, you can learn more about how API versioning is implemented on the Runa API Platform by referring to the [API versioning](/best-practices/api-versioning) documentation.
 
 - `X-Execution-Mode` - Set the value of this header to `async`.
 
@@ -30,7 +30,7 @@ To successfully place an order, you need to include the following headers in you
 
 This section illustrates how to send out the rewards directly to the end user via email.
 
-`payment_method` - Specify the preferred balance you want to use on the order. If you haven't done so already, please ensure that you have sufficient [balance in your account](https://developer.runa.io/v2023-07-27/docs/getting-an-api-key#topping-up-your-account-balance).
+`payment_method` - Specify the preferred balance you want to use on the order. If you haven't done so already, please ensure that you have sufficient [balance in your account](/getting-started/production#funding-your-account).
 
 - `type` - Set the payment method type as `ACCOUNT_BALANCE`.
 - `currency` - Specify the currency of the account to be used for payment.
@@ -45,7 +45,7 @@ This section illustrates how to send out the rewards directly to the end user vi
   - `type` - Set the product type as `SINGLE`.
   - `value` - Provide the product code. In this case, the code for Amazon UK is `AMZ-GB`.
 
-For more details or to quickly try out the endpoint, navigate to the [API reference for the Create Order endpoint](https://developer.runa.io/reference/createorder).
+For more details or to quickly try out the endpoint, navigate to the [API reference for the Create Order endpoint](/reference/2024-02-05/endpoint/orders/create).
 
 ![](https://files.readme.io/abc9a76-image.png)
 
@@ -119,11 +119,11 @@ Now you can simply retrieve the payout links from the order details response to 
 
 ## Retrieving your order details
 
-You can use our [Order Completion webhook](https://developer.runa.io/docs/order-completion) to be notified when an order has completed processing.
+You can use our [Order Completion webhook](/reference/2024-02-05/webhook/order.completion) to be notified when an order has completed processing.
 
-Alternatively, you can poll the [Get Order](https://developer.runa.io/reference/getsingleorder) endpoint in order to verify the successful order processing. You will need the order ID obtained from the response received after calling the [Create Order](https://developer.runa.io/v2023-07-27/reference/createorder) endpoint. In the example response provided above, the order ID is `O-ABC123`. Simply include this order ID as a path parameter in the following URL format: `https://api.runa.io/v2/order/{id}`. Replace `{id}` with your specific order ID.
+Alternatively, you can poll the [Get Order](/reference/2024-02-05/endpoint/orders/get) endpoint in order to verify the successful order processing. You will need the order ID obtained from the response received after calling the [Create Order](/reference/2024-02-05/endpoint/orders/create) endpoint. In the example response provided above, the order ID is `O-ABC123`. Simply include this order ID as a path parameter in the following URL format: `https://api.runa.io/v2/order/{id}`. Replace `{id}` with your specific order ID.
 
-To try out this endpoint, you can visit the [Get Order](https://developer.runa.io/reference/getsingleorder) page and insert your order ID into the id path parameter.
+To try out this endpoint, you can visit the [Get Order](/reference/2024-02-05/endpoint/orders/get) page and insert your order ID into the id path parameter.
 
 ![](https://files.readme.io/7c68558-image.png)
 

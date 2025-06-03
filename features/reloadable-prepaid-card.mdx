@@ -12,10 +12,10 @@ Before you go live with Reloadable Prepaid Cards, you will need to sign updated 
 
 # 1️⃣ Getting started
 
-- Ensure you have [created an API key](https://developer.runa.io/docs/getting-an-api-key).
-- Ensure you have funded your account with the required balance to cover the payments you intend to make. You can use the [balances endpoint](https://developer.runa.io/docs/balances) to check your account balance.
-- Retrieve the Reloadable Prepaid Card products using the [product list endpoint](https://developer.runa.io/reference/getproducts). You can identify these products by the `payout_type` field, which will be set to `payment`. Each Reloadable Prepaid Card product supports a specific currency and country. You can refer to the [product listing guide](https://developer.runa.io/docs/product-listing-guide) for more information on this endpoint.
-- Familiarize yourself with the [ordering endpoint](https://developer.runa.io/docs/make-your-first-order). To make an order for a payment you simply specify the Reloadable Prepaid Card product code for the currency and country you wish to send funds in.
+- Ensure you have [created an API key](/getting-started/api-key).
+- Ensure you have funded your account with the required balance to cover the payments you intend to make. You can use the [balances endpoint](/features/balances) to check your account balance.
+- Retrieve the Reloadable Prepaid Card products using the [product list endpoint](/reference/2024-02-05/endpoint/products/list). You can identify these products by the `payout_type` field, which will be set to `payment`. Each Reloadable Prepaid Card product supports a specific currency and country. You can refer to the [product listing guide](/features/product-catalog) for more information on this endpoint.
+- Familiarize yourself with the [ordering endpoint](/getting-started/first-order/sync). To make an order for a payment you simply specify the Reloadable Prepaid Card product code for the currency and country you wish to send funds in.
 - Place an order for a Reloadable Prepaid Card. You should use the `RECIPIENT` distribution method and specify a unique `recipient_reference` which will be used for subsequent payments to the same recipient.
 - For subsequent payments simply specify the same `recipient_reference` to reload the existing card issued to the recipient.
 
@@ -46,7 +46,7 @@ Before you go live with Reloadable Prepaid Cards, you will need to sign updated 
 
 To make a second payment to the same recipient you should make a very similar order ensuring you use the same `recipient_reference`. We use this identifier to match the payment to the existing recipient. All other details in the order can be the same.
 
-Refer to the [order endpoint reference](https://developer.runa.io/reference/createorder) for more information on the request schema and other options available.
+Refer to the [order endpoint reference](/reference/2024-02-05/endpoint/orders/create) for more information on the request schema and other options available.
 
 # 💳 Reloadable Prepaid Card redemption experience
 
@@ -109,7 +109,7 @@ These are faults that will require your input to resolve
 
 Insufficient balance at order time
 
-- If your account has insufficient balance you will be unable to create the order for the payment. The API response with a 400 status code, the error message body will contain the type `insufficient_funds`. Check the [order endpoint reference](https://developer.runa.io/reference/createorder) for more information.
+- If your account has insufficient balance you will be unable to create the order for the payment. The API response with a 400 status code, the error message body will contain the type `insufficient_funds`. Check the [order endpoint reference](/reference/2024-02-05/endpoint/orders/create) for more information.
 
 ### User ineligible
 
