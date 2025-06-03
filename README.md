@@ -1,28 +1,36 @@
-# Mintlify Starter Kit
+# Runa Developer Hub
 
-Click on `Use this template` to copy the Mintlify starter kit. The starter kit contains examples including
+This repo contains the documentation for the Runa Developer Hub aka API Docs. This includes the OpenAPI specs for published versions of the API. We use [Mintlify](https://mintlify.com) as a docs framework and hosting provider.
 
-- Guide pages
-- Navigation
-- Customizations
-- API Reference pages
-- Use of popular components
+## Writing
 
-### Development
+Read https://mintlify.com/guides
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the documentation changes locally.
+From [content types](https://mintlify.com/guides/content-types)
 
-Run the following command at the root of your documentation (where docs.json is)
+- Our **tutorial** is the 'Getting started' culminating in making your first order
+- Our **how-to** are the feature guides
+- Our **reference** is the 'API Reference' pages generated from the API spec
+- Our **explanation** are the other pages in 'API Reference' and some pages under 'Best Practices'
+
+## Development
+
+Install JS packages with `pnpm install` then run
 
 ```
-npx mintlify dev
+pnpm dev
 ```
 
-### Publishing Changes
+A local server will then serve the docs at http://localhost:3000
+Hot-reload is supported
 
-Install our Github App to auto propagate changes from your repo to your deployment. Changes will be deployed to production automatically after pushing to the default branch. Find the link to install on your dashboard.
+## Mintlify
 
-#### Troubleshooting
+See [Mintlify docs](https://mintlify.com/docs) for more information. The `docs.json` file is the configuration file. Pages are written in MDX, a markdown variant with JSX support.
 
-- Mintlify dev isn't running - Run `mintlify install` it'll re-install dependencies.
-- Page loads as a 404 - Make sure you are running in a folder with `docs.json`
+## Publishing Changes
+
+- Make your changes on a branch
+- Open a PR and verify the changes from the preview
+- Get some review
+- Merge to main and the changes are automatically deployed to production
