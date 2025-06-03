@@ -169,101 +169,170 @@
     "options": ["copy", "view", "chatgpt", "claude"]
   },
   "redirects": [
-    { "source": "/changelog", "destination": "" },
-    { "source": "/changelog/", "destination": "" },
-    { "source": "/changelog/2023-07-27", "destination": "" },
-    { "source": "/changelog/2024-02-05", "destination": "" },
-    { "source": "/changelog/new-payment-payout-type-added", "destination": "" },
-    { "source": "/docs", "destination": "" },
-    { "source": "/docs/api-versioning", "destination": "" },
-    { "source": "/docs/balances", "destination": "" },
+    {
+      "source": "/changelog/2023-01-16-api-version-no-longer-available",
+      "destination": "/changelog/api#2023-01-16-api-version-end-of-life"
+    },
+    {
+      "source": "/changelog/2023-07-27",
+      "destination": "/changelog/api#api-verion-2023-07-27-released"
+    },
+    {
+      "source": "/changelog/2024-02-05",
+      "destination": "/changelog/api#api-version-2024-02-05-released"
+    },
+    {
+      "source": "/changelog/additional-currencies-supported-for-embedded-fx",
+      "destination": "/changelog/api#additional-currencies-supported-for-embedded-fx"
+    },
+    {
+      "source": "/changelog/embedded-fx-is-now-available-on-playground",
+      "destination": "/changelog/api#embedded-fx-is-now-available-on-playground"
+    },
+    {
+      "source": "/changelog/embedded-fx-is-now-available-on-production",
+      "destination": "/changelog/api#embedded-fx-is-now-available-on-production"
+    },
+    {
+      "source": "/changelog/new-payment-payout-type-added",
+      "destination": "/changelog/api#new-payment-payout-type-added"
+    },
+    {
+      "source": "/changelog/product-orderable-state-now-supported-in-the-product-update-webhook",
+      "destination": "/changelog/api#product-orderable-state-now-supported-in-the-product-update-webhook"
+    },
+    {
+      "source": "/docs",
+      "destination": "/introduction"
+    },
+    {
+      "source": "/docs/api-versioning",
+      "destination": "/best-practices/api-versioning"
+    },
+    {
+      "source": "/docs/balances",
+      "destination": "/features/balances"
+    },
     {
       "source": "/docs/creating-payout-selection-templates",
-      "destination": ""
+      "destination": "/features/merchant-selection-template"
     },
-    { "source": "/docs/currencies", "destination": "" },
+    {
+      "source": "/docs/currencies",
+      "destination": "/reference/currencies"
+    },
     {
       "source": "/docs/customizing-the-redemption-experience",
-      "destination": ""
+      "destination": "/features/user-redemption-templates"
     },
-    { "source": "/docs/errors", "destination": "" },
-    { "source": "/docs/getting-an-api-key", "destination": "" },
-    { "source": "/docs/getting-list-of-products", "destination": "" },
-    { "source": "/docs/getting-order-price-estimate", "destination": "" },
-    { "source": "/docs/idempotency", "destination": "" },
-    { "source": "/docs/make-your-first-order", "destination": "" },
-    { "source": "/docs/make-your-first-order-asynchronous", "destination": "" },
-    { "source": "/docs/make-your-first-order-synchronous", "destination": "" },
+    {
+      "source": "/docs/errors",
+      "destination": "/reference/2024-02-05/errors"
+    },
+    {
+      "source": "/docs/getting-an-api-key",
+      "destination": "/getting-started/api-key"
+    },
+    {
+      "source": "/docs/getting-list-of-products",
+      "destination": "/features/product-catalog"
+    },
+    {
+      "source": "/docs/getting-order-price-estimate",
+      "destination": "/features/estimate"
+    },
+    {
+      "source": "/docs/idempotency",
+      "destination": "/best-practices/idempotency"
+    },
+    {
+      "source": "/docs/make-your-first-order",
+      "destination": "/getting-started/first-order/which-mode"
+    },
+    {
+      "source": "/docs/make-your-first-order-asynchronous",
+      "destination": "/getting-started/first-order/async"
+    },
+    {
+      "source": "/docs/make-your-first-order-synchronous",
+      "destination": "/getting-started/first-order/sync"
+    },
     { "source": "/docs/order-completion", "destination": "" },
     { "source": "/docs/order-completion-webhook", "destination": "" },
-    { "source": "/docs/playground", "destination": "" },
-    { "source": "/docs/product-listing-guide", "destination": "" },
-    { "source": "/docs/securing-your-api-key", "destination": "" },
-    { "source": "/docs/supported-countries", "destination": "" },
+    {
+      "source": "/docs/playground",
+      "destination": "/reference/2024-02-05/playground"
+    },
+    {
+      "source": "/docs/product-listing-guide",
+      "destination": "/features/product-catalog"
+    },
+    {
+      "source": "/docs/securing-your-api-key",
+      "destination": "/best-practices/security"
+    },
+    {
+      "source": "/docs/supported-countries",
+      "destination": "/reference/countries"
+    },
     {
       "source": "/docs/using-embedded-fx-embedded-fx-order",
-      "destination": ""
+      "destination": "/features/embedded-fx"
     },
     { "source": "/docs/webhooks", "destination": "" },
-    { "source": "/page/changelog-landing-page", "destination": "" },
-    { "source": "/page/network-changelog", "destination": "" },
-    { "source": "/page/runa-network-removals", "destination": "" },
-    { "source": "/page/runa-network-updates", "destination": "" },
-    { "source": "/reference", "destination": "" },
-    { "source": "/reference/balance", "destination": "" },
-    { "source": "/reference/createorder", "destination": "" },
-    { "source": "/reference/estimateorderprice", "destination": "" },
-    { "source": "/reference/getbalance", "destination": "" },
-    { "source": "/reference/getlistoforders", "destination": "" },
-    { "source": "/reference/getproducts", "destination": "" },
-    { "source": "/reference/getproductscountries", "destination": "" },
-    { "source": "/reference/getsingleorder", "destination": "" },
-    { "source": "/reference/getsingleproduct", "destination": "" },
+    {
+      "source": "/page/changelog-landing-page",
+      "destination": "/changelog"
+    },
+    {
+      "source": "/page/network-changelog",
+      "destination": "/changelog/network/additions"
+    },
+    {
+      "source": "/page/runa-network-removals",
+      "destination": "/changelog/network/removals"
+    },
+    {
+      "source": "/page/runa-network-updates",
+      "destination": "/changelog/network/changes"
+    },
+    {
+      "source": "/reference/balance",
+      "destination": "/reference/2024-02-05/endpoint/balance/get"
+    },
+    {
+      "source": "/reference/createorder",
+      "destination": "/reference/2024-02-05/endpoint/orders/create"
+    },
+    {
+      "source": "/reference/estimateorderprice",
+      "destination": "/reference/2024-02-05/endpoint/orders/estimate"
+    },
+    {
+      "source": "/reference/getbalance",
+      "destination": "/reference/2024-02-05/endpoint/balance/get"
+    },
+    {
+      "source": "/reference/getlistoforders",
+      "destination": "/reference/2024-02-05/endpoint/orders/list"
+    },
+    {
+      "source": "/reference/getproducts",
+      "destination": "/reference/2024-02-05/endpoint/products/list"
+    },
+    {
+      "source": "/reference/getproductscountries",
+      "destination": "/reference/2024-02-05/endpoint/products/countries"
+    },
+    {
+      "source": "/reference/getsingleorder",
+      "destination": "/reference/2024-02-05/endpoint/orders/get"
+    },
+    {
+      "source": "/reference/getsingleproduct",
+      "destination": "/reference/2024-02-05/endpoint/products/get"
+    },
     { "source": "/reference/order-completion", "destination": "" },
-    { "source": "/reference/product-update", "destination": "" },
-    { "source": "/v2023-07-27", "destination": "" },
-    { "source": "/v2023-07-27/", "destination": "" },
-    { "source": "/v2023-07-27/changelog", "destination": "" },
-    { "source": "/v2023-07-27/docs", "destination": "" },
-    { "source": "/v2023-07-27/docs/", "destination": "" },
-    { "source": "/v2023-07-27/docs/api-versioning", "destination": "" },
-    { "source": "/v2023-07-27/docs/balances", "destination": "" },
-    { "source": "/v2023-07-27/docs/errors", "destination": "" },
-    { "source": "/v2023-07-27/docs/getting-an-api-key", "destination": "" },
-    {
-      "source": "/v2023-07-27/docs/getting-list-of-products",
-      "destination": ""
-    },
-    {
-      "source": "/v2023-07-27/docs/getting-order-price-estimate",
-      "destination": ""
-    },
-    { "source": "/v2023-07-27/docs/idempotency", "destination": "" },
-    { "source": "/v2023-07-27/docs/make-your-first-order", "destination": "" },
-    {
-      "source": "/v2023-07-27/docs/make-your-first-order-synchronous",
-      "destination": ""
-    },
-    {
-      "source": "/v2023-07-27/docs/order-completion-webhook",
-      "destination": ""
-    },
-    { "source": "/v2023-07-27/docs/playground", "destination": "" },
-    { "source": "/v2023-07-27/docs/securing-your-api-key", "destination": "" },
-    { "source": "/v2023-07-27/docs/supported-countries", "destination": "" },
-    { "source": "/v2023-07-27/docs/webhooks", "destination": "" },
-    { "source": "/v2023-07-27/page/changelog-landing-page", "destination": "" },
-    { "source": "/v2023-07-27/reference", "destination": "" },
-    { "source": "/v2023-07-27/reference/createorder", "destination": "" },
-    {
-      "source": "/v2023-07-27/reference/estimateorderprice",
-      "destination": ""
-    },
-    { "source": "/v2023-07-27/reference/getbalance", "destination": "" },
-    { "source": "/v2023-07-27/reference/getlistoforders", "destination": "" },
-    { "source": "/v2023-07-27/reference/getproducts", "destination": "" },
-    { "source": "/v2023-07-27/reference/getsingleorder", "destination": "" },
-    { "source": "/v2023-07-27/reference/order-completion", "destination": "" },
-    { "source": "/v2023-07-27/reference/product-update", "destination": "" }
+    { "source": "/reference/product-update", "destination": "" }
   ]
 }
