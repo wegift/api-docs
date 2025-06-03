@@ -18,15 +18,23 @@ To successfully place an order, you need to include the following headers in you
 </ParamField>
 
 <ParamField header="X-Idempotency-Key" type="string" required>
-  A unique value that we use to prevent duplicate purchases. If a network error occurs, you can retry the request with the same idempotency key and we will return the original order without any danger of creating a new one. You can read more about how we handle this field in the [idempotency guide](/best-practices/idempotency). We suggest using a V4 UUID for this field.
+  A unique value that we use to prevent duplicate purchases. If a network error
+  occurs, you can retry the request with the same idempotency key and we will
+  return the original order without any danger of creating a new one. You can
+  read more about how we handle this field in the [idempotency
+  guide](/best-practices/idempotency). We suggest using a V4 UUID for this
+  field.
 </ParamField>
 
 <ParamField header="X-Api-Version" type="string">
-  The API version you want to use. This header is optional but we highly recommend you to set it. For this guide, we will use the latest version `2024-02-05`
+  The API version you want to use. This header is optional but we highly
+  recommend you to set it. For this guide, we will use the latest version
+  `2024-02-05`
 </ParamField>
 
 <ParamField header="X-Execution-Mode" type="string" default="async">
-  Set the value of this header to `sync` as we are using the synchronous execution mode for this guide. If omitted, the default value is `async`.
+  Set the value of this header to `sync` as we are using the synchronous
+  execution mode for this guide. If omitted, the default value is `async`.
 </ParamField>
 
 ## The request body
@@ -45,7 +53,7 @@ Here's the outline of the request body we will be constructing, read on to see h
     {
       "face_value": 10,
       "distribution_method": {
-        "type": "PAYOUT_LINK",
+        "type": "PAYOUT_LINK"
       },
       "products": {
         "type": "SINGLE",
@@ -83,15 +91,17 @@ The payment method is the balance you want to use on the order. In this example 
 ### The order item
 
 As we are using the synchronous execution mode, we can only order a single payout link at a time. The following fields are set on the single item within the `items` array:
+
 <Columns cols={2}>
 <div>
   <ParamField body="face_value" type="number" required>
     Indicate the face value of the payout link you wish to order. The currency will be based on the selected product. As the product is in USD this will be $10.
   </ParamField>
 
-  <ParamField body="distribution_method" type="object" required>
-    We have a choice here between `EMAIL` and `PAYOUT_LINK`. Read on to see how to set these fields.
-  </ParamField>
+<ParamField body="distribution_method" type="object" required>
+  We have a choice here between `EMAIL` and `PAYOUT_LINK`. Read on to see how to
+  set these fields.
+</ParamField>
 
   <ParamField body="products" type="object" required>
     We have a choice here between `SINGLE` and `MULTIPLE` and `TEMPLATE`. Read on to see how to set these fields.
@@ -120,6 +130,7 @@ As mentioned we have two options here, `EMAIL` and `PAYOUT_LINK`.
 - `PAYOUT_LINK` - This will return the payout link in the response body.
 
 ##### To distribute via email
+
 <Columns cols={2}>
   <div>
     <ParamField body="type" children="distribution_method" type="string" required>
@@ -143,9 +154,11 @@ As mentioned we have two options here, `EMAIL` and `PAYOUT_LINK`.
 The playground environment by default does not send emails. To enable this, you need to set the `X-Send-Email: true` header.
 
 Ensure you refer to the [playground reference](/reference/2024-02-05/playground#sending-emails) for more details.
+
 </Info>
 
 ##### To distribute via payout link
+
 <Columns cols={2}>
   <div>
     <ParamField body="type" children="distribution_method" type="string" required>
@@ -160,7 +173,6 @@ Ensure you refer to the [playground reference](/reference/2024-02-05/playground#
     ```
   </div>
 </Columns>
-
 
 #### The product selection
 
@@ -178,7 +190,10 @@ On the `products` object we will set the `type` to `TEMPLATE` and the `template_
   Set the product selection type to `TEMPLATE`
 </ParamField>
 <ParamField body="template_id" children="products" type="string" required>
-  Set the template ID to `PT-01HQ12PV4B8XMBRTK281JM54KK`, a [pre-defined playground template](/reference/2024-02-05/playground#default-product-selection-templates) for USD.
+  Set the template ID to `PT-01HQ12PV4B8XMBRTK281JM54KK`, a [pre-defined
+  playground
+  template](/reference/2024-02-05/playground#default-product-selection-templates)
+  for USD.
 </ParamField>
 
 ## Putting it all together
@@ -263,19 +278,43 @@ Pop the `url` field into your browser to see the payout link. Congratulations, y
 You can now explore the following features to take your first order to the next level.
 
 <Columns cols={3}>
-  <Card title="Fetch the product catalog" href="/features/product-catalog" icon="grid" arrow>
-    To make orders for specfic products you'll need to fetch the product catalog first.
+  <Card
+    title="Fetch the product catalog"
+    href="/features/product-catalog"
+    icon="grid"
+    arrow
+  >
+    To make orders for specfic products you'll need to fetch the product catalog
+    first.
   </Card>
-  <Card title="Customizing the payout link" href="/features/user-redemption-templates" icon="gift" arrow>
-    Add your own branding and customize the redemption experience for your recipients.
+  <Card
+    title="Customizing the payout link"
+    href="/features/user-redemption-templates"
+    icon="gift"
+    arrow
+  >
+    Add your own branding and customize the redemption experience for your
+    recipients.
   </Card>
-  <Card title="Pay using a different currency" href="/features/embedded-fx" icon="money-bill-transfer" arrow>
-    Use Runa Embedded FX to pay for an order using your funds in another currency
+  <Card
+    title="Pay using a different currency"
+    href="/features/embedded-fx"
+    icon="money-bill-transfer"
+    arrow
+  >
+    Use Runa Embedded FX to pay for an order using your funds in another
+    currency
   </Card>
 </Columns>
 
 Alternatively, you can explore the steps needed to make real orders in the production environment.
 
-<Card title="Moving to production" href="/getting-started/production" icon="hexagon-check" horizontal arrow>
+<Card
+  title="Moving to production"
+  href="/getting-started/production"
+  icon="hexagon-check"
+  horizontal
+  arrow
+>
   Once you're ready to go live have a look at the production checklist.
 </Card>

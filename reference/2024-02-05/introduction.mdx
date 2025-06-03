@@ -1,7 +1,7 @@
 ---
-title: 'Introduction'
-description: 'Introduction to the API reference documentation'
-icon: 'book'
+title: "Introduction"
+description: "Introduction to the API reference documentation"
+icon: "book"
 ---
 
 # Welcome
@@ -11,26 +11,25 @@ This section documents the API endpoints available in the Runa API. The API foll
 # Environments
 
 <CardGroup cols={2} rows={1}>
-  <Card
-    title="Production"
-    icon="gear"
-  >
-    The production API is the live environment where you can process real transactions. The base URL for the production API is:
-    <br/>
+  <Card title="Production" icon="gear">
+    The production API is the live environment where you can process real
+    transactions. The base URL for the production API is:
+    <br />
     **`https://api.runa.io/v2`**
   </Card>
-  <Card
-    title="Playground"
-    icon="puzzle-piece-simple"
-  >
-    A simulated environment where you can experiment with the API without real transactions or expenses. It is available at:
-    <br/>
+  <Card title="Playground" icon="puzzle-piece-simple">
+    A simulated environment where you can experiment with the API without real
+    transactions or expenses. It is available at:
+    <br />
     **`https://playground.runa.io/v2`**
   </Card>
 </CardGroup>
 
 <Info>
-Do note that the playground environment is not a complete replica of the production environment. Some endpoints are not available in the playground, and some features may behave differently. See the [playground reference](/reference/2024-02-05/playground) for more information.
+  Do note that the playground environment is not a complete replica of the
+  production environment. Some endpoints are not available in the playground,
+  and some features may behave differently. See the [playground
+  reference](/reference/2024-02-05/playground) for more information.
 </Info>
 
 # Requests & Responses
@@ -52,17 +51,36 @@ Once you're ready to start using production your should refer to the [security b
 API responses can vary in type but will be consistent per HTTP status code. You should use the HTTP status code to determine how to interpret the response.
 
 <Frame caption="The status code dropdown in the response section switches between the different response types.">
-  <img className="block dark:hidden" src="/assets/screenshots/response-dropdown-light.png" />
-  <img className="hidden dark:block" src="/assets/screenshots/response-dropdown-dark.png" />
+  <img
+    className="block dark:hidden"
+    src="/assets/screenshots/response-dropdown-light.png"
+  />
+  <img
+    className="hidden dark:block"
+    src="/assets/screenshots/response-dropdown-dark.png"
+  />
 </Frame>
-  
-For example the `POST /v2/order` response returns a different structure for the `200 OK` and `202 Accepted` status codes. The `200 OK` response returns the whole order object, while the `202 Accepted` response returns a minimal object containing only the order ID and status when using the `async` ordering mode.
+For example the `POST /v2/order` response returns a different structure for the
+`200 OK` and `202 Accepted` status codes. The `200 OK` response returns the
+whole order object, while the `202 Accepted` response returns a minimal object
+containing only the order ID and status when using the `async` ordering mode.
 
 Error status code starting `4xx` and `5xx` have a consistent error response structure. See the guide on [handling errors](/best-practices/handling-errors) for more information and best practices on how to handle errors.
 
 # Test endpoints in the browser
-<img className="inline dark:hidden m-0 ml-4 mb-4 h-10" align="right" src="/assets/screenshots/try-it-light.png" />
-<img className="hidden dark:inline m-0 ml-4 mb-4 h-10" align="right" src="/assets/screenshots/try-it-dark.png" />
-Using the **try it** button you can interact directly with the Runa API from the documentation. This is a great way to test the API and see how it works without having to write any code.
+
+<img
+  className="inline dark:hidden m-0 ml-4 mb-4 h-10"
+  align="right"
+  src="/assets/screenshots/try-it-light.png"
+/>
+<img
+  className="hidden dark:inline m-0 ml-4 mb-4 h-10"
+  align="right"
+  src="/assets/screenshots/try-it-dark.png"
+/>
+Using the **try it** button you can interact directly with the Runa API from the
+documentation. This is a great way to test the API and see how it works without
+having to write any code.
 
 You'll need to provide an API key to use the try it button. The API key is stored in your browser's local storage so it's recommended to use the playground environment and to remove the key when you're done testing.

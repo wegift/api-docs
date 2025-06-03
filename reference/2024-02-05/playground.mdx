@@ -33,30 +33,30 @@ The supported APIs in the Playground environment will have the same request and 
 <Accordion title="Create an order">
   The [Create Order endpoint](/reference/2024-02-05/endpoint/orders/create) lets you create playground orders. When creating Playground orders the behaviour will closely resemble the production API, but there are a few limitations to consider:
 
-  - Use of account balance to pay for an order will always be accepted. There is no need to top-up or maintain a balance on the playground.
-  - You can place as many orders as you want without reaching a fund limit. We are working on ways to simulate the errors you would get if you reached this limit, to be released in a future version.
-  - When performing an Embedded FX order in the playground, please note that the exchange rates and fees are not reflective of the real rates you would encounter in production. The exchange rates are arbitrary and fixed for simulation purposes, and the fee is set at a standard 1.9%, regardless of any custom fees you may have agreed upon in the production environment.
+- Use of account balance to pay for an order will always be accepted. There is no need to top-up or maintain a balance on the playground.
+- You can place as many orders as you want without reaching a fund limit. We are working on ways to simulate the errors you would get if you reached this limit, to be released in a future version.
+- When performing an Embedded FX order in the playground, please note that the exchange rates and fees are not reflective of the real rates you would encounter in production. The exchange rates are arbitrary and fixed for simulation purposes, and the fee is set at a standard 1.9%, regardless of any custom fees you may have agreed upon in the production environment.
 
-  It's important to note that **no real orders** will be created in the Playground, although you will be able to retrieve the data you submitted. If you select an email distribution type, emails will be sent, but please note the important message below about how this works.
-  
-  ## Sending emails
-  By default no emails are sent for playground orders. If you want to enable email sending you should send a custom header `X-Send-Email: true`. The response will contain the same header.
+It's important to note that **no real orders** will be created in the Playground, although you will be able to retrieve the data you submitted. If you select an email distribution type, emails will be sent, but please note the important message below about how this works.
 
-  When enabled, we will only send an email for the **first order item** that has an email distribution type. This enables you to test large orders with email testing but without actually sending an excessive number of emails.
+## Sending emails
 
-  When testing orders with the header `X-Send-Email: true` you must ensure that the email addresses you use are valid and messages sent to them will not bounce. We monitor deliverability and may remove this feature from your account for repeat violations. For safety you can use emails ending in .invalid or .test, for example name@domain.invalid, which will never trigger email delivery.
+By default no emails are sent for playground orders. If you want to enable email sending you should send a custom header `X-Send-Email: true`. The response will contain the same header.
 
-  ## Default product selection templates
+When enabled, we will only send an email for the **first order item** that has an email distribution type. This enables you to test large orders with email testing but without actually sending an excessive number of emails.
 
-  You can use the following curated template IDs in the `products` field while creating a playground order. The actual payout types will be present in the response when you retrieve your order. Note that, the randomised products for some of the countries are for representational purpose, it is not a real functionality on production environment.
+When testing orders with the header `X-Send-Email: true` you must ensure that the email addresses you use are valid and messages sent to them will not bounce. We monitor deliverability and may remove this feature from your account for repeat violations. For safety you can use emails ending in .invalid or .test, for example name@domain.invalid, which will never trigger email delivery.
 
-  | Currency | Template ID | Payout types |
-  | -------- | ----------- | ------------ |
-  | `USD` | `PT-01HQ12PV4B8XMBRTK281JM54KK` | Randomised 10 payout types |
-  | `GBP` | `PT-01HPPT8ME05693EG77RCGKMX7N` | Randomised 10 payout types |
-  | `EUR` | `PT-01HQ130AHCKRRB45Z5XV2Y8W9K` | Randomised 10 payout types |
-  | `CAD` | `PT-01HQ12SMX2964BVXG2N69K8HF3` | Randomised 10 payout types |
-  
+## Default product selection templates
+
+You can use the following curated template IDs in the `products` field while creating a playground order. The actual payout types will be present in the response when you retrieve your order. Note that, the randomised products for some of the countries are for representational purpose, it is not a real functionality on production environment.
+
+| Currency | Template ID                     | Payout types               |
+| -------- | ------------------------------- | -------------------------- |
+| `USD`    | `PT-01HQ12PV4B8XMBRTK281JM54KK` | Randomised 10 payout types |
+| `GBP`    | `PT-01HPPT8ME05693EG77RCGKMX7N` | Randomised 10 payout types |
+| `EUR`    | `PT-01HQ130AHCKRRB45Z5XV2Y8W9K` | Randomised 10 payout types |
+| `CAD`    | `PT-01HQ12SMX2964BVXG2N69K8HF3` | Randomised 10 payout types |
 
 </Accordion>
 <Accordion title="Get order details">
@@ -72,12 +72,14 @@ The supported APIs in the Playground environment will have the same request and 
 <Accordion title="List products">
   The [List Products endpoint](/reference/2024-02-05/endpoint/products/list) lets you retrieve a list of products you can create orders for.
 
-  This catalogue of produsts in playground is static and corresponds to our base product selection without additional product approval. You may have access to a broader range of products when using the production API. You can only place Playground orders with the products returned from this endpoint.
+This catalogue of produsts in playground is static and corresponds to our base product selection without additional product approval. You may have access to a broader range of products when using the production API. You can only place Playground orders with the products returned from this endpoint.
+
 </Accordion>
 <Accordion title="Get a list of countries where products are available">
   The [List Countries endpoint](/reference/2024-02-05/endpoint/countries/list) lets you retrieve a list of countries where products are available.
 
-  This list of countries is static and corresponds to our base product selection without additional product approval. You may have access to a broader range of countries when using the production API.
+This list of countries is static and corresponds to our base product selection without additional product approval. You may have access to a broader range of countries when using the production API.
+
 </Accordion>
 
 # Unsupported endpoints
@@ -131,10 +133,10 @@ This is due to a version difference in the validation library we use which will 
 
 Some errors cannot be triggered in playground through incorrect formatting or request inputs. For these errors, you can simulate them by adding a `X-Trigger-Error` header with the value set to one of the error types below:
 
-| Error type | Description |
-|------------|-------------|
-| `insufficient_funds` | The account balance you're trying to use to pay for your order does not have enough funds. |
-| `internal_server_error` | An unknown error occurred in our services. |
+| Error type              | Description                                                                                |
+| ----------------------- | ------------------------------------------------------------------------------------------ |
+| `insufficient_funds`    | The account balance you're trying to use to pay for your order does not have enough funds. |
+| `internal_server_error` | An unknown error occurred in our services.                                                 |
 
 # Continuous improvement
 

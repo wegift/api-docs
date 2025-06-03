@@ -5,7 +5,10 @@ icon: "money-bill-transfer"
 ---
 
 <Note>
-By default, this feature applies standard FX fees in production. If you haven't negotiated custom rates, those standard fees will apply. To learn more or discuss custom pricing, [talk to an expert](https://runa.io/products/runa-fx) or contact your account manager
+  By default, this feature applies standard FX fees in production. If you
+  haven't negotiated custom rates, those standard fees will apply. To learn more
+  or discuss custom pricing, [talk to an
+  expert](https://runa.io/products/runa-fx) or contact your account manager
 </Note>
 
 # What is Embedded FX?
@@ -16,7 +19,7 @@ Runa Embedded FX handles currency exchanges in real-time at the point of payment
 
 # Placing an Embedded FX order
 
-Placing an Embedded FX order follows the same request schema as the existing method for placing orders via the `/v2/order` endpoint. You can refer to the [ordering guides](/getting-started/first-order/sync) or [create order reference](/reference/2024-02-05/endpoint/orders/create) for detailed instructions. 
+Placing an Embedded FX order follows the same request schema as the existing method for placing orders via the `/v2/order` endpoint. You can refer to the [ordering guides](/getting-started/first-order/sync) or [create order reference](/reference/2024-02-05/endpoint/orders/create) for detailed instructions.
 
 To use embedded FX you should specify the desired billing currency in the `payment_method` object.
 
@@ -28,6 +31,7 @@ To use embedded FX you should specify the desired billing currency in the `payme
 4. This feature currently supports **only** synchronous orders.
 
 # Example
+
 Here's an example of a basic request and response for an order with embedded FX.
 
 - The `payment_method.currency` has been set to `GBP`.
@@ -55,7 +59,6 @@ Here's an example of a basic request and response for an order with embedded FX.
   ]
 }
 ```
-
 
 ```json Response {37-49}
 {
@@ -109,6 +112,7 @@ Here's an example of a basic request and response for an order with embedded FX.
   }
 }
 ```
+
 </CodeGroup>
 In the above example, a $10 USD payout link has been purchased using a `GBP` balance.
 
@@ -129,7 +133,9 @@ For example, if the `fx.rate` is 1.2 and the `fx.rate_symbol` is `GBPUSD`:
 
 - When converting GBP to USD: If your `payment_method` currency is GBP and you're purchasing an item priced at \$10 USD, the calculation is: `$10 ÷ 1.2 = £8.33`
 - When converting USD to GBP: If your `payment_method` currency is USD and you're purchasing an item priced at £10 GBP, the calculation is: `£10 × 1.2 = $12`
+
 </Card>
+
 # FX Fees
 
 The fee is always calculated and included in the billing currency, so that you can operate in one currency.
@@ -142,6 +148,12 @@ If you haven't set up custom fees, **a standard fee rate of 1.9%** will be appli
 
 Embedded FX support varies by currency. Check the [currencies page](/reference/currencies) for detail on what is supported today. We are actively working to expand support for more combinations.
 
-<Card title="Currencies" icon="coins" href="/reference/currencies" horizonal={true} arrow={true}>
-View the list of currencies supported by the Runa API.
+<Card
+  title="Currencies"
+  icon="coins"
+  href="/reference/currencies"
+  horizonal={true}
+  arrow={true}
+>
+  View the list of currencies supported by the Runa API.
 </Card>

@@ -62,6 +62,7 @@ If you'd like to restrict the product selection to a single product, please refe
 **Multiple country orders are not supported**
 
 Please be aware that when placing an order, it is essential to ensure that all selected `products` within the order `items` belong to the same country. We currently do not support combining products from different countries in a single order. Your order will be rejected.
+
 </Warning>
 
 # Exploring and Selecting Products from Runa Product Network
@@ -79,185 +80,166 @@ Here is an example of a successful response that demonstrates how the listing wi
 
 ```json
 {
-	"catalog": [
-		{
-            "approval_state": "APPROVED",
-            "categories": [
-                "experiences"
-            ],
-            "code": "EXAMPLEFIXED-US",
-            "countries_redeemable_in": [
-                "US"
-            ],
-            "currency": "USD",
-            "customer_service": {
-                "phone_number": "+1 (123) 456-7890",
-                "website_url": "https:/example.com/contact"
-            },
-            "discount_multiplier": "0.1000",
-            "is_orderable": true,
-            "name": "Example Fixed Denominations US",
-            "payout_type": "gift_card",
-            "state": "LIVE",
-            "gift_card": {
-                "assets": {
-                    "card_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEFIXED-US/EXAMPLEFIXED-US-card.png",
-                    "icon_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEFIXED-US/EXAMPLEFIXED-US-icon.png",
-                    "primary_color": "#FFFFFF"
-                },
-                "balance_check_url": "https://example.com/balance-check-url",
-                "content_resources": {
-                    "description_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/description.md",
-                    "disclaimer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/disclaimer.md",
-                    "locale": "en_US",
-                    "redemption_instructions_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/redemption_instructions.md",
-                    "refund_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/refund_policy.md",
-                    "reissuance_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/reissuance_policy.md",
-                    "terms_buyer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/terms_buyer.md",
-                    "terms_consumer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/terms_consumer.md"
-                },
-                "denominations": {
-                    "available_list": [
-                        "0.5",
-                        "1",
-                        "5",
-                        "10",
-                        "25",
-                        "50",
-                        "100"
-                    ],
-                    "maximum_value": "100",
-                    "minimum_value": "0.5",
-                    "type": "fixed"
-                },
-                "expiry": {
-                    "date_policy": "Does not expire",
-                    "in_months": 0,
-                    "type": "indefinite"
-                },
-                "redeemable_at": "online",
-								"website_url": "https://example.com",
-            },
+  "catalog": [
+    {
+      "approval_state": "APPROVED",
+      "categories": ["experiences"],
+      "code": "EXAMPLEFIXED-US",
+      "countries_redeemable_in": ["US"],
+      "currency": "USD",
+      "customer_service": {
+        "phone_number": "+1 (123) 456-7890",
+        "website_url": "https:/example.com/contact"
+      },
+      "discount_multiplier": "0.1000",
+      "is_orderable": true,
+      "name": "Example Fixed Denominations US",
+      "payout_type": "gift_card",
+      "state": "LIVE",
+      "gift_card": {
+        "assets": {
+          "card_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEFIXED-US/EXAMPLEFIXED-US-card.png",
+          "icon_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEFIXED-US/EXAMPLEFIXED-US-icon.png",
+          "primary_color": "#FFFFFF"
         },
-        {
-            "approval_state": "APPROVED",
-            "categories": [
-                "electricals"
-            ],
-            "code": "EXAMPLEOPEN-US",
-            "countries_redeemable_in": [
-                "US"
-            ],
-            "currency": "USD",
-            "customer_service": {
-                "phone_number": "+1 (123) 456-7890",
-                "website_url": "https:/example.com/contact"
-            },
-            "discount_multiplier": "0.3",
-            "is_orderable": true,
-            "name": "Example Open Denominations US",
-            "payout_type": "gift_card",
-            "state": "TEMPORARILY_DISABLED",
-            "gift_card": {
-                "assets": {
-                    "card_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEOPEN-US/EXAMPLEOPEN-US-card.png",
-                    "icon_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEOPEN-US/EXAMPLEOPEN-US-icon.png",
-                    "primary_color": "#FFFFFF"
-                },
-                "balance_check_url": "https://example.com/balance-check-url",
-                "content_resources": {
-                    "description_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/description.md",
-                    "disclaimer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/disclaimer.md",
-                    "locale": "en_US",
-                    "redemption_instructions_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/redemption_instructions.md",
-                    "refund_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/refund_policy.md",
-                    "reissuance_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/reissuance_policy.md",
-                    "terms_buyer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/terms_buyer.md",
-                    "terms_consumer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/terms_consumer.md"
-                },
-                "denominations": {
-                    "available_list": null,
-                    "maximum_value": "500.00",
-                    "minimum_value": "15",
-                    "type": "open"
-                },
-                "expiry": {
-                    "date_policy": "Does not expire",
-                    "in_months": 0,
-                    "type": "indefinite"
-                },
-                "redeemable_at": "all",
-				"website_url": "https://example.com",
-            },
+        "balance_check_url": "https://example.com/balance-check-url",
+        "content_resources": {
+          "description_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/description.md",
+          "disclaimer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/disclaimer.md",
+          "locale": "en_US",
+          "redemption_instructions_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/redemption_instructions.md",
+          "refund_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/refund_policy.md",
+          "reissuance_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/reissuance_policy.md",
+          "terms_buyer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/terms_buyer.md",
+          "terms_consumer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/terms_consumer.md"
         },
-				{
-            "approval_state": "APPROVED",
-            "categories": [
-                "beauty-and-fashion"
-            ],
-            "code": "SUBSCRIPTION-GB",
-            "countries_redeemable_in": [
-                "GN"
-            ],
-            "currency": "GBP",
-            "customer_service": {
-                "phone_number": "+4420 1234 5678",
-                "website_url": "https://example.com/subscription-customer-service"
-            },
-            "discount_multiplier": "0.1940",
-            "is_orderable": true,
-            "name": "Subscription Example GB",
-            "payout_type": "subscription",
-            "state": "LIVE",
-            "subscription": {
-                "assets": {
-                    "card_image_url": "https:/gift.runa.io/static/product_assets/SUBSCRIPTION-GB/SUBSCRIPTION-GB-card.png",
-                    "icon_image_url": "https:/gift.runa.io/static/product_assets/SUBSCRIPTION-GB/SUBSCRIPTION-GB-icon.png",
-                    "primary_color": "#FFFFFF"
-                },
-                "balance_check_url": "https://example.com/subscription-balance-check-url",
-                "content_resources": {
-                    "description_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/description.md",
-                    "disclaimer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/disclaimer.md",
-                    "locale": "es_ES",
-                    "redemption_instructions_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/redemption_instructions.md",
-                    "refund_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/refund_policy.md",
-                    "reissuance_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/reissuance_policy.md",
-                    "terms_buyer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/terms_buyer.md",
-                    "terms_consumer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/terms_consumer.md"
-                },
-                "expiry": {
-                    "date_policy": "Expires 1 year from issue date",
-                    "in_months": 12,
-                    "type": "from-issue-date"
-                },
-                "redeemable_at": "online",
-                "subscription_plans": [
-                    {
-                        "length": 6,
-                        "length_unit": "MONTHS",
-                        "name": "Subscription Example 6 months",
-                        "price": 107.94,
-                        "subscription_plan_code": "SUBSCRIPTION-GB"
-                    }
-                ],
-                "website_url": "https://example.com/subscription-details"
-            }
+        "denominations": {
+          "available_list": ["0.5", "1", "5", "10", "25", "50", "100"],
+          "maximum_value": "100",
+          "minimum_value": "0.5",
+          "type": "fixed"
         },
-	],
-	"pagination": {
-        "cursors": {
-            "after": "After Cursor",
-            "before": "Before Cursor"
+        "expiry": {
+          "date_policy": "Does not expire",
+          "in_months": 0,
+          "type": "indefinite"
         },
-        "page": {
-            "limit": 500
-        }
+        "redeemable_at": "online",
+        "website_url": "https://example.com"
+      }
+    },
+    {
+      "approval_state": "APPROVED",
+      "categories": ["electricals"],
+      "code": "EXAMPLEOPEN-US",
+      "countries_redeemable_in": ["US"],
+      "currency": "USD",
+      "customer_service": {
+        "phone_number": "+1 (123) 456-7890",
+        "website_url": "https:/example.com/contact"
+      },
+      "discount_multiplier": "0.3",
+      "is_orderable": true,
+      "name": "Example Open Denominations US",
+      "payout_type": "gift_card",
+      "state": "TEMPORARILY_DISABLED",
+      "gift_card": {
+        "assets": {
+          "card_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEOPEN-US/EXAMPLEOPEN-US-card.png",
+          "icon_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEOPEN-US/EXAMPLEOPEN-US-icon.png",
+          "primary_color": "#FFFFFF"
+        },
+        "balance_check_url": "https://example.com/balance-check-url",
+        "content_resources": {
+          "description_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/description.md",
+          "disclaimer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/disclaimer.md",
+          "locale": "en_US",
+          "redemption_instructions_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/redemption_instructions.md",
+          "refund_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/refund_policy.md",
+          "reissuance_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/reissuance_policy.md",
+          "terms_buyer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/terms_buyer.md",
+          "terms_consumer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/terms_consumer.md"
+        },
+        "denominations": {
+          "available_list": null,
+          "maximum_value": "500.00",
+          "minimum_value": "15",
+          "type": "open"
+        },
+        "expiry": {
+          "date_policy": "Does not expire",
+          "in_months": 0,
+          "type": "indefinite"
+        },
+        "redeemable_at": "all",
+        "website_url": "https://example.com"
+      }
+    },
+    {
+      "approval_state": "APPROVED",
+      "categories": ["beauty-and-fashion"],
+      "code": "SUBSCRIPTION-GB",
+      "countries_redeemable_in": ["GN"],
+      "currency": "GBP",
+      "customer_service": {
+        "phone_number": "+4420 1234 5678",
+        "website_url": "https://example.com/subscription-customer-service"
+      },
+      "discount_multiplier": "0.1940",
+      "is_orderable": true,
+      "name": "Subscription Example GB",
+      "payout_type": "subscription",
+      "state": "LIVE",
+      "subscription": {
+        "assets": {
+          "card_image_url": "https:/gift.runa.io/static/product_assets/SUBSCRIPTION-GB/SUBSCRIPTION-GB-card.png",
+          "icon_image_url": "https:/gift.runa.io/static/product_assets/SUBSCRIPTION-GB/SUBSCRIPTION-GB-icon.png",
+          "primary_color": "#FFFFFF"
+        },
+        "balance_check_url": "https://example.com/subscription-balance-check-url",
+        "content_resources": {
+          "description_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/description.md",
+          "disclaimer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/disclaimer.md",
+          "locale": "es_ES",
+          "redemption_instructions_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/redemption_instructions.md",
+          "refund_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/refund_policy.md",
+          "reissuance_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/reissuance_policy.md",
+          "terms_buyer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/terms_buyer.md",
+          "terms_consumer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/terms_consumer.md"
+        },
+        "expiry": {
+          "date_policy": "Expires 1 year from issue date",
+          "in_months": 12,
+          "type": "from-issue-date"
+        },
+        "redeemable_at": "online",
+        "subscription_plans": [
+          {
+            "length": 6,
+            "length_unit": "MONTHS",
+            "name": "Subscription Example 6 months",
+            "price": 107.94,
+            "subscription_plan_code": "SUBSCRIPTION-GB"
+          }
+        ],
+        "website_url": "https://example.com/subscription-details"
+      }
     }
+  ],
+  "pagination": {
+    "cursors": {
+      "after": "After Cursor",
+      "before": "Before Cursor"
+    },
+    "page": {
+      "limit": 500
+    }
+  }
 }
 ```
 
 <Warning>
-**Temporarily unavailable products**
-We recommend to refresh your product catalogue regularly because it is possible that products will be temporarily unavailable due to outages of our downstream providers.
+  **Temporarily unavailable products** We recommend to refresh your product
+  catalogue regularly because it is possible that products will be temporarily
+  unavailable due to outages of our downstream providers.
 </Warning>

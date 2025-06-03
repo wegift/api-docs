@@ -8,7 +8,10 @@ When you place an order, the total price depends on the value of the items you'r
 
 To provide you with a clear breakdown of the order price before you confirm your purchase the [estimate order](/reference/2024-02-05/endpoint/orders/estimate) endpoint can optionally be used to get your estimated order price including fees. It accepts a request similar to the one used for creating an order and responds with a detailed breakdown of the estimated price for both the overall order and each individual item within the order.
 
-<Note>Please note that the order price estimate endpoint does **not** support Embedded FX orders.</Note>
+<Note>
+  Please note that the order price estimate endpoint does **not** support
+  Embedded FX orders.
+</Note>
 
 Below is an estimate request and response for an order with 2 order items.
 
@@ -16,7 +19,6 @@ The response contains fields that are related to the order price.
 
 - Price of each item is presented in the `price` field.
 - The `total_price` is the sum of all order item prices
-
 
 <CodeGroup>
 ```json Request
@@ -71,4 +73,5 @@ The response contains fields that are related to the order price.
   ]
 }
 ```
+
 </CodeGroup>

@@ -10,6 +10,7 @@ You can create and use merchant selection templates to enhance the flexibility o
 **Merchant selection templates are predefined in the Playground environment**
 
 Templates you create yourself cannot be used in the Playground environment. Instead we supply a predefined set of template IDs for testing purposes. See [the playground documentation](/reference/2024-02-05/playground#default-product-selection-templates) for more details.
+
 </Info>
 
 # Using Payout Templates
@@ -31,7 +32,7 @@ Templates you create yourself cannot be used in the Playground environment. Inst
     </Step>
     <Step title="Use the template ID in your order request">
         When placing an order
-        
+
         - Set the `type` of the `products` object to `TEMPLATE`
         - Set the `template_id` in the `products` object to the ID you have obtained from the previous step.
 
@@ -58,8 +59,8 @@ Templates you create yourself cannot be used in the Playground environment. Inst
 
         See the [order request reference](/reference/2024-02-05/endpoint/orders/create#body-distribution-method-template-id) for more details.
     </Step>
-</Steps>
 
+</Steps>
 
 ## Minimum payout value
 
@@ -68,7 +69,7 @@ For payout link to contain all the selected payout options, you will need to mee
 When creating the merchant template you will be shown the minimum value.
 
 <Frame caption="Message shown in the portal when the minimum payout value is not met">
-![Payout Template Minimum Value](https://files.readme.io/7b8f103-image.png)
+  ![Payout Template Minimum Value](https://files.readme.io/7b8f103-image.png)
 </Frame>
 
 # Limitations

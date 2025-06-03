@@ -1,57 +1,60 @@
 html {
-    /* Force scrollbar to always appear to prevent content jumps */
-    overflow-y: scroll;
+  /* Force scrollbar to always appear to prevent content jumps */
+  overflow-y: scroll;
 }
 
 #navbar {
-    background: black !important;
-    color-scheme: dark;
-    color: white !important;
-  }
-
-#navbar-transition {
-    background: black !important;
+  background: black !important;
+  color-scheme: dark;
+  color: white !important;
 }
 
-#navbar .text-gray-800, #navbar .text-gray-600, #navbar .text-gray-700 {
-    color: white !important;
+#navbar-transition {
+  background: black !important;
+}
+
+#navbar .text-gray-800,
+#navbar .text-gray-600,
+#navbar .text-gray-700 {
+  color: white !important;
 }
 
 .nav-logo.hidden {
-    display: block !important;
+  display: block !important;
 }
 
 .nav-logo.block {
-    display: none !important;
+  display: none !important;
 }
 
 #search-bar-entry {
-    background: black !important;
-    color: white !important;
-    border: 1px solid rgba(255, 255, 255, 0.9);
+  background: black !important;
+  color: white !important;
+  border: 1px solid rgba(255, 255, 255, 0.9);
 }
 
 #assistant-entry {
-    background: white;
+  background: white;
 }
 
-#assistant-entry .text-gray-700, #assistant-entry .text-gray-500 {
-    color: black !important;
+#assistant-entry .text-gray-700,
+#assistant-entry .text-gray-500 {
+  color: black !important;
 }
 
 #chat-assistant-sheet {
-    border-left: 1px solid #e5e7eb;
+  border-left: 1px solid #e5e7eb;
 }
 
 /* Override the default height of the active tab indicator, too thin when we have a black header on white page */
 .nav-tabs [class*="h-[1.5px]"] {
-    height:3px !important
+  height: 3px !important;
 }
 
 /* Add gradient to header button */
 #navbar a[href="https://app.runa.io"] .bg-primary-dark
 {
-   background: linear-gradient(20deg, #00FFA3, #93FF82, #EEFC51) border-box;
+  background: linear-gradient(20deg, #00ffa3, #93ff82, #eefc51) border-box;
 }
 #navbar a[href="https://app.runa.io"] .text-white, #navbar a[href="https://app.runa.io"] svg
 {
@@ -60,25 +63,25 @@ html {
 
 /* Make page sidebar navigation links show in a higher contrast colour in light mode */
 #navigation-items .text-primary {
-    /* Force text to be black */
-    color: black
+  /* Force text to be black */
+  color: black;
 }
 #navigation-items .dark\:text-primary-light:is(.dark *) {
-    /* Restore colour on dark mode, default is fine */
-    color: rgb(var(--primary-light)/var(--tw-text-opacity))
+  /* Restore colour on dark mode, default is fine */
+  color: rgb(var(--primary-light) / var(--tw-text-opacity));
 }
 #navigation-items .bg-primary {
-    /* The icon also needs to be black */
-    background-color: black;
+  /* The icon also needs to be black */
+  background-color: black;
 }
 #navigation-items .dark\:bg-primary-light:is(.dark *) {
-    /* Restore icon colour on dark mode, default is fine */
-    background-color: rgb(var(--primary-light)/var(--tw-bg-opacity))
+  /* Restore icon colour on dark mode, default is fine */
+  background-color: rgb(var(--primary-light) / var(--tw-bg-opacity));
 }
 #navigation-items .bg-primary\/10 {
-    /* The icon also needs to be black */
-    background-color: rgb(var(--primary) / .2);
+  /* The icon also needs to be black */
+  background-color: rgb(var(--primary) / 0.2);
 }
 #navigation-items .dark\:bg-primary-light\/10:is(.dark *) {
-    background-color: rgb(var(--primary-light) / .2);
+  background-color: rgb(var(--primary-light) / 0.2);
 }
