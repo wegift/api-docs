@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "mintlify dev"
+    "dev": "mintlify dev",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +14,11 @@
     "mintlify": "^4.0.531"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.0",
     "prettier": "^3.5.3"
+  },
+  "lint-staged": {
+    "*.{js,css,md,mdx,json,yml,yaml}": "prettier --write"
   }
 }
