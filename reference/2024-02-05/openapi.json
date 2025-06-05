@@ -526,9 +526,7 @@
           "description": "Update on product status",
           "content": {
             "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Product"
-              }
+              "schema": { "$ref": "#/components/schemas/ProductUpdateWebhook" }
             }
           }
         },
@@ -1442,6 +1440,48 @@
           }
         },
         "description": "Product(s) unknown. It was not possible to determine which products were included\nin the order."
+      },
+      "ProductUpdateWebhook": {
+        "title": "Product update webhook",
+        "type": "object",
+        "required": ["product_code", "old_state", "new_state", "timestamp"],
+        "properties": {
+          "product_code": {
+            "type": "string",
+            "description": "The code of the product that was updated.",
+            "example": "XYZ-US"
+          },
+          "old_state": {
+            "title": "Old state",
+            "description": "The state of the product before the update.",
+            "$ref": "#/components/schemas/ProductUpdateState"
+          },
+          "new_state": {
+            "title": "New state",
+            "description": "The state of the product after the update.",
+            "$ref": "#/components/schemas/ProductUpdateState"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp, in ISO 8601 format, when the product was updated."
+          }
+        }
+      },
+      "ProductUpdateState": {
+        "title": "Product update state",
+        "description": "The state of the product either before or after the update.",
+        "required": ["price_multiplier", "is_orderable"],
+        "properties": {
+          "price_multiplier": {
+            "type": "string",
+            "example": "0.8"
+          },
+          "is_orderable": {
+            "type": "boolean",
+            "example": true
+          }
+        }
       },
       "PayoutStatus": {
         "title": "Payout status",
