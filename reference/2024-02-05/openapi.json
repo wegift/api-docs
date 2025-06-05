@@ -204,7 +204,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SyncCompletedOrderWithFullDetails"
+                  "$ref": "#/components/schemas/SyncCompletedOrder"
                 }
               }
             }
@@ -214,7 +214,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderTask"
+                  "$ref": "#/components/schemas/AsyncAcceptedOrder"
                 }
               }
             }
@@ -572,6 +572,12 @@
         },
         "description": "Generic Runa API error response."
       },
+      "OrderId": {
+        "title": "Order ID",
+        "description": "The ID of the order.",
+        "type": "string",
+        "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q"
+      },
       "OrderDescription": {
         "title": "Description",
         "description": "Free format text reference for the order. Not visible to the end user. Will be visible to you in the Runa web portal.",
@@ -613,7 +619,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "title": "Id",
+            "title": "ID",
             "description": "The ID of the order item.",
             "example": "E-NWPEKW4VL",
             "type": "string"
@@ -699,12 +705,7 @@
         ],
         "type": "object",
         "properties": {
-          "id": {
-            "title": "Id",
-            "description": "The ID of the order.",
-            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
-            "type": "string"
-          },
+          "id": { "$ref": "#/components/schemas/OrderId" },
           "status": {
             "description": "Status of the order.",
             "allOf": [
@@ -756,87 +757,37 @@
         },
         "description": "Used for orders that have completed. This class is typically used when returning\na *list* of orders to the client."
       },
-      "SyncCompletedOrderWithFullDetails": {
-        "title": "CompletedOrderWithFullDetails",
-        "required": [
-          "id",
-          "status",
-          "created_at",
-          "payment_method",
-          "currency",
-          "total_price",
-          "total_discount",
-          "items"
-        ],
+      "AsyncAcceptedOrder": {
+        "title": "Async Order Accepted",
+        "required": ["id", "status"],
         "type": "object",
         "properties": {
-          "id": {
-            "title": "Id",
-            "description": "The ID of the order.",
-            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
-            "type": "string"
-          },
+          "id": { "$ref": "#/components/schemas/OrderId" },
           "status": {
-            "description": "Status of the order.",
+            "description": "The status of your order.",
+            "example": "PROCESSING",
             "allOf": [
               {
-                "$ref": "#/components/schemas/SyncOrderStatusEnum"
+                "$ref": "#/components/schemas/OrderStatusEnum"
               }
             ]
-          },
-          "created_at": {
-            "title": "Created At",
-            "description": "UTC timestamp, in ISO 8601 format, when the order was submitted.",
-            "type": "string",
-            "format": "date-time"
-          },
-          "completed_at": {
-            "title": "Completed At",
-            "description": "UTC timestamp, in ISO 8601 format, when the order was completed.",
-            "type": "string",
-            "format": "date-time"
-          },
-          "description": { "$ref": "#/components/schemas/OrderDescription" },
-          "payment_method": {
-            "title": "Payment Method",
-            "description": "The payment method used for the order.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPayment"
-              }
-            ]
-          },
-          "currency": {
-            "title": "Currency",
-            "example": "USD",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "description": "The currency that was used to pay for the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
-          },
-          "total_price": {
-            "title": "Total Price",
-            "description": "The total price of the order. This _includes_ any applicable fees. This is represented in the payment currency.",
-            "example": "10",
-            "type": "number"
-          },
-          "total_discount": {
-            "title": "Total Discount",
-            "description": "The total discount of the order. This is represented in the payment currency.",
-            "type": "number"
-          },
-          "items": {
-            "title": "Items",
-            "description": "The list of items that were included in the order. Each _item_ represents a single payout link.",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CompletedOrderItem"
-            }
-          },
-          "transaction_detail": {
-            "$ref": "#/components/schemas/TransactionDetail"
           }
-        },
-        "description": "Used for an order that has completed. This class is typically used when returning\na *single order* to the client."
+        }
+      },
+      "SyncCompletedOrder": {
+        "title": "CompletedOrderWithFullDetails",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CompletedOrderWithFullDetails"
+          },
+          {
+            "properties": {
+              "status": {
+                "enum": ["COMPLETED"]
+              }
+            }
+          }
+        ]
       },
       "RateExceededResponse": {
         "title": "RateExceededResponse",
@@ -852,12 +803,6 @@
         },
         "description": "API rate limited error response."
       },
-      "SyncOrderStatusEnum": {
-        "title": "SyncOrderStatusEnum",
-        "type": "string",
-        "enum": ["COMPLETED"],
-        "description": "The status of the order."
-      },
       "CompletedOrderWithFullDetails": {
         "title": "CompletedOrderWithFullDetails",
         "required": [
@@ -872,12 +817,7 @@
         ],
         "type": "object",
         "properties": {
-          "id": {
-            "title": "Id",
-            "description": "The ID of the order.",
-            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
-            "type": "string"
-          },
+          "id": { "$ref": "#/components/schemas/OrderId" },
           "status": {
             "description": "Status of the order.",
             "allOf": [
@@ -975,12 +915,7 @@
         "required": ["id", "status", "message"],
         "type": "object",
         "properties": {
-          "id": {
-            "title": "Id",
-            "description": "The ID of the order.",
-            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
-            "type": "string"
-          },
+          "id": { "$ref": "#/components/schemas/OrderId" },
           "status": {
             "description": "Status of the order.",
             "allOf": [
@@ -1402,28 +1337,6 @@
           }
         },
         "required": ["rate", "rate_symbol", "fee"]
-      },
-      "OrderTask": {
-        "title": "OrderTask",
-        "required": ["id", "status"],
-        "type": "object",
-        "properties": {
-          "id": {
-            "title": "Id",
-            "description": "The ID of your new order.",
-            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
-            "type": "string"
-          },
-          "status": {
-            "description": "The status of your order.",
-            "example": "PROCESSING",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OrderStatusEnum"
-              }
-            ]
-          }
-        }
       },
       "Page": {
         "title": "Page",
