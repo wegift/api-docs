@@ -792,7 +792,7 @@
       "CompletedOrderWebhook": {
         "title": "Completed order",
         "type": "object",
-        "description": "I am a completed order webhook",
+        "description": "Webhook message sent when an order has completed processing.",
         "allOf": [
           {
             "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
@@ -809,12 +809,12 @@
       "FailedOrderWebhook": {
         "title": "Failed order",
         "type": "object",
-        "description": "I am a failed order webhook",
+        "description": "Webhook message sent when an order has failed to process.",
         "required": ["id", "status"],
         "properties": {
           "id": { "$ref": "#/components/schemas/OrderId" },
           "status": {
-            "enum": ["COMPLETED"]
+            "enum": ["FAILED"]
           }
         }
       },
