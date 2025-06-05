@@ -8,6 +8,10 @@
       "name": "Ⓒ Runa"
     }
   },
+  "externalDocs": {
+    "url": "https://developer.runa.com/reference",
+    "description": "Runa API Reference"
+  },
   "servers": [
     {
       "url": "https://playground.runa.io/v2",
