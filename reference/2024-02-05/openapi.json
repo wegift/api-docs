@@ -501,11 +501,14 @@
     "order.completion": {
       "post": {
         "requestBody": {
-          "description": "Update on order status",
+          "description": "Sent when an order finishes processing, the body object will be one of the following schemas depending on the order status.",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CompletedOrderWithFullDetails"
+                "oneOf": [
+                  { "$ref": "#/components/schemas/CompletedOrderWebhook" },
+                  { "$ref": "#/components/schemas/FailedOrderWebhook" }
+                ]
               }
             }
           }
@@ -707,7 +710,7 @@
         ]
       },
       "CompletedOrderWithBasicDetails": {
-        "title": "CompletedOrderWithBasicDetails",
+        "title": "Completed order",
         "description": "Used for orders that have completed. This class is typically used when returning\na *list* of orders to the client.",
         "required": [
           "id",
@@ -787,6 +790,35 @@
             }
           }
         ]
+      },
+      "CompletedOrderWebhook": {
+        "title": "Completed order",
+        "type": "object",
+        "description": "I am a completed order webhook",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
+          },
+          {
+            "properties": {
+              "status": {
+                "enum": ["COMPLETED"]
+              }
+            }
+          }
+        ]
+      },
+      "FailedOrderWebhook": {
+        "title": "Failed order",
+        "type": "object",
+        "description": "I am a failed order webhook",
+        "required": ["id", "status"],
+        "properties": {
+          "id": { "$ref": "#/components/schemas/OrderId" },
+          "status": {
+            "enum": ["COMPLETED"]
+          }
+        }
       },
       "RateExceededResponse": {
         "title": "RateExceededResponse",
