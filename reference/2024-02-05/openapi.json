@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.2",
+  "openapi": "3.1.1",
   "info": {
     "title": "Runa",
     "version": "2.0",
@@ -7,6 +7,10 @@
     "license": {
       "name": "Ⓒ Runa"
     }
+  },
+  "externalDocs": {
+    "url": "https://developer.runa.com/reference",
+    "description": "Runa API Reference"
   },
   "servers": [
     {
@@ -204,7 +208,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SyncCompletedOrderWithFullDetails"
+                  "$ref": "#/components/schemas/SyncCompletedOrder"
                 }
               }
             }
@@ -214,7 +218,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderTask"
+                  "$ref": "#/components/schemas/AsyncAcceptedOrder"
                 }
               }
             }
@@ -493,6 +497,47 @@
       }
     }
   },
+  "webhooks": {
+    "order.completion": {
+      "post": {
+        "requestBody": {
+          "description": "Sent when an order finishes processing, the body object will be one of the following schemas depending on the order status.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  { "$ref": "#/components/schemas/CompletedOrderWebhook" },
+                  { "$ref": "#/components/schemas/FailedOrderWebhook" }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "product.update": {
+      "post": {
+        "requestBody": {
+          "description": "Update on product status",
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ProductUpdateWebhook" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    }
+  },
   "components": {
     "parameters": {
       "X-Api-Version": {
@@ -532,12 +577,28 @@
         },
         "description": "Generic Runa API error response."
       },
+      "OrderId": {
+        "title": "Order ID",
+        "description": "The ID of the order.",
+        "type": "string",
+        "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q"
+      },
       "OrderDescription": {
         "title": "Description",
         "description": "Free format text reference for the order. Not visible to the end user. Will be visible to you in the Runa web portal.",
         "type": "string",
         "maxLength": 128,
         "example": "Your own reference text"
+      },
+      "OrderStatus": {
+        "title": "Order Status",
+        "description": "Status of the order.",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/OrderStatusEnum"
+          }
+        ],
+        "example": "PROCESSING"
       },
       "AccountPayment": {
         "title": "AccountPayment",
@@ -573,7 +634,7 @@
         "type": "object",
         "properties": {
           "id": {
-            "title": "Id",
+            "title": "ID",
             "description": "The ID of the order item.",
             "example": "E-NWPEKW4VL",
             "type": "string"
@@ -647,7 +708,8 @@
         ]
       },
       "CompletedOrderWithBasicDetails": {
-        "title": "CompletedOrderWithBasicDetails",
+        "title": "Completed order",
+        "description": "Used for orders that have completed. This class is typically used when returning\na *list* of orders to the client.",
         "required": [
           "id",
           "status",
@@ -659,20 +721,8 @@
         ],
         "type": "object",
         "properties": {
-          "id": {
-            "title": "Id",
-            "description": "The ID of the order.",
-            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
-            "type": "string"
-          },
-          "status": {
-            "description": "Status of the order.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OrderStatusEnum"
-              }
-            ]
-          },
+          "id": { "$ref": "#/components/schemas/OrderId" },
+          "status": { "$ref": "#/components/schemas/OrderStatus" },
           "created_at": {
             "title": "Created At",
             "description": "UTC timestamp, in ISO 8601 format, when the order was submitted.",
@@ -713,90 +763,60 @@
             "description": "The total discount of the order.",
             "type": "number"
           }
-        },
-        "description": "Used for orders that have completed. This class is typically used when returning\na *list* of orders to the client."
+        }
       },
-      "SyncCompletedOrderWithFullDetails": {
-        "title": "CompletedOrderWithFullDetails",
-        "required": [
-          "id",
-          "status",
-          "created_at",
-          "payment_method",
-          "currency",
-          "total_price",
-          "total_discount",
-          "items"
-        ],
+      "AsyncAcceptedOrder": {
+        "title": "Async Order Accepted",
+        "required": ["id", "status"],
         "type": "object",
         "properties": {
-          "id": {
-            "title": "Id",
-            "description": "The ID of the order.",
-            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
-            "type": "string"
+          "id": { "$ref": "#/components/schemas/OrderId" },
+          "status": { "$ref": "#/components/schemas/OrderStatus" }
+        }
+      },
+      "SyncCompletedOrder": {
+        "title": "CompletedOrderWithFullDetails",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CompletedOrderWithFullDetails"
           },
-          "status": {
-            "description": "Status of the order.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/SyncOrderStatusEnum"
+          {
+            "properties": {
+              "status": {
+                "enum": ["COMPLETED"]
               }
-            ]
-          },
-          "created_at": {
-            "title": "Created At",
-            "description": "UTC timestamp, in ISO 8601 format, when the order was submitted.",
-            "type": "string",
-            "format": "date-time"
-          },
-          "completed_at": {
-            "title": "Completed At",
-            "description": "UTC timestamp, in ISO 8601 format, when the order was completed.",
-            "type": "string",
-            "format": "date-time"
-          },
-          "description": { "$ref": "#/components/schemas/OrderDescription" },
-          "payment_method": {
-            "title": "Payment Method",
-            "description": "The payment method used for the order.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPayment"
-              }
-            ]
-          },
-          "currency": {
-            "title": "Currency",
-            "example": "USD",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "description": "The currency that was used to pay for the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
-          },
-          "total_price": {
-            "title": "Total Price",
-            "description": "The total price of the order. This _includes_ any applicable fees. This is represented in the payment currency.",
-            "example": "10",
-            "type": "number"
-          },
-          "total_discount": {
-            "title": "Total Discount",
-            "description": "The total discount of the order. This is represented in the payment currency.",
-            "type": "number"
-          },
-          "items": {
-            "title": "Items",
-            "description": "The list of items that were included in the order. Each _item_ represents a single payout link.",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CompletedOrderItem"
             }
-          },
-          "transaction_detail": {
-            "$ref": "#/components/schemas/TransactionDetail"
           }
-        },
-        "description": "Used for an order that has completed. This class is typically used when returning\na *single order* to the client."
+        ]
+      },
+      "CompletedOrderWebhook": {
+        "title": "Completed order",
+        "type": "object",
+        "description": "Webhook message sent when an order has completed processing.",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
+          },
+          {
+            "properties": {
+              "status": {
+                "enum": ["COMPLETED"]
+              }
+            }
+          }
+        ]
+      },
+      "FailedOrderWebhook": {
+        "title": "Failed order",
+        "type": "object",
+        "description": "Webhook message sent when an order has failed to process.",
+        "required": ["id", "status"],
+        "properties": {
+          "id": { "$ref": "#/components/schemas/OrderId" },
+          "status": {
+            "enum": ["FAILED"]
+          }
+        }
       },
       "RateExceededResponse": {
         "title": "RateExceededResponse",
@@ -812,93 +832,40 @@
         },
         "description": "API rate limited error response."
       },
-      "SyncOrderStatusEnum": {
-        "title": "SyncOrderStatusEnum",
-        "type": "string",
-        "enum": ["COMPLETED"],
-        "description": "The status of the order."
-      },
       "CompletedOrderWithFullDetails": {
         "title": "CompletedOrderWithFullDetails",
-        "required": [
-          "id",
-          "status",
-          "created_at",
-          "payment_method",
-          "currency",
-          "total_price",
-          "total_discount",
-          "items"
-        ],
+        "description": "Used for an order that has completed. This class is typically used when returning\na *single order* to the client.",
         "type": "object",
-        "properties": {
-          "id": {
-            "title": "Id",
-            "description": "The ID of the order.",
-            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
-            "type": "string"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
           },
-          "status": {
-            "description": "Status of the order.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OrderStatusEnum"
+          {
+            "required": [
+              "id",
+              "status",
+              "created_at",
+              "payment_method",
+              "currency",
+              "total_price",
+              "total_discount",
+              "items"
+            ],
+            "properties": {
+              "items": {
+                "title": "Items",
+                "description": "The list of items that were included in the order. Each _item_ represents a single payout link.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CompletedOrderItem"
+                }
+              },
+              "transaction_detail": {
+                "$ref": "#/components/schemas/TransactionDetail"
               }
-            ]
-          },
-          "created_at": {
-            "title": "Created At",
-            "description": "UTC timestamp, in ISO 8601 format, when the order was submitted.",
-            "type": "string",
-            "format": "date-time"
-          },
-          "completed_at": {
-            "title": "Completed At",
-            "description": "UTC timestamp, in ISO 8601 format, when the order was completed.",
-            "type": "string",
-            "format": "date-time"
-          },
-          "description": { "$ref": "#/components/schemas/OrderDescription" },
-          "payment_method": {
-            "title": "Payment Method",
-            "description": "The payment method used for the order.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPayment"
-              }
-            ]
-          },
-          "currency": {
-            "title": "Currency",
-            "example": "USD",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "description": "The currency of the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
-          },
-          "total_price": {
-            "title": "Total Price",
-            "description": "The total price of the order. This _includes_ any applicable fees.",
-            "example": "10",
-            "type": "number"
-          },
-          "total_discount": {
-            "title": "Total Discount",
-            "description": "The total discount of the order.",
-            "type": "number"
-          },
-          "items": {
-            "title": "Items",
-            "description": "The list of items that were included in the order. Each _item_ represents a single payout link.",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CompletedOrderItem"
             }
-          },
-          "transaction_detail": {
-            "$ref": "#/components/schemas/TransactionDetail"
           }
-        },
-        "description": "Used for an order that has completed. This class is typically used when returning\na *single order* to the client."
+        ]
       },
       "EmailDistribution": {
         "title": "EmailDistribution",
@@ -935,20 +902,8 @@
         "required": ["id", "status", "message"],
         "type": "object",
         "properties": {
-          "id": {
-            "title": "Id",
-            "description": "The ID of the order.",
-            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
-            "type": "string"
-          },
-          "status": {
-            "description": "Status of the order.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OrderStatusEnum"
-              }
-            ]
-          },
+          "id": { "$ref": "#/components/schemas/OrderId" },
+          "status": { "$ref": "#/components/schemas/OrderStatus" },
           "message": {
             "title": "Message",
             "description": "Human readable message describing the status of the order.",
@@ -1363,28 +1318,6 @@
         },
         "required": ["rate", "rate_symbol", "fee"]
       },
-      "OrderTask": {
-        "title": "OrderTask",
-        "required": ["id", "status"],
-        "type": "object",
-        "properties": {
-          "id": {
-            "title": "Id",
-            "description": "The ID of your new order.",
-            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q",
-            "type": "string"
-          },
-          "status": {
-            "description": "The status of your order.",
-            "example": "PROCESSING",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OrderStatusEnum"
-              }
-            ]
-          }
-        }
-      },
       "Page": {
         "title": "Page",
         "type": "object",
@@ -1507,6 +1440,48 @@
           }
         },
         "description": "Product(s) unknown. It was not possible to determine which products were included\nin the order."
+      },
+      "ProductUpdateWebhook": {
+        "title": "Product update webhook",
+        "type": "object",
+        "required": ["product_code", "old_state", "new_state", "timestamp"],
+        "properties": {
+          "product_code": {
+            "type": "string",
+            "description": "The code of the product that was updated.",
+            "example": "XYZ-US"
+          },
+          "old_state": {
+            "title": "Old state",
+            "description": "The state of the product before the update.",
+            "$ref": "#/components/schemas/ProductUpdateState"
+          },
+          "new_state": {
+            "title": "New state",
+            "description": "The state of the product after the update.",
+            "$ref": "#/components/schemas/ProductUpdateState"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp, in ISO 8601 format, when the product was updated."
+          }
+        }
+      },
+      "ProductUpdateState": {
+        "title": "Product update state",
+        "description": "The state of the product either before or after the update.",
+        "required": ["price_multiplier", "is_orderable"],
+        "properties": {
+          "price_multiplier": {
+            "type": "string",
+            "example": "0.8"
+          },
+          "is_orderable": {
+            "type": "boolean",
+            "example": true
+          }
+        }
       },
       "PayoutStatus": {
         "title": "Payout status",

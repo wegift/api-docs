@@ -1,0 +1,12 @@
+---
+title: "Order completion"
+description: "Order completion events are triggered when an order has completed processing."
+openapi: "/reference/2024-02-05/openapi.json WEBHOOK order.completion"
+---
+
+This event is essential when using the async ordering mode if you need to take action when an order has completed processing. It's also useful if you want to feed ordering data into your system.
+
+The webhook payload depends on whether the order was processed successfully or not. You should use the `status` field to determine the type of payload you have received.
+
+- Successfully completed orders will have a `status` of `COMPLETED`
+- Failed orders will have a `status` of `FAILED`
