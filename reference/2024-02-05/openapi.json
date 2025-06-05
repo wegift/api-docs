@@ -585,6 +585,16 @@
         "maxLength": 128,
         "example": "Your own reference text"
       },
+      "OrderStatus": {
+        "title": "Order Status",
+        "description": "Status of the order.",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/OrderStatusEnum"
+          }
+        ],
+        "example": "PROCESSING"
+      },
       "AccountPayment": {
         "title": "AccountPayment",
         "required": ["type"],
@@ -694,6 +704,7 @@
       },
       "CompletedOrderWithBasicDetails": {
         "title": "CompletedOrderWithBasicDetails",
+        "description": "Used for orders that have completed. This class is typically used when returning\na *list* of orders to the client.",
         "required": [
           "id",
           "status",
@@ -706,14 +717,7 @@
         "type": "object",
         "properties": {
           "id": { "$ref": "#/components/schemas/OrderId" },
-          "status": {
-            "description": "Status of the order.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OrderStatusEnum"
-              }
-            ]
-          },
+          "status": { "$ref": "#/components/schemas/OrderStatus" },
           "created_at": {
             "title": "Created At",
             "description": "UTC timestamp, in ISO 8601 format, when the order was submitted.",
@@ -754,8 +758,7 @@
             "description": "The total discount of the order.",
             "type": "number"
           }
-        },
-        "description": "Used for orders that have completed. This class is typically used when returning\na *list* of orders to the client."
+        }
       },
       "AsyncAcceptedOrder": {
         "title": "Async Order Accepted",
@@ -763,15 +766,7 @@
         "type": "object",
         "properties": {
           "id": { "$ref": "#/components/schemas/OrderId" },
-          "status": {
-            "description": "The status of your order.",
-            "example": "PROCESSING",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OrderStatusEnum"
-              }
-            ]
-          }
+          "status": { "$ref": "#/components/schemas/OrderStatus" }
         }
       },
       "SyncCompletedOrder": {
@@ -805,80 +800,38 @@
       },
       "CompletedOrderWithFullDetails": {
         "title": "CompletedOrderWithFullDetails",
-        "required": [
-          "id",
-          "status",
-          "created_at",
-          "payment_method",
-          "currency",
-          "total_price",
-          "total_discount",
-          "items"
-        ],
+        "description": "Used for an order that has completed. This class is typically used when returning\na *single order* to the client.",
         "type": "object",
-        "properties": {
-          "id": { "$ref": "#/components/schemas/OrderId" },
-          "status": {
-            "description": "Status of the order.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OrderStatusEnum"
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
+          },
+          {
+            "required": [
+              "id",
+              "status",
+              "created_at",
+              "payment_method",
+              "currency",
+              "total_price",
+              "total_discount",
+              "items"
+            ],
+            "properties": {
+              "items": {
+                "title": "Items",
+                "description": "The list of items that were included in the order. Each _item_ represents a single payout link.",
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CompletedOrderItem"
+                }
+              },
+              "transaction_detail": {
+                "$ref": "#/components/schemas/TransactionDetail"
               }
-            ]
-          },
-          "created_at": {
-            "title": "Created At",
-            "description": "UTC timestamp, in ISO 8601 format, when the order was submitted.",
-            "type": "string",
-            "format": "date-time"
-          },
-          "completed_at": {
-            "title": "Completed At",
-            "description": "UTC timestamp, in ISO 8601 format, when the order was completed.",
-            "type": "string",
-            "format": "date-time"
-          },
-          "description": { "$ref": "#/components/schemas/OrderDescription" },
-          "payment_method": {
-            "title": "Payment Method",
-            "description": "The payment method used for the order.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPayment"
-              }
-            ]
-          },
-          "currency": {
-            "title": "Currency",
-            "example": "USD",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "description": "The currency of the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
-          },
-          "total_price": {
-            "title": "Total Price",
-            "description": "The total price of the order. This _includes_ any applicable fees.",
-            "example": "10",
-            "type": "number"
-          },
-          "total_discount": {
-            "title": "Total Discount",
-            "description": "The total discount of the order.",
-            "type": "number"
-          },
-          "items": {
-            "title": "Items",
-            "description": "The list of items that were included in the order. Each _item_ represents a single payout link.",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CompletedOrderItem"
             }
-          },
-          "transaction_detail": {
-            "$ref": "#/components/schemas/TransactionDetail"
           }
-        },
-        "description": "Used for an order that has completed. This class is typically used when returning\na *single order* to the client."
+        ]
       },
       "EmailDistribution": {
         "title": "EmailDistribution",
@@ -916,14 +869,7 @@
         "type": "object",
         "properties": {
           "id": { "$ref": "#/components/schemas/OrderId" },
-          "status": {
-            "description": "Status of the order.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OrderStatusEnum"
-              }
-            ]
-          },
+          "status": { "$ref": "#/components/schemas/OrderStatus" },
           "message": {
             "title": "Message",
             "description": "Human readable message describing the status of the order.",
