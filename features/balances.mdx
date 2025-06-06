@@ -4,13 +4,21 @@ description: "Check your balance using the API and set up alerts to notify you w
 icon: "coins"
 ---
 
-Balances empower you to monitor available funds across [all supported currencies](/reference/countries) in your account. It's crucial to maintain adequate balances, as insufficient funds may lead to order failures. Regularly checking your balances can help prevent such issues and we recommend setting up an alert in your system so that the relevant teams can be notified.
+Your balance is the amount of money available in your account to pay for orders. If you don't have enough balance, attempts to order will be rejected with a `insufficient_funds` error.
 
-Refer to our list of supported currencies for a comprehensive understanding of available options.
+We offer a number of ways to check your balance and set up alerts to notify you when your balance is low.
 
-This guide serves as documentation for developers, providing instructions on utilizing the Runa API to [fetch balances](/reference/2024-02-05/endpoint/balance/get).
+- An API endpoint to fetch your current balance, either for all currencies or for a single currency
+- Predictive balance emails when your balance is expected to become low based on your previous order volumes
+- Custom balance thresholds that notify you when your balance falls below a specific threshold
 
-# Checking all available balances
+You may hold balances in multiple currencies. See the list of [supported currencies](/reference/currencies) for an understanding of available options.
+
+## Checking balances in the API
+
+The [balance endpoint](/reference/2024-02-05/endpoint/balance/get) can be used to fetch balances for all currencies or for a single currency.
+
+### Checking all available balances
 
 To retrieve information on all balances associated with your account, initiate a GET request to the `/v2/balance` endpoint.
 
@@ -44,7 +52,7 @@ Each object in the array represents the total available balance for a specific c
 ]
 ```
 
-# Checking the balance for a single currency
+### Checking the balance for a single currency
 
 To obtain the balance for a specific currency, include the three-letter currency code in the GET request: `/v2/balance/?currency=[CURRENCY]`
 
@@ -59,3 +67,9 @@ For example, a request to `/v2/balance/?currency=GBP` will yield a single object
   "currency": "CAD"
 }
 ```
+
+## Setting up alerts
+
+Two types of alerts are available. **Predictive balnce emails** automatically notify you when your balance is expected to become low based on your previous order volumes. **Custom balance thresholds** allow you to set a specific balance threshold and be notified when your balance falls below that threshold.
+
+Both types of alerts can be configured in the Runa dashboard under the [settings page](https://app.runa.io/user/settings).
