@@ -265,8 +265,14 @@
       "source": "/docs/make-your-first-order-synchronous",
       "destination": "/getting-started/first-order/sync"
     },
-    { "source": "/docs/order-completion", "destination": "" },
-    { "source": "/docs/order-completion-webhook", "destination": "" },
+    {
+      "source": "/docs/order-completion",
+      "destination": "/reference/2024-02-05/webhook/order.completion"
+    },
+    {
+      "source": "/docs/order-completion-webhook",
+      "destination": "/reference/2024-02-05/webhook/order.completion"
+    },
     {
       "source": "/docs/playground",
       "destination": "/reference/2024-02-05/playground"
@@ -287,7 +293,7 @@
       "source": "/docs/using-embedded-fx-embedded-fx-order",
       "destination": "/features/embedded-fx"
     },
-    { "source": "/docs/webhooks", "destination": "" },
+    { "source": "/docs/webhooks", "destination": "/reference/webhooks" },
     {
       "source": "/page/changelog-landing-page",
       "destination": "/changelog"
@@ -340,7 +346,13 @@
       "source": "/reference/getsingleproduct",
       "destination": "/reference/2024-02-05/endpoint/products/get"
     },
-    { "source": "/reference/order-completion", "destination": "" },
-    { "source": "/reference/product-update", "destination": "" }
+    {
+      "source": "/reference/order-completion",
+      "destination": "/reference/2024-02-05/webhook/order.completion"
+    },
+    {
+      "source": "/reference/product-update",
+      "destination": "/reference/2024-02-05/webhook/product.update"
+    }
   ]
 }
