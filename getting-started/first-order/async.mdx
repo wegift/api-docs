@@ -1,162 +1,223 @@
 ---
 title: "Async"
 icon: "rotate"
+description: "Making your first API order in asynchronous mode"
 ---
 
-To initiate an order using the Runa API you need to follow two steps:
+## The URL
 
-1. Placing your order: Begin by submitting your order. Once the order is ready to be accepted, a response will be sent back to the client. Please note that order processing is carried out asynchronously.
-2. Retrieving the order details: Because order processing takes place asynchronously, you'll need to periodically check for updates on the order details. This involves polling for the necessary information.
+import GettingStartedTheUrl from "/snippets/getting-started-the-url.mdx";
 
-This guide aims to walk you through the process of making your first API order.
+<GettingStartedTheUrl />
 
-## Place your order
+## What headers do I need to send?
 
-To successfully place an order, you need to include the following headers in your API request:
+import GettingStartedCommonHeaders from "/snippets/getting-started-common-headers.mdx";
 
-- `x-idempotency-key` - This header requires a unique value that the server utilizes to prevent duplicate purchases. Ensure that each request you make includes a distinct idempotency key.
+<GettingStartedCommonHeaders />
 
-> 📘 Note on x-idempotency-key:
->
-> When the server receives a request that includes an `x-idempotency-key` header matching an existing order, it will not generate a new order. Instead, it will return the details of the original order. This mechanism ensures that each order is unique. It also prevents clients from submitting duplicate orders in the events such as HTTP request retries.
+<ParamField header="X-Execution-Mode" type="string" default="async">
+  Set the value of this header to `async` as we are using the synchronous
+  execution mode for this guide. If omitted, the default value is `async` but we
+  still recommend you set it for explicitness.
+</ParamField>
 
-- `X-Api-Key` - To authenticate your API requests, you need to include a secret token in this header. You can generate an API key by visiting https://app.runa.io/api-keys.
+Putting this all together the full headers we need to send are:
 
-- `X-Api-Version` - This header requires a valid API version to be specified. For this particular version of the API, please use "2024-02-05". Optionally, you can learn more about how API versioning is implemented on the Runa API Platform by referring to the [API versioning](/best-practices/api-versioning) documentation.
+```http
+X-Api-Key: <your-api-key>
+X-Idempotency-Key: <your-idempotency-key>
+X-Api-Version: 2024-02-05
+X-Execution-Mode: async
+```
 
-- `X-Execution-Mode` - Set the value of this header to `async`.
+## The request body
 
-### Distribute the payout link via email
+import GettingStartedRequestBody from "/snippets/getting-started-request-body.mdx";
 
-This section illustrates how to send out the rewards directly to the end user via email.
+<GettingStartedRequestBody />
 
-`payment_method` - Specify the preferred balance you want to use on the order. If you haven't done so already, please ensure that you have sufficient [balance in your account](/getting-started/production#funding-your-account).
-
-- `type` - Set the payment method type as `ACCOUNT_BALANCE`.
-- `currency` - Specify the currency of the account to be used for payment.
-
-`items` - This is an array of items to be included in your order. Each item represents a payout link and consists of the following fields:
-
-- `face_value` - Indicate the face value of the payout link you wish to order. The currency will be based on the selected product.
-- `distribution_method` - Define how you want to distribute the payout links to your end users. For this example, the payout links will be send directly to the end users via email.
-  - `type` - Set the distribution method type as `EMAIL`.
-  - `email_address` - Set the email address you want to send this payout link to.
-- `products` - Specify the merchants where the end user can redeem their payout link. In this example, we will select a single product, Amazon UK.
-  - `type` - Set the product type as `SINGLE`.
-  - `value` - Provide the product code. In this case, the code for Amazon UK is `AMZ-GB`.
-
-For more details or to quickly try out the endpoint, navigate to the [API reference for the Create Order endpoint](/reference/2024-02-05/endpoint/orders/create).
-
-Here's an example of a basic request body:
-
-```json
+```json [expandable]
 {
   "payment_method": {
     "type": "ACCOUNT_BALANCE",
-    "currency": "GBP"
+    "currency": "USD"
   },
   "items": [
     {
-      "face_value": 1,
-      "distribution_method": {
-        "type": "EMAIL",
-        "email_address": "fred@bloggs.com"
-      },
+      "face_value": 10,
+      "distribution_method": { "type": "PAYOUT_LINK" },
       "products": {
-        "type": "SINGLE",
-        "value": "AMZ-GB"
+        "type": "TEMPLATE",
+        "template_id": "PT-01HQ12PV4B8XMBRTK281JM54KK"
+      }
+    },
+    {
+      "face_value": 20,
+      "distribution_method": { "type": "PAYOUT_LINK" },
+      "products": {
+        "type": "TEMPLATE",
+        "template_id": "PT-01HQ12PV4B8XMBRTK281JM54KK"
       }
     }
   ]
 }
 ```
 
-Here's an example of a successful response:
+### The payment method
 
-```json
+import GettingStartedPaymentMethod from "/snippets/getting-started-payment-method.mdx";
+
+<GettingStartedPaymentMethod />
+
+### The order items
+
+As we are using the asynchronous execution mode, we can order multiple payout links at a time. The following fields are set on the items within the `items` array:
+
+import GettingStartedOrderItem from "/snippets/getting-started-order-item.mdx";
+
+<GettingStartedOrderItem />
+
+## Putting it all together
+
+### The request
+
+Here's the complete request we'll be sending to the API.
+
+```http The Request Headers
+POST https://playground.runa.io/v2/order
+X-Api-Key: <your-api-key>
+X-Idempotency-Key: <your-idempotency-key>
+X-Api-Version: 2024-02-05
+X-Execution-Mode: sync
+Content-Type: application/json
+```
+
+```json The Request Body
 {
-  "id": "O-ABC123",
+  "payment_method": {
+    "type": "ACCOUNT_BALANCE",
+    "currency": "USD"
+  },
+  "items": [
+    {
+      "face_value": 10,
+      "distribution_method": { "type": "PAYOUT_LINK" },
+      "products": {
+        "type": "TEMPLATE",
+        "template_id": "PT-01HQ12PV4B8XMBRTK281JM54KK"
+      }
+    },
+    {
+      "face_value": 20,
+      "distribution_method": { "type": "PAYOUT_LINK" },
+      "products": {
+        "type": "TEMPLATE",
+        "template_id": "PT-01HQ12PV4B8XMBRTK281JM54KK"
+      }
+    }
+  ]
+}
+```
+
+### The initial response
+
+For async orders the response to the request will only contain the order ID and the status of the order. This is because the order is processing in the background.
+
+```json The Intermediate Response
+{
+  "id": "O-01234567890ABCDEFGHIJK",
   "status": "PROCESSING"
 }
 ```
 
-If the order has been processed successfully and the payout links will have been delivered to the recipient's email inbox from `noreply@mail.runa.io`.
+You should take note of the order ID as you will need it to fetch the order details later.
 
-<Card img="/assets/screenshots/balance-1-GBP-email.png">
-  Example email that end users receive in their inbox.
-</Card>
+### Getting the order details
 
-### Distribute the payout yourself
+If you wait a short period and then fetch the order details using the [get order details](/reference/2024-02-05/endpoint/orders/get) endpoint you're able to fetch the same details available when using the synchronous ordering mode.
 
-If you're interested in obtaining the payout link to distribute it independently through your platform or any other channel, you can simply change the `distribution_method.type` to `PAYOUT_LINK`.
+<Info>
+  The order status will be `PROCESSING` for a short period of time after it is
+  accepted. On the playground environment this is simulated by a 1 second delay.
+</Info>
 
-Here's an example of a basic request body:
+The URL to fetch the order details is:
 
-```json
-{
-  "payment_method": {
-    "type": "ACCOUNT_BALANCE",
-    "currency": "GBP"
-  },
-  "items": [
-    {
-      "face_value": 1,
-      "distribution_method": {
-        "type": "PAYOUT_LINK"
-      },
-      "products": {
-        "type": "SINGLE",
-        "value": "AMZ-GB"
-      }
-    }
-  ]
-}
+```
+https://playground.runa.io/v2/order/{order-id}
 ```
 
-Now you can simply retrieve the payout links from the order details response to further process them.
+The response will be a `200 OK` with the order details in the body. You can retrieve the payout links from the `payout.url` fields from the `items` array.
 
-## Retrieving your order details
-
-You can use our [Order Completion webhook](/reference/2024-02-05/webhook/order.completion) to be notified when an order has completed processing.
-
-Alternatively, you can poll the [Get Order](/reference/2024-02-05/endpoint/orders/get) endpoint in order to verify the successful order processing. You will need the order ID obtained from the response received after calling the [Create Order](/reference/2024-02-05/endpoint/orders/create) endpoint. In the example response provided above, the order ID is `O-ABC123`. Simply include this order ID as a path parameter in the following URL format: `https://api.runa.io/v2/order/{id}`. Replace `{id}` with your specific order ID.
-
-To try out this endpoint, you can visit the [Get Order](/reference/2024-02-05/endpoint/orders/get) page and insert your order ID into the id path parameter.
-
-Upon a successful request, the order details will be returned to you and the status of the order is updated to `COMPLETED`. The redemption url of the payout link can be found in the `url` field of the `payout` object within `items`. Below is an example of a successful response:
-
-```json JSON
+```json The Response {25,42}
 {
-  "id": "O-ABC123",
+  "id": "O-01234567890ABCDEFGHIJK",
   "status": "COMPLETED",
-  "created_at": "2023-07-10T17:12:34.389392+00:00",
-  "completed_at": "2023-07-10T17:13:34.389392+00:00",
+  "created_at": "2025-01-01T12:00:00+00:00",
+  "completed_at": "2025-01-01T12:00:01+00:00",
   "description": null,
   "payment_method": {
     "type": "ACCOUNT_BALANCE"
   },
-  "currency": "GBP",
-  "total_price": "1.0",
+  "currency": "USD",
   "items": [
     {
-      "id": "E-12345",
-      "redemption_url": "https://spend.runa.io/55555-555-55-0000-555",
-      "distribution_method": {
-        "type": "PAYOUT_LINK"
-      },
+      "id": "E-01234567890ABCDEFGHIJK",
+      "distribution_method": { "type": "PAYOUT_LINK" },
       "products": {
-        "type": "SINGLE",
-        "value": "AMZ-GB"
+        "type": "TEMPLATE",
+        "template_id": "PT-01HQ12PV4B8XMBRTK281JM54KK",
+        "values": [ ... ]
       },
-      "face_value": "1.0",
-      "price": "1.0",
+      "face_value": "10.00",
+      "price": "10.00",
       "payout": {
         "status": "ACTIVE",
-        "status_updated_at": "2024-02-28T17:21:03.543262+00:00",
-        "url": "https://example-test.spend.runa.io/055306f2-466b-4fc4-8b59-9538eaf1be92",
-        "expiry_date": null
-      }
+        "status_updated_at": "2025-01-01T12:00:01+00:00",
+        "url": "https://payout.playground.runa.io/01234567-0000-4000-abcd-012345678900",
+      },
+      "currency": "USD"
+    },
+    {
+      "id": "E-11234567890ABCDEFGHIJK",
+      "distribution_method": { "type": "PAYOUT_LINK" },
+      "products": {
+        "type": "TEMPLATE",
+        "template_id": "PT-01HQ12PV4B8XMBRTK281JM54KK",
+        "values": [ ... ]
+      },
+      "face_value": "20.00",
+      "price": "20.00",
+      "payout": {
+        "status": "ACTIVE",
+        "status_updated_at": "2025-01-01T12:00:01+00:00",
+        "url": "https://payout.playground.runa.io/11234567-0000-4000-abcd-012345678900",
+      },
+      "currency": "USD"
     }
-  ]
+  ],
 }
 ```
+
+Pop the `url` field into your browser to see the payout link. Congratulations, you've just made your first order with Runa.
+
+### Webhooks
+
+While you can fetch the order details after a short delay, in reality this would require you to poll the endpoint until the order is completed. This is not ideal and may lead to rate limiting issues. Instead we have the [order completion webhook](/reference/2024-02-05/webhook/order.completion) available for you to use.
+
+If you intend to use the async ordering mode you should take a look at the [webhooks](/reference/webhooks) section to see how to set one up. Unfortunately the playground environment does not support webhooks so you will need to use a real environment to test this out.
+
+<Card
+  title="Webhooks"
+  horizontal
+  icon="webhook"
+  href="/reference/webhooks"
+  arrow
+>
+  Get real-time updates for the product catalogue and your orders.
+</Card>
+
+import GettingStartedNextSteps from "/snippets/getting-started-next-steps.mdx";
+
+<GettingStartedNextSteps />

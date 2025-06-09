@@ -1,0 +1,21 @@
+The payment method is the balance you want to use to pay for the order. For simplicity we will match the currency of the payout link we are about to order. The following fields are set on the `payment_method` object:
+
+<Columns cols={2}>
+<div>
+  <ParamField body="type" children="payment_method" type="string" required>
+    Set the payment method type as `ACCOUNT_BALANCE`
+  </ParamField>
+
+  <ParamField body="currency" type="string" required>
+    For this example, we will use the currency `USD`
+  </ParamField>
+</div>
+<div>
+  ```json
+  "payment_method": {
+    "type": "ACCOUNT_BALANCE",
+    "currency": "USD"
+  }
+  ```
+</div>
+</Columns>

@@ -1,47 +1,40 @@
 ---
 title: "Sync"
 icon: "arrow-right-arrow-left"
+description: "Making your first API order in synchronous mode"
 ---
 
-This guide aims to walk you through the process of making your first API order.
+## The URL
 
-## The base URL
+import GettingStartedTheUrl from "/snippets/getting-started-the-url.mdx";
 
-As we are using the playground, the base URL is `https://playground.runa.io/v2`
+<GettingStartedTheUrl />
 
 ## What headers do I need to send?
 
-To successfully place an order, you need to include the following headers in your API request:
+import GettingStartedCommonHeaders from "/snippets/getting-started-common-headers.mdx";
 
-<ParamField header="X-Api-Key" type="string" required>
-  The API key you created in the previous step.
-</ParamField>
-
-<ParamField header="X-Idempotency-Key" type="string" required>
-  A unique value that we use to prevent duplicate purchases. If a network error
-  occurs, you can retry the request with the same idempotency key and we will
-  return the original order without any danger of creating a new one. You can
-  read more about how we handle this field in the [idempotency
-  guide](/best-practices/idempotency). We suggest using a V4 UUID for this
-  field.
-</ParamField>
-
-<ParamField header="X-Api-Version" type="string">
-  The API version you want to use. This header is optional but we highly
-  recommend you to set it. For this guide, we will use the latest version
-  `2024-02-05`
-</ParamField>
+<GettingStartedCommonHeaders />
 
 <ParamField header="X-Execution-Mode" type="string" default="async">
   Set the value of this header to `sync` as we are using the synchronous
   execution mode for this guide. If omitted, the default value is `async`.
 </ParamField>
 
+Putting this all together the full headers we need to send are:
+
+```http
+X-Api-Key: <your-api-key>
+X-Idempotency-Key: <your-idempotency-key>
+X-Api-Version: 2024-02-05
+X-Execution-Mode: sync
+```
+
 ## The request body
 
-The request body is a JSON object that defines the order we are about to place. We need to define the **payment method** and the **items we want to order**, and how we want to **distribute** the payout link to the end users.
+import GettingStartedRequestBody from "/snippets/getting-started-request-body.mdx";
 
-Here's the outline of the request body we will be constructing, read on to see how to fill in the details.
+<GettingStartedRequestBody />
 
 ```json [expandable]
 {
@@ -56,8 +49,8 @@ Here's the outline of the request body we will be constructing, read on to see h
         "type": "PAYOUT_LINK"
       },
       "products": {
-        "type": "SINGLE",
-        "value": "ABC-US"
+        "type": "TEMPLATE",
+        "template_id": "PT-01HQ12PV4B8XMBRTK281JM54KK"
       }
     }
   ]
@@ -66,135 +59,17 @@ Here's the outline of the request body we will be constructing, read on to see h
 
 ### The payment method
 
-The payment method is the balance you want to use on the order. In this example we will ensure this matches the currency of the payout link we are about to order. The following fields are set on the `payment_method` object:
+import GettingStartedPaymentMethod from "/snippets/getting-started-payment-method.mdx";
 
-<Columns cols={2}>
-<div>
-  <ParamField body="type" children="payment_method" type="string" required>
-    Set the payment method type as `ACCOUNT_BALANCE`
-  </ParamField>
-
-  <ParamField body="currency" type="string" required>
-    For this example, we will use the currency `USD`
-  </ParamField>
-</div>
-<div>
-  ```json
-  "payment_method": {
-    "type": "ACCOUNT_BALANCE",
-    "currency": "USD"
-  }
-  ```
-</div>
-</Columns>
+<GettingStartedPaymentMethod />
 
 ### The order item
 
 As we are using the synchronous execution mode, we can only order a single payout link at a time. The following fields are set on the single item within the `items` array:
 
-<Columns cols={2}>
-<div>
-  <ParamField body="face_value" type="number" required>
-    Indicate the face value of the payout link you wish to order. The currency will be based on the selected product. As the product is in USD this will be $10.
-  </ParamField>
+import GettingStartedOrderItem from "/snippets/getting-started-order-item.mdx";
 
-<ParamField body="distribution_method" type="object" required>
-  We have a choice here between `EMAIL` and `PAYOUT_LINK`. Read on to see how to
-  set these fields.
-</ParamField>
-
-  <ParamField body="products" type="object" required>
-    We have a choice here between `SINGLE` and `MULTIPLE` and `TEMPLATE`. Read on to see how to set these fields.
-  </ParamField>
-</div>
-<div>
-  ```json
-  {
-    "face_value": 10,
-    "distribution_method": {
-      ...
-    },
-    "products": {
-      ...
-    }
-  }
-  ```
-</div>
-</Columns>
-
-#### The distribution method
-
-As mentioned we have two options here, `EMAIL` and `PAYOUT_LINK`.
-
-- `EMAIL` - This will send the payout link directly to the end user's email inbox.
-- `PAYOUT_LINK` - This will return the payout link in the response body.
-
-##### To distribute via email
-
-<Columns cols={2}>
-  <div>
-    <ParamField body="type" children="distribution_method" type="string" required>
-      Set the distribution method type as `EMAIL`
-    </ParamField>
-    <ParamField body="email_address" children="distribution_method" type="string" required>
-      Set the email address you want to send this payout link to.
-    </ParamField>
-  </div>
-  <div>
-    ```json
-    "distribution_method": {
-      "type": "EMAIL",
-      "email_address": "recipient@example.com"
-    }
-    ```
-  </div>
-</Columns>
-
-<Info>
-The playground environment by default does not send emails. To enable this, you need to set the `X-Send-Email: true` header.
-
-Ensure you refer to the [playground reference](/reference/2024-02-05/playground#sending-emails) for more details.
-
-</Info>
-
-##### To distribute via payout link
-
-<Columns cols={2}>
-  <div>
-    <ParamField body="type" children="distribution_method" type="string" required>
-      Set the distribution method type as `PAYOUT_LINK`
-    </ParamField>
-  </div>
-  <div>
-    ```json
-    "distribution_method": {
-      "type": "PAYOUT_LINK"
-    }
-    ```
-  </div>
-</Columns>
-
-#### The product selection
-
-There are three options here, `SINGLE`, `MULTIPLE` and `TEMPLATE`.
-
-- `SINGLE` - This will create a payout link for the selected product, the end user will receive a link for the chosen value exactly.
-- `MULTIPLE` - This will create payout link where the end user can choose to split the value between multiple products.
-- `TEMPLATE` - This will create a payout link as defined by a [pre-built template](/features/merchant-selection-template).
-
-As we've not pulled the [product catalog](/features/product-catalog) we'll use `TEMPLATE` for this example. In the playground environment we have a [pre-defined template](/reference/2024-02-05/playground#default-product-selection-templates) we can use for USD that will give us a payout link with 10 randomized products.
-
-On the `products` object we will set the `type` to `TEMPLATE` and the `template_id` to `PT-01HQ12PV4B8XMBRTK281JM54KK`. The `template_id` is the ID of the template we want to use.
-
-<ParamField body="type" children="products" type="string" required>
-  Set the product selection type to `TEMPLATE`
-</ParamField>
-<ParamField body="template_id" children="products" type="string" required>
-  Set the template ID to `PT-01HQ12PV4B8XMBRTK281JM54KK`, a [pre-defined
-  playground
-  template](/reference/2024-02-05/playground#default-product-selection-templates)
-  for USD.
-</ParamField>
+<GettingStartedOrderItem />
 
 ## Putting it all together
 
@@ -273,48 +148,6 @@ The response will be a `200 OK` with the order details in the body. You can retr
 
 Pop the `url` field into your browser to see the payout link. Congratulations, you've just made your first order with Runa.
 
-## Next steps
+import GettingStartedNextSteps from "/snippets/getting-started-next-steps.mdx";
 
-You can now explore the following features to take your first order to the next level.
-
-<Columns cols={3}>
-  <Card
-    title="Fetch the product catalog"
-    href="/features/product-catalog"
-    icon="grid"
-    arrow
-  >
-    To make orders for specfic products you'll need to fetch the product catalog
-    first.
-  </Card>
-  <Card
-    title="Customizing the payout link"
-    href="/features/user-redemption-templates"
-    icon="gift"
-    arrow
-  >
-    Add your own branding and customize the redemption experience for your
-    recipients.
-  </Card>
-  <Card
-    title="Pay using a different currency"
-    href="/features/embedded-fx"
-    icon="money-bill-transfer"
-    arrow
-  >
-    Use Runa Embedded FX to pay for an order using your funds in another
-    currency
-  </Card>
-</Columns>
-
-Alternatively, you can explore the steps needed to make real orders in the production environment.
-
-<Card
-  title="Moving to production"
-  href="/getting-started/production"
-  icon="hexagon-check"
-  horizontal
-  arrow
->
-  Once you're ready to go live have a look at the production checklist.
-</Card>
+<GettingStartedNextSteps />

@@ -1,0 +1,22 @@
+To successfully place an order, you need to include the following headers in your API request:
+
+<ParamField header="X-Api-Key" type="string" required>
+  The API key you created in the previous step.
+</ParamField>
+
+<ParamField header="X-Idempotency-Key" type="string" required>
+  A unique value that we use to prevent duplicate purchases. If a network error
+  occurs, you can retry the request with the same idempotency key and we will
+  return the original order without any danger of creating a new one. You can
+  read more about how we handle this field in the [idempotency
+  guide](/best-practices/idempotency).
+
+For testing you can just make one up, but you **must** generate a unique value for each order you intend to make. We suggest using a V4 UUID for this field.
+
+</ParamField>
+
+<ParamField header="X-Api-Version" type="string">
+  The API version you want to use. This header is optional but we highly
+  recommend you to set it. For this guide, we will use the latest version
+  `2024-02-05`
+</ParamField>

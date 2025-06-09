@@ -1,0 +1,104 @@
+<Columns cols={2}>
+<div>
+  <ParamField body="face_value" type="number" required>
+    Indicate the face value of the payout link you wish to order. The currency will be based on the selected product. As the product is in USD this will be $10.
+  </ParamField>
+
+<ParamField body="distribution_method" type="object" required>
+  We have a choice here between `EMAIL` and `PAYOUT_LINK`. Read on to see how to
+  set these fields.
+</ParamField>
+
+  <ParamField body="products" type="object" required>
+    We have a choice here between `SINGLE` and `MULTIPLE` and `TEMPLATE`. Read on to see how to set these fields.
+  </ParamField>
+</div>
+<div>
+  ```json
+  {
+    "face_value": 10,
+    "distribution_method": {
+      ...
+    },
+    "products": {
+      ...
+    }
+  }
+  ```
+</div>
+</Columns>
+
+#### The distribution method
+
+As mentioned we have two options here, `EMAIL` and `PAYOUT_LINK`.
+
+- `EMAIL`: This will send the payout link directly to the end user's email inbox.
+- `PAYOUT_LINK`: This will return the payout link in the response body.
+- `RECIPIENT`: This is used for payment type products, we won't be using this in this guide.
+
+##### To distribute via `EMAIL`
+
+<Columns cols={2}>
+  <div>
+    <ParamField body="type" children="distribution_method" type="string" required>
+      Set the distribution method type as `EMAIL`
+    </ParamField>
+    <ParamField body="email_address" children="distribution_method" type="string" required>
+      Set the email address you want to send this payout link to.
+    </ParamField>
+  </div>
+  <div>
+    ```json
+    "distribution_method": {
+      "type": "EMAIL",
+      "email_address": "recipient@example.com"
+    }
+    ```
+  </div>
+</Columns>
+
+<Info>
+The playground environment by default does not send emails. To enable this, you need to set the `X-Send-Email: true` header.
+
+Ensure you refer to the [playground reference](/reference/2024-02-05/playground#sending-emails) for more details.
+
+</Info>
+
+##### To distribute via `PAYOUT_LINK`
+
+<Columns cols={2}>
+  <div>
+    <ParamField body="type" children="distribution_method" type="string" required>
+      Set the distribution method type as `PAYOUT_LINK`
+    </ParamField>
+  </div>
+  <div>
+    ```json
+    "distribution_method": {
+      "type": "PAYOUT_LINK"
+    }
+    ```
+  </div>
+</Columns>
+
+#### The product selection
+
+There are three options here, `SINGLE`, `MULTIPLE` and `TEMPLATE`.
+
+- `SINGLE`: This will create a payout link for the selected product, the end user will receive a link for the chosen value exactly.
+- `MULTIPLE`: This will create payout link where the end user can choose to split the value between multiple products.
+- `TEMPLATE`: This will create a payout link as defined by a [pre-built template](/features/merchant-selection-template).
+
+As we've not pulled the [product catalog](/features/product-catalog) we'll use `TEMPLATE` for this example. In the playground environment we have a [pre-defined template](/reference/2024-02-05/playground#default-product-selection-templates) we can use for USD that will give us a payout link with 10 randomized products.
+
+On the `products` object we will set the `type` to `TEMPLATE` and the `template_id` to `PT-01HQ12PV4B8XMBRTK281JM54KK`. The `template_id` is the ID of the template we want to use.
+
+<ParamField body="type" children="products" type="string" required>
+  Set the product selection type to `TEMPLATE`
+</ParamField>
+<ParamField body="template_id" children="products" type="string" required>
+  Set the template ID to `PT-01HQ12PV4B8XMBRTK281JM54KK`, a [pre-defined
+  playground
+  template](/reference/2024-02-05/playground#default-product-selection-templates)
+  for USD.
+</ParamField>
