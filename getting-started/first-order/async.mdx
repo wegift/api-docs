@@ -47,8 +47,6 @@ This section illustrates how to send out the rewards directly to the end user vi
 
 For more details or to quickly try out the endpoint, navigate to the [API reference for the Create Order endpoint](/reference/2024-02-05/endpoint/orders/create).
 
-![](https://files.readme.io/abc9a76-image.png)
-
 Here's an example of a basic request body:
 
 ```json
@@ -84,7 +82,7 @@ Here's an example of a successful response:
 
 If the order has been processed successfully and the payout links will have been delivered to the recipient's email inbox from `noreply@mail.runa.io`.
 
-<Card img="https://files.readme.io/a6e3c1d-image.png">
+<Card img="/assets/screenshots/balance-1-GBP-email.png">
   Example email that end users receive in their inbox.
 </Card>
 
@@ -124,8 +122,6 @@ You can use our [Order Completion webhook](/reference/2024-02-05/webhook/order.c
 Alternatively, you can poll the [Get Order](/reference/2024-02-05/endpoint/orders/get) endpoint in order to verify the successful order processing. You will need the order ID obtained from the response received after calling the [Create Order](/reference/2024-02-05/endpoint/orders/create) endpoint. In the example response provided above, the order ID is `O-ABC123`. Simply include this order ID as a path parameter in the following URL format: `https://api.runa.io/v2/order/{id}`. Replace `{id}` with your specific order ID.
 
 To try out this endpoint, you can visit the [Get Order](/reference/2024-02-05/endpoint/orders/get) page and insert your order ID into the id path parameter.
-
-![](https://files.readme.io/7c68558-image.png)
 
 Upon a successful request, the order details will be returned to you and the status of the order is updated to `COMPLETED`. The redemption url of the payout link can be found in the `url` field of the `payout` object within `items`. Below is an example of a successful response:
 
