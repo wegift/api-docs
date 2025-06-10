@@ -90,6 +90,22 @@
                       }
                     }
                   ]
+                },
+                "examples": {
+                  "Single Balance": {
+                    "summary": "Single balance",
+                    "value": {
+                      "balance": "10.00",
+                      "currency": "USD"
+                    }
+                  },
+                  "Multiple Balances": {
+                    "summary": "Multiple balances",
+                    "value": [
+                      { "balance": "10.00", "currency": "USD" },
+                      { "balance": "8.50", "currency": "GBP" }
+                    ]
+                  }
                 }
               }
             }
