@@ -401,7 +401,7 @@
                       }
                     },
                     "pagination": {
-                      "$ref": "#/components/schemas/Pagination"
+                      "$ref": "#/components/schemas/PageableMeta"
                     }
                   }
                 }
@@ -2104,35 +2104,6 @@
           "is_orderable",
           "payout_type"
         ]
-      },
-      "Pagination": {
-        "type": "object",
-        "properties": {
-          "cursors": {
-            "type": "object",
-            "description": "Cursor-based pagination allows clients to navigate through a collection of items by providing 'after' or 'before' cursors.",
-            "properties": {
-              "after": {
-                "type": "string",
-                "description": "A cursor that points to the end of the page of data that has been returned. Passing this cursor on a subsequent request returns the next page of data."
-              },
-              "before": {
-                "type": "string",
-                "description": "A cursor that points to the start of the page of data that has been returned. Passing this cursor on a subsequent request returns the previous page of data."
-              }
-            }
-          },
-          "page": {
-            "type": "object",
-            "description": "Page-based pagination provides a way to request a specific page of items.",
-            "properties": {
-              "limit": {
-                "type": "integer",
-                "description": "Specifies the maximum number of items to return in the response. This can be used to control the size of each page of data. By default, each page of results will contain 500 items."
-              }
-            }
-          }
-        }
       },
       "Payment": {
         "type": "object",
