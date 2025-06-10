@@ -1,0 +1,4 @@
+This endpoint can return both complete and incomplete orders. The types of these responses differ, you should use the `status` field to determine which type of response you are receiving.
+
+- Completed orders will have a `status` of `COMPLETED` or `FAILED` and have a full response body.
+- Incomplete orders will have a `status` of `PROCESSING` and have a partial response body.

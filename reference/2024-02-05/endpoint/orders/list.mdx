@@ -7,3 +7,7 @@ description: "Get a list of all of your orders"
 This endpoint is paginated and supports cursor based pagination. Each response includes a `next_cursor` and `previous_cursor` which can be used to fetch the next and previous pages of results.
 
 The orders returned only contain a subset of the fields that are returned for a single order. To fetch the full details of an order use the [single order get endpoint](/reference/2024-02-05/endpoint/orders/get).
+
+import OrderDisambiguation from "/snippets/order-disambiguation.mdx";
+
+<OrderDisambiguation />

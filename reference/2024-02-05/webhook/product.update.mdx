@@ -4,6 +4,17 @@ description: "Product update events are triggered when there is an update to the
 openapi: "/reference/2024-02-05/openapi.json WEBHOOK product.update"
 ---
 
+<Card
+  title="Webhook overview"
+  href="/reference/webhooks"
+  icon="graduation-cap"
+  horizontal
+  arrow
+>
+  Webhooks work differently to the API endpoints. Take a read of our guide to
+  understand how they work.
+</Card>
+
 An event is triggered when there is an update to a product in the catalogue. If multiple products are updated at once, an event is triggered for each product.
 
 Use the `product_code` to identify the product that was updated, then refer to the `old_state` and `new_state` to determine the changes. A `timestamp` is provided to indicate when the update occurred.

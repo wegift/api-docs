@@ -257,7 +257,8 @@
               "type": "string"
             },
             "in": "path",
-            "description": "The ID of the order."
+            "description": "The ID of the order.",
+            "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q"
           }
         ],
         "responses": {
@@ -481,7 +482,39 @@
                         "type": "string",
                         "pattern": "^[A-Z]{2}$",
                         "description": "ISO 3166 ALPHA-2 country code"
-                      }
+                      },
+                      "example": [
+                        "AT",
+                        "AU",
+                        "BE",
+                        "CA",
+                        "CH",
+                        "CZ",
+                        "DE",
+                        "DK",
+                        "ES",
+                        "FI",
+                        "FR",
+                        "GB",
+                        "GR",
+                        "HU",
+                        "IE",
+                        "IT",
+                        "JP",
+                        "LU",
+                        "MX",
+                        "NL",
+                        "NO",
+                        "NZ",
+                        "PL",
+                        "PT",
+                        "RO",
+                        "SE",
+                        "SG",
+                        "SI",
+                        "US",
+                        "ZA"
+                      ]
                     }
                   }
                 }
@@ -833,7 +866,7 @@
         "description": "API rate limited error response."
       },
       "CompletedOrderWithFullDetails": {
-        "title": "CompletedOrderWithFullDetails",
+        "title": "Completed order",
         "description": "Used for an order that has completed. This class is typically used when returning\na *single order* to the client.",
         "type": "object",
         "allOf": [
@@ -868,7 +901,7 @@
         ]
       },
       "EmailDistribution": {
-        "title": "EmailDistribution",
+        "title": "Email",
         "required": ["type", "email_address"],
         "type": "object",
         "properties": {
@@ -898,7 +931,7 @@
         "description": "Supported email distribution types."
       },
       "IncompleteOrder": {
-        "title": "IncompleteOrder",
+        "title": "Incomplete order",
         "required": ["id", "status", "message"],
         "type": "object",
         "properties": {
@@ -913,7 +946,7 @@
         "description": "Order that has been accepted but is not complete."
       },
       "LinkDistribution": {
-        "title": "LinkDistribution",
+        "title": "Link",
         "required": ["type"],
         "type": "object",
         "properties": {
@@ -936,7 +969,7 @@
         "description": "Supported link distribution types."
       },
       "MultipleProduct": {
-        "title": "MultipleProduct",
+        "title": "Multiple",
         "required": ["type", "values"],
         "type": "object",
         "properties": {
@@ -964,7 +997,7 @@
         "description": "Multiple products. When more than one product code is provided."
       },
       "PayoutSelectionTemplate": {
-        "title": "PayoutSelectionTemplate",
+        "title": "Template",
         "required": ["type", "template_id"],
         "type": "object",
         "properties": {
@@ -1071,7 +1104,7 @@
         "properties": {
           "face_value": {
             "title": "Face Value",
-            "description": "Face value of the payout link.",
+            "description": "Face value of the payout link. The currency of the face value is inferred from the product selection.",
             "minimum": 0.01,
             "example": 10,
             "type": "number"
@@ -1093,10 +1126,10 @@
             "description": "Choose `SINGLE` if you want the end user to redeem the face value on a single specific product. Choose `MULTIPLE` if the end user can choose to spend the face value across multiple products.",
             "oneOf": [
               {
-                "$ref": "#/components/schemas/MultipleProduct"
+                "$ref": "#/components/schemas/SingleProduct"
               },
               {
-                "$ref": "#/components/schemas/SingleProduct"
+                "$ref": "#/components/schemas/MultipleProduct"
               },
               {
                 "$ref": "#/components/schemas/PayoutSelectionTemplate"
@@ -1405,7 +1438,7 @@
         }
       },
       "SingleProduct": {
-        "title": "SingleProduct",
+        "title": "Single",
         "required": ["type", "value"],
         "type": "object",
         "properties": {
