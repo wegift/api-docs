@@ -5,7 +5,13 @@
     "version": "2.0",
     "description": "The public Runa API",
     "license": {
-      "name": "Ⓒ Runa"
+      "name": "Ⓒ Runa",
+      "url": "https://runa.io/terms-of-use"
+    },
+    "contact": {
+      "name": "Runa",
+      "url": "https://runa.io",
+      "email": "info@runa.io"
     }
   },
   "externalDocs": {
@@ -209,6 +215,7 @@
         },
         "requestBody": {
           "required": true,
+          "description": "The details of the order to create.",
           "content": {
             "application/json": {
               "schema": {
@@ -288,6 +295,7 @@
         },
         "requestBody": {
           "required": true,
+          "description": "The details of the order to estimate.",
           "content": {
             "application/json": {
               "schema": {
@@ -301,8 +309,8 @@
     "/product": {
       "get": {
         "operationId": "getProducts",
+        "description": "List all products in your catalog",
         "tags": ["products"],
-        "summary": "Retrieve products",
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           {
@@ -396,7 +404,7 @@
       "get": {
         "operationId": "getSingleProduct",
         "tags": ["products"],
-        "summary": "Retrieve a single product's details",
+        "description": "Retrieve a single product's details",
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           {
@@ -443,7 +451,7 @@
       "get": {
         "operationId": "getProductsCountries",
         "tags": ["products"],
-        "summary": "Retrieves a list of countries where products are available",
+        "description": "Retrieves a list of countries where products are available",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
         "responses": {
           "200": {
@@ -701,13 +709,13 @@
             "title": "Face Value",
             "description": "The face value of the payout link.",
             "example": "10",
-            "type": "number"
+            "type": "string"
           },
           "price": {
             "title": "Price",
             "description": "The price paid for the payout link.",
             "example": "10",
-            "type": "number"
+            "type": "string"
           },
           "payout": {
             "title": "Payout",
@@ -784,12 +792,13 @@
             "title": "Total Price",
             "description": "The total price of the order. This _includes_ any applicable fees.",
             "example": "10",
-            "type": "number"
+            "type": "string"
           },
           "total_discount": {
             "title": "Total Discount",
             "description": "The total discount of the order.",
-            "type": "number"
+            "type": "string",
+            "example": "1"
           }
         }
       },
@@ -1271,7 +1280,7 @@
       },
       "TransactionDetail": {
         "title": "TransactionDetail",
-        "description": "A hashmap subtotal of the order using the payout currency as a key.",
+        "description": "A mapping of the subtotal of the order using the payout currency as a key.",
         "type": "object",
         "example": {
           "USD": {
