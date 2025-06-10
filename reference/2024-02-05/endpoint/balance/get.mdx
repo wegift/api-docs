@@ -4,7 +4,10 @@ openapi: "/reference/2024-02-05/openapi.json GET /balance"
 description: "Fetch the current balances for your account"
 ---
 
-Retrieves the account balance. Returns the balance in a specified currency if the currency parameter is provided. If not, returns all balances greater than 0.
+Retrieves the account balance.
+
+- If the `currency` parameter is provided, the response will be a single balance object for the currency requested.
+- If the `currency` parameter is omitted, the response will be an array of balance objects for all currencies with a balance greater than 0.
 
 <Card
   title="Need a hand with balances?"

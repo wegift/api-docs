@@ -45,66 +45,43 @@
         "description": "Retrieves the account balance. Returns the balance in a specified currency if the currency parameter is provided. If not, returns all balances greater than 0.",
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
-          {
-            "name": "currency",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "pattern": "^[A-Z]{3}$"
-            },
-            "description": "The currency of the account, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field.",
-            "in": "query"
-          }
+          { "$ref": "#/components/parameters/CurrencyForAccount" }
         ],
         "responses": {
           "200": {
-            "description": "Successful Response",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "oneOf": [
                     {
+                      "title": "Single balance",
+                      "description": "If the `currency` parameter is provided, the response will be a single balance object.",
                       "type": "object",
                       "properties": {
                         "balance": {
-                          "type": "string"
+                          "$ref": "#/components/schemas/BalanceForAccount"
                         },
                         "currency": {
-                          "type": "string",
-                          "pattern": "^[A-Z]{3}$",
-                          "description": "The currency of the account, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+                          "$ref": "#/components/schemas/CurrencyForAccount"
                         }
-                      },
-                      "example": {
-                        "balance": "10.0",
-                        "currency": "USD"
                       }
                     },
                     {
+                      "title": "Multiple balances",
+                      "description": "If the `currency` parameter is omitted, the response will be an array of balance objects.",
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
                           "balance": {
-                            "type": "string"
+                            "$ref": "#/components/schemas/BalanceForAccount"
                           },
                           "currency": {
-                            "type": "string",
-                            "pattern": "^[A-Z]{3}$",
-                            "description": "The currency of the account, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+                            "$ref": "#/components/schemas/CurrencyForAccount"
                           }
                         }
-                      },
-                      "example": [
-                        {
-                          "balance": "10.0",
-                          "currency": "USD"
-                        },
-                        {
-                          "balance": "8.5",
-                          "currency": "GBP"
-                        }
-                      ]
+                      }
                     }
                   ]
                 }
@@ -581,6 +558,17 @@
         "schema": {
           "type": "string"
         }
+      },
+      "CurrencyForAccount": {
+        "name": "currency",
+        "required": false,
+        "schema": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currency) for a listing of supported currencies.",
+        "in": "query",
+        "example": "USD"
       }
     },
     "schemas": {
@@ -622,6 +610,19 @@
         "type": "string",
         "maxLength": 128,
         "example": "Your own reference text"
+      },
+      "BalanceForAccount": {
+        "title": "Balance",
+        "description": "The balance of the account.",
+        "type": "string",
+        "example": "10.00",
+        "pattern": "^[0-9]+\\.[0-9]{2}$"
+      },
+      "CurrencyForAccount": {
+        "type": "string",
+        "pattern": "^[A-Z]{3}$",
+        "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currency) for a listing of supported currencies.",
+        "example": "USD"
       },
       "OrderStatus": {
         "title": "Order Status",
@@ -1485,12 +1486,10 @@
             "example": "XYZ-US"
           },
           "old_state": {
-            "title": "Old state",
             "description": "The state of the product before the update.",
             "$ref": "#/components/schemas/ProductUpdateState"
           },
           "new_state": {
-            "title": "New state",
             "description": "The state of the product after the update.",
             "$ref": "#/components/schemas/ProductUpdateState"
           },
