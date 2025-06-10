@@ -162,7 +162,34 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageableResult_Union_CompletedOrderWithBasicDetails__IncompleteOrder__"
+                  "type": "object",
+                  "required": ["items", "pagination"],
+                  "properties": {
+                    "items": {
+                      "title": "Items",
+                      "description": "The list of orders in the page.",
+                      "type": "array",
+                      "items": {
+                        "oneOf": [
+                          {
+                            "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
+                          },
+                          {
+                            "$ref": "#/components/schemas/IncompleteOrder"
+                          }
+                        ]
+                      }
+                    },
+                    "pagination": {
+                      "title": "Pagination",
+                      "description": "Metadata of the result page.",
+                      "allOf": [
+                        {
+                          "$ref": "#/components/schemas/PageableMeta"
+                        }
+                      ]
+                    }
+                  }
                 }
               }
             }
@@ -1415,37 +1442,6 @@
             "allOf": [
               {
                 "$ref": "#/components/schemas/Page"
-              }
-            ]
-          }
-        }
-      },
-      "PageableResult_Union_CompletedOrderWithBasicDetails__IncompleteOrder__": {
-        "title": "PageableResult[Union[CompletedOrderWithBasicDetails, IncompleteOrder]]",
-        "required": ["items", "pagination"],
-        "type": "object",
-        "properties": {
-          "items": {
-            "title": "Items",
-            "description": "The list of items that were queried for.",
-            "type": "array",
-            "items": {
-              "oneOf": [
-                {
-                  "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
-                },
-                {
-                  "$ref": "#/components/schemas/IncompleteOrder"
-                }
-              ]
-            }
-          },
-          "pagination": {
-            "title": "Pagination",
-            "description": "Metadata of the result page.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PageableMeta"
               }
             ]
           }
