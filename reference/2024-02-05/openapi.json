@@ -647,13 +647,7 @@
               }
             ]
           },
-          "currency": {
-            "title": "Currency",
-            "example": "USD",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "description": "The currency of the account, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
-          }
+          "currency": { "$ref": "#/components/schemas/CurrencyForAccount" }
         },
         "description": "Account balance payment."
       },
@@ -1061,13 +1055,7 @@
               }
             ]
           },
-          "currency": {
-            "title": "Currency",
-            "example": "USD",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "description": "The currency of the account, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
-          }
+          "currency": { "$ref": "#/components/schemas/CurrencyForAccount" }
         },
         "description": "Pay using your account balance."
       },
