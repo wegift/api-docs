@@ -140,9 +140,32 @@
           {
             "group": "Network",
             "pages": [
-              "changelog/network/additions",
-              "changelog/network/changes",
-              "changelog/network/removals"
+              "changelog/network/2025/additions",
+              "changelog/network/2025/changes",
+              "changelog/network/2025/removals",
+              {
+                "group": "Archived pages",
+                "icon": "boxes-stacked",
+                "pages": [
+                  {
+                    "group": "2024",
+                    "icon": "box",
+                    "pages": [
+                      "changelog/network/2024/additions",
+                      "changelog/network/2024/changes",
+                      "changelog/network/2024/removals"
+                    ]
+                  },
+                  {
+                    "group": "2023",
+                    "icon": "box",
+                    "pages": [
+                      "changelog/network/2023/additions",
+                      "changelog/network/2023/changes"
+                    ]
+                  }
+                ]
+              }
             ]
           }
         ]
