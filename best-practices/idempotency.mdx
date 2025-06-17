@@ -13,11 +13,11 @@ Runa's idempotency works by storing the request body and response in a cache for
   after this period will result in a new order being placed.
 </Warning>
 
-# Choosing a key
+## Choosing a key
 
 The key can be any free-form string but we would suggest using a suitable unique and random value such as v4 UUIDs. This ensures the key is unique across all requests and reduces the risk of collisions. You **should not use a string with intrinsic meaning** such as an order ID or customer email address as you may need to generate a second request with a different key in case of the first returning an error.
 
-# Responses when using idempotency
+## Responses when using idempotency
 
 When using idempotency there are a number of cases you will need to cover.
 
@@ -25,6 +25,6 @@ When using idempotency there are a number of cases you will need to cover.
 - We will return an `HTTP 102 Processing` response with type `idempotency_in_progress` if the original request is still in progress. We are unable to replay the response until the original request has completed. Please wait a few seconds and try again.
 - We will return an `HTTP 400 Bad request` response with type `idempotency_validation_error` if an idempotency key is reused but the request body does not match the original request. You should either correct the request body or generate a new key and try again.
 
-# Endpoints using idempotency
+## Endpoints using idempotency
 
 Currently only the order creation endpoint supports idempotency. You will note the `X-Idempotency-Key` header is marked as required in [the specification for this endpoint](/reference/2024-02-05/endpoint/orders/create).

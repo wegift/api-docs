@@ -6,22 +6,22 @@ icon: "shield"
 
 When you integrate with the Runa API, you are responsible for ensuring the security of your integration. The core facet of this is securing your API key. Anyone who holds your API key can make API calls on your behalf, including placing new orders and viewing order history. Here are some best practices to follow to ensure the security of your integration.
 
-# Store your API key securely
+## Store your API key securely
 
 - **Do not embed your API key in your codebase**. Instead, use environment variables or secret management systems to retrieve the Runa API keys and use them in your code.
 - **Do not store your API key in a version control system**, such as GitHub or GitLab. If keys are accidentally committed to a repository even if removed they must still be revoked and replaced.
 - **Do not embed your API key where it could be exposed**, such as a mobile application or a web frontend. Your keys must not leave your backend.
 
-# Share access correctly
+## Share access correctly
 
 - **Generate separate API keys for different environments, applications or users**. This allows you to revoke a key without affecting other integrations. If you need to give temporary access to a third party, create a new key for them and revoke it when they no longer need access.
 - **Do not share your API key over untrusted communication channels** such as email, SMS, or instant messaging applications. If you must share an API key, use encrypted technologies to share it. Ideally you should avoid sharing the key at all, instead provide access to the Runa portal where a new key can be generated.
 
-# Limit access by IP address
+## Limit access by IP address
 
 - **Limit the IP addresses that can use your API keys**. Contact your account manager to set up IP restrictions for your API keys. We can limit the IP addresses that can use your API keys to only those that you specify.
 
-# Your responsibility for API keys
+## Your responsibility for API keys
 
 Runa Network Limited does not have visibility or access to a customers network or systems and therefore can not be held liable for anything that may cause a security incident on your network or platform.
 

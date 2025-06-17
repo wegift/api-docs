@@ -13,6 +13,10 @@ From [content types](https://mintlify.com/guides/content-types)
 - Our **reference** is the 'API Reference' pages generated from the API spec
 - Our **explanation** are the other pages in 'API Reference' and some pages under 'Best Practices'
 
+### Content rules
+
+- Do not use level 1 headings (`#`) in the content, use level 2 headings (`##`) instead. Level 1 headings are reserved for the page title and break the table of contents.
+
 ## Development
 
 Install JS packages with `pnpm install` then run

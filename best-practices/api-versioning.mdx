@@ -8,11 +8,11 @@ Runa uses versioning to improve our API contracts without affecting existing int
 
 When we need to introduce a backwards-incompatible change, we will create a new dated version which clients can migrate to when ready. The [API changelog](/changelog) details both major dated version releases and improvements made within each version.
 
-# What is the latest version?
+## What is the latest version?
 
 The latest version is `2024-02-05`.
 
-# Which version am I using?
+## Which version am I using?
 
 Your version is stored in your account when you call the API for the very first time. This version is automatically applied to your API calls in the future.
 
@@ -20,13 +20,13 @@ Your version is stored in your account when you call the API for the very first 
 >
 > If you have any uncertainty regarding the API version, checking the `X-Api-Version` response header will provide the necessary clarification. This header provides the specific version information associated with the API endpoint you are interacting with.
 
-# Setting your API version
+## Setting your API version
 
 Even though a version is stored on your account when you call the API for the first time, it is highly recommended to always specify the API version you intend to use. You can set the API version by including the `X-Api-Version` request header.
 
 The value of the header should be set to the dated version of the API version you intend to call. e.g. `2024-02-05`.
 
-# Backwards-compatible changes
+## Backwards-compatible changes
 
 Runa considers the following changes to be backwards-compatible:
 
@@ -37,7 +37,7 @@ Runa considers the following changes to be backwards-compatible:
 
 We regularly introduce such backwards-compatible changes to our API to support new product features. These should not affect existing integrations so we can introduce them directly to all versions. This avoids clients having to upgrade to a newer version to utilise the new functionality.
 
-# Upgrading your API version
+## Upgrading your API version
 
 If you're running against an older version of the API, upgrade to the latest version to take advantage of new functionality or to streamline responses so the API is faster for you. We recommend to follow these steps to successfully upgrade your API version:
 
@@ -49,6 +49,6 @@ If you're running against an older version of the API, upgrade to the latest ver
 
 If you encounter any issues or have questions during the API version upgrade process, feel free to contact [ordersupport@runa.io](mailto:ordersupport@runa.io) for assistance. We are here to help and provide guidance to ensure a smooth transition.
 
-# Why do the API URLs include "/v2"?
+## Why do the API URLs include "/v2"?
 
 The URL version is expected to stay as "v2" for the foreseeable future. This is a reference to the second version of the Runa API, an evolved version what was formerly known as the Connect API to existing API customers.

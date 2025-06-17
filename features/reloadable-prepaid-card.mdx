@@ -10,7 +10,7 @@ Sending payouts with Runa is simple and straightforward. If you already have a R
 
 Before you go live with Reloadable Prepaid Cards, you will need to sign updated T&Cs. Please reach out to your Account Manager or email [support@runa.io](mailto:support@runa.io) to complete this step.
 
-# 1️⃣ Getting started
+## 1️⃣ Getting started
 
 - Ensure you have [created an API key](/getting-started/api-key).
 - Ensure you have funded your account with the required balance to cover the payments you intend to make. You can use the [balances endpoint](/features/balances) to check your account balance.
@@ -19,7 +19,7 @@ Before you go live with Reloadable Prepaid Cards, you will need to sign updated 
 - Place an order for a Reloadable Prepaid Card. You should use the `RECIPIENT` distribution method and specify a unique `recipient_reference` which will be used for subsequent payments to the same recipient.
 - For subsequent payments simply specify the same `recipient_reference` to reload the existing card issued to the recipient.
 
-## Example Reloadable Prepaid Card order
+### Example Reloadable Prepaid Card order
 
 ```json
 {
@@ -48,7 +48,7 @@ To make a second payment to the same recipient you should make a very similar or
 
 Refer to the [order endpoint reference](/reference/2024-02-05/endpoint/orders/create) for more information on the request schema and other options available.
 
-# 💳 Reloadable Prepaid Card redemption experience
+## 💳 Reloadable Prepaid Card redemption experience
 
 <img
   className="block dark:hidden"
@@ -79,13 +79,13 @@ For a subsequent payment, the card will be automatically reloaded with the payou
   src="/assets/graphics/reloadable-reload-dark.png"
 />
 
-# 🛟 Support
+## 🛟 Support
 
-## 👤 User errors
+### 👤 User errors
 
 If there are any errors during our payment partner's experience, the user will be able to use the “Contact Us” button to contact their team.
 
-### Multiple Payments to Unactivated Card
+#### Multiple Payments to Unactivated Card
 
 If a consumer receives multiple payment emails for the same reloadable card, but this card is not activated yet, each email must be opened to load its associated funds.
 
@@ -97,29 +97,29 @@ If a consumer receives multiple payment emails for the same reloadable card, but
   activated before any funds are loaded.
 </Info>
 
-### Issues with entering the recipient address
+#### Issues with entering the recipient address
 
 Due to limitations on our payment partner's side, the country field in the recipient address can only be set to the United States (US). However, this does not mean that the recipient has to be based in the US, they can enter their home address while ignoring the country field (by setting it to US).
 
-## 🖥️ Order errors
+### 🖥️ Order errors
 
 These are faults that will require your input to resolve
 
-### Insufficient funds
+#### Insufficient funds
 
 Insufficient balance at order time
 
 - If your account has insufficient balance you will be unable to create the order for the payment. The API response with a 400 status code, the error message body will contain the type `insufficient_funds`. Check the [order endpoint reference](/reference/2024-02-05/endpoint/orders/create) for more information.
 
-### User ineligible
+#### User ineligible
 
 Payments cannot be sent to anyone who appears on a sanctions list.
 
 - The user will see the error message: “There's been an unexpected issue, please contact the issuer of this link.”
 
-## ⚙ Processing errors
+### ⚙ Processing errors
 
-### In-journey errors
+#### In-journey errors
 
 1. Authentication error: Recipient hasn't received email with code
    - The recipient will need to contact Runa for us to investigate what might have gone wrong with authentication.
@@ -128,6 +128,6 @@ Payments cannot be sent to anyone who appears on a sanctions list.
 3. Fraud Suspected
    - If fraud is suspected, we will hold on sending out the payout until we have established that the payment isn't fraudulent. During this time, we will either ask the end recipient to share additional information, or we will have to cancel the payment and inform you that it's been cancelled with a reason as to why.
 
-## All other issues
+### All other issues
 
 Your point of contact for any other issues: [support@runa.io](mailto:support@runa.io)

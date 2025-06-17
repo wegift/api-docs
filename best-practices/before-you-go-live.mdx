@@ -6,7 +6,7 @@ icon: "star"
 
 Now that you have integrated with the Runa API and are ready to go live there are a few things you should consider to ensure your integration is reliable and secure.
 
-# 🔒 Securing your account
+## 🔒 Securing your account
 
 While its easy to generate a key to get started with the API you should consider how you handle and store your API key.
 
@@ -14,25 +14,25 @@ While its easy to generate a key to get started with the API you should consider
 - See the [page on security](/best-practices/security) for more details on how to keep your API key secure.
 - Consider enabling IP restrictions on your API keys to limit access to only your servers.
 
-# 🔄 Making retries safe
+## 🔄 Making retries safe
 
 While we strive to provide a reliable service, network issues can and at a certain scale will occur. Your integration should be prepared to handle cases where you don't receive a response to a request.
 
 See the [page on idempotency](/best-practices/idempotency) for details on how to use the idempotency key feature to safely retry orders without duplicating them. We require the use of an idempotency key for ordering but it is up to you to set a suitable key.
 
-# 🛑 Handling error responses
+## 🛑 Handling error responses
 
 The API endpoints can return multiple types of errors. Some of these are client errors (4xx error codes) and some are server errors (5xx error codes). You should be prepared to handle both types of errors. We group errors by HTTP status code but the specific detail is in the response body of the error.
 
 See the [page on error handling](/best-practices/handling-errors) for more details on what errors we do return and how to handle them.
 
-# 🔢 Rate limiting
+## 🔢 Rate limiting
 
 We use a number of safeguards to protect against bursts of traffic to protect our system's stability. If you are making a large number of requests in a short period of time you may receive a `429 Too Many Requests` response. This means you are being rate limited and should slow down your requests.
 
 See the [page on rate limiting](/best-practices/rate-limits) for more details on our limits and how to handle them.
 
-# ⭐ Keeping up to date with new features
+## ⭐ Keeping up to date with new features
 
 We're continuously making improvements and adding new features to our API offering. Most changes are not breaking and don't require you to update your integration. However periodically we release a new dated version of the API that does.
 

@@ -4,11 +4,9 @@ description: "Introduction to the API reference documentation"
 icon: "book"
 ---
 
-# Welcome
-
 This section documents the API endpoints available in the Runa API. The API follows RESTful patterns and provides a set of endpoints for interacting with the Runa platform. Each endpoint is documented in a page with a description of its purpose, the HTTP method to use, the URL path, and the request and response formats.
 
-# Environments
+## Environments
 
 <CardGroup cols={2} rows={1}>
   <Card title="Production" icon="gear">
@@ -32,9 +30,9 @@ This section documents the API endpoints available in the Runa API. The API foll
   reference](/reference/2024-02-05/playground) for more information.
 </Info>
 
-# Requests & Responses
+## Requests & Responses
 
-## Authentication
+### Authentication
 
 All API endpoints are authenticated using API keys. You can generate API keys in the Runa web app. The API key must be included in the `X-Api-Key` header of each request.
 
@@ -46,7 +44,7 @@ See the [authentication guide](/best-practices/authentication) for more informat
 
 Once you're ready to start using production your should refer to the [security best practices guide](/best-practices/security) to ensure you're using and storing your keys securely.
 
-## Responses
+### Responses
 
 API responses can vary in type but will be consistent per HTTP status code. You should use the HTTP status code to determine how to interpret the response.
 
@@ -67,7 +65,7 @@ containing only the order ID and status when using the `async` ordering mode.
 
 Error status code starting `4xx` and `5xx` have a consistent error response structure. See the guide on [handling errors](/best-practices/handling-errors) for more information and best practices on how to handle errors.
 
-# Test endpoints in the browser
+## Test endpoints in the browser
 
 <img
   className="inline dark:hidden m-0 ml-4 mb-4 h-10"

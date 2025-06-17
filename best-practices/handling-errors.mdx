@@ -16,7 +16,7 @@ When an error happens the Runa API returns a response with a status code of 4xx 
 
 Some specific errors include additional keys, for example validation errors, to help pin down the issue. Check the reference page for an endpoint to see the specific HTTP status codes that are expected. You can use the status code to determine if that error provides additional keys. For example [the 422 response on the create order endpoint](/reference/2024-02-05/endpoint/orders/create) includes a `details` key to identify which fields are invalid.
 
-# Error types
+## Error types
 
 <Card
   title="Error type reference"
@@ -30,14 +30,14 @@ Some specific errors include additional keys, for example validation errors, to 
 
 You can use the `type` field to determine the type of error that occurred and take appropriate action. You must not rely on the `message` or `help` fields as these may change over time.
 
-# Handling final vs transient errors
+## Handling final vs transient errors
 
 When an error occurs, it's important to determine whether it's a final error or a transient error. A final error is an error that will not be resolved by retrying the request. A transient error is an error that may be resolved by retrying the request.
 
-## Final errors
+### Final errors
 
 Final errors have `4xx` status codes, indicating an issue with the request being made. For example an invalid payload or a specific error with the payload such as an unsupported value for a product. In these cases you should correct the issue and retry the request using a new idempotency key. Using the same idempotency key will result in the same error being returned.
 
-## Transient errors
+### Transient errors
 
 Transient errors have `5xx` status codes, indicating an issue with the Runa API. These errors are usually temporary and can be resolved by retrying the request. In these cases you should retry the request using the same idempotency key. If the error persists you should wait a short period of time before retrying the request.
