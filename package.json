@@ -11,11 +11,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mintlify": "^4.0.531"
+    "mintlify": "^4.0.588"
   },
   "devDependencies": {
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.0",
+    "lint-staged": "^16.1.2",
     "prettier": "^3.5.3"
   },
   "lint-staged": {
