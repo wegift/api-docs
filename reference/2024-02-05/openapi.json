@@ -492,7 +492,7 @@
     },
     "/product/countries": {
       "get": {
-        "operationId": "getProductsCountries",
+        "operationId": "listProductsCountries",
         "tags": ["products"],
         "description": "Retrieves a list of countries where products are available",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
@@ -542,6 +542,58 @@
                         "SI",
                         "US",
                         "ZA"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/product/categories": {
+      "get": {
+        "operationId": "listProductsCategories",
+        "tags": ["products"],
+        "summary": "Retrieves a list of product categories",
+        "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
+        "responses": {
+          "200": {
+            "description": "A list of all possible product categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "categories": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": [
+                        "beauty-and-lifestyle",
+                        "booksellers",
+                        "department-stores",
+                        "electricals",
+                        "entertainment",
+                        "experiences",
+                        "fashion",
+                        "food-and-drink",
+                        "home-and-diy",
+                        "jewellers",
+                        "leisure-and-sports",
+                        "mens-fashion",
+                        "prepaid-card",
+                        "supermarkets",
+                        "toys-and-games",
+                        "travel",
+                        "womens-fashion"
                       ]
                     }
                   }
@@ -1997,7 +2049,7 @@
             "items": {
               "type": "string"
             },
-            "description": "List of the categories that the product belongs to. Examples of values (not comprehensive): `department-stores` `home-and-diy` `toys-and-games` `supermarkets` `booksellers` `experiences` `fashion` `electricals` `entertainment` `travel` `leisure-and-sports` `food-and-drink` `beauty-and-lifestyle` `jewellers` `prepaid-card`"
+            "description": "List of the categories that the product belongs to. You can fetch the list of categories using the [`GET /product/categories` endpoint](/reference/2024-02-05/endpoint/products/categories)."
           },
           "code": {
             "type": "string",
