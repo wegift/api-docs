@@ -711,10 +711,25 @@
       },
       "OrderDescription": {
         "title": "Description",
-        "description": "Free format text reference for the order. Not visible to the end user. Will be visible to you in the Runa web portal.",
+        "description": "Free format text reference for the order. The order description will not be visible to the end user. You will see this description in the Runa web portal.\n\nThis field is optional and can be omitted if not needed.\nIf not provided, the field will be set to `null` in the response.",
         "type": "string",
+        "nullable": true,
         "maxLength": 128,
         "example": "Your own reference text"
+      },
+      "OrderMetadata": {
+        "title": "Metadata",
+        "description": "A flexible field for you to attach additional, customer-specific data to the order. This is for your internal use, the information stored here will not be exposed to the end user.\n- All keys and their corresponding values must be strings\n- Each order supports up to 20 key-value pairs\n- Keys have a maximum length of 40 characters\n- Values can be up to 200 characters long.\n\nThis field is optional and can be omitted if not needed.\nIf not provided, the field will be set to `null` in the response.",
+        "type": "object",
+        "nullable": true,
+        "additionalProperties": {
+          "type": "string"
+        },
+        "example": {
+          "internal_id": "12345",
+          "department": "marketing",
+          "campaign": "summer_2024"
+        }
       },
       "BalanceForAccount": {
         "title": "Balance",
@@ -1012,7 +1027,8 @@
               },
               "transaction_detail": {
                 "$ref": "#/components/schemas/TransactionDetail"
-              }
+              },
+              "metadata": { "$ref": "#/components/schemas/OrderMetadata" }
             }
           }
         ]
@@ -1181,7 +1197,8 @@
               "$ref": "#/components/schemas/NewOrderItemDetails"
             }
           },
-          "description": { "$ref": "#/components/schemas/OrderDescription" }
+          "description": { "$ref": "#/components/schemas/OrderDescription" },
+          "metadata": { "$ref": "#/components/schemas/OrderMetadata" }
         }
       },
       "NewOrderItemDetails": {
