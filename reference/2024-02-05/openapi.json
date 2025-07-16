@@ -722,8 +722,14 @@
         "description": "A flexible field for you to attach additional, customer-specific data to the order. This is for your internal use, the information stored here will not be exposed to the end user.\n- All keys and their corresponding values must be strings\n- Each order supports up to 20 key-value pairs\n- Keys have a maximum length of 40 characters\n- Values can be up to 200 characters long.\n\nThis field is optional and can be omitted if not needed.\nIf not provided, the field will be set to `null` in the response.",
         "type": "object",
         "nullable": true,
+        "maxProperties": 20,
+        "propertyNames": {
+          "type": "string",
+          "maxLength": 40
+        },
         "additionalProperties": {
-          "type": "string"
+          "type": "string",
+          "maxLength": 200
         },
         "example": {
           "internal_id": "12345",
