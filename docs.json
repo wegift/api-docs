@@ -108,7 +108,8 @@
                 "pages": [
                   "reference/2024-02-05/endpoint/products/list",
                   "reference/2024-02-05/endpoint/products/get",
-                  "reference/2024-02-05/endpoint/products/countries"
+                  "reference/2024-02-05/endpoint/products/countries",
+                  "reference/2024-02-05/endpoint/products/categories"
                 ]
               },
               {
