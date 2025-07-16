@@ -383,7 +383,7 @@
                 "description": "ISO 3166 ALPHA-2 country code"
               }
             },
-            "description": "Filter by countries where a product can be redeemed in."
+            "description": "Filter by countries where a product can be redeemed in. To specify multiple countries you repeat the parameter for each country, e.g. `?countries_redeemable_in=US&countries_redeemable_in=GB`"
           },
           {
             "in": "query",
