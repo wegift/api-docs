@@ -1,6 +1,8 @@
 # Runa Developer Hub
 
-This repo contains the documentation for the Runa Developer Hub aka API Docs. This includes the OpenAPI specs for published versions of the API. We use [Mintlify](https://mintlify.com) as a docs framework and hosting provider.
+This repo contains the documentation for the Runa Developer Hub aka API Docs. This includes the OpenAPI specs for published versions of the API along with content pages. We use [Mintlify](https://mintlify.com) as a docs framework and hosting provider.
+
+This repository is publically hosted at https://github.com/wegift/api-docs.
 
 ## Writing
 
