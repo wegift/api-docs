@@ -395,7 +395,7 @@
                 "description": "Product category name"
               }
             },
-            "description": "Filter by product categories. To specify multiple categories repeat the parameter for each category, e.g. `?categories=fashion&categories=department-stores`. You can pull the list of categories [list categories](/reference/2024-02-05/endpoint/products/categories) endpoint."
+            "description": "Filter by product categories. To specify multiple categories repeat the parameter for each category, e.g. `?categories=fashion&categories=department-stores`. You can pull the list of categories from the [list categories](/reference/2024-02-05/endpoint/products/categories) endpoint."
           },
           {
             "in": "query",
