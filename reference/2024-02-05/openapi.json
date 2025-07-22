@@ -383,7 +383,19 @@
                 "description": "ISO 3166 ALPHA-2 country code"
               }
             },
-            "description": "Filter by countries where a product can be redeemed in. To specify multiple countries you repeat the parameter for each country, e.g. `?countries_redeemable_in=US&countries_redeemable_in=GB`"
+            "description": "Filter by countries where a product can be redeemed in. To specify multiple countries repeat the parameter for each country, e.g. `?countries_redeemable_in=US&countries_redeemable_in=GB`"
+          },
+          {
+            "in": "query",
+            "name": "categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "description": "Product category name"
+              }
+            },
+            "description": "Filter by product categories. To specify multiple categories repeat the parameter for each category, e.g. `?categories=fashion&categories=department-stores`. You can pull the list of categories [list categories](/reference/2024-02-05/endpoint/products/categories) endpoint."
           },
           {
             "in": "query",
