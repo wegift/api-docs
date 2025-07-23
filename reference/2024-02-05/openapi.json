@@ -40,6 +40,10 @@
     {
       "name": "orders",
       "description": "Operations related to ordering and orders."
+    },
+    {
+      "name": "transactions",
+      "description": "Operations related to transactions."
     }
   ],
   "paths": {
@@ -543,6 +547,182 @@
                         "US",
                         "ZA"
                       ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/transactions": {
+      "get": {
+        "operationId": "getTransactions",
+        "tags": ["transactions"],
+        "summary": "Get Customer Transactions",
+        "description": "Endpoint to get a list of transactions for a customer",
+        "parameters": [
+          { "$ref": "#/components/parameters/X-Api-Version" },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Limit the number of transactions returned",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/PageLimit"
+            }
+          },
+          {
+            "name": "after",
+            "in": "query",
+            "description": "Cursor to paginate forwards through transactions",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/TransactionsCursor"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Cursor to paginate backwards through transactions",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/TransactionsCursor"
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "description": "Comma separated list of 3 digit currency codes",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/CurrencyForAccount"
+            }
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "description": "The start date for filtering transactions. This parameter specifies the earliest date from which transactions should be included. It should be provided in ISO 8601 format without the timestamp (e.g. 2024-01-01).\n",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/DateFilter"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "description": "The end date for filtering transactions. This parameter specifies the latest date up to which transactions should be included. It should be provided in ISO 8601 format without the timestamp (e.g. 2024-01-01).\n",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/DateFilter"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "The transaction type",
+            "schema": {
+              "$ref": "#/components/schemas/TransactionType"
+            }
+          },
+          {
+            "name": "order_sources",
+            "in": "query",
+            "description": "Comma-separated list of transaction order sources(s) used to filter order item transactions. Because the frontend requires a different filter for order items, we use this instead of subtype.\n",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/OrderSources"
+            }
+          },
+          {
+            "name": "product_codes",
+            "in": "query",
+            "description": "Comma separated list of product codes for filtering transactions. This parameter is used to filter transactions for specific products. As product name is not associated with all transactions, we require the client to translate from name to code, and the code is then used for filtering.\n",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/ProductCodes"
+            }
+          },
+          {
+            "name": "face_value_from",
+            "in": "query",
+            "description": "The face value from value for filtering ORDER_ITEM type transactions that are greater than or equal to the provided value. Can also be passed along with face_value_to.\n",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/TransactionFaceValue"
+            }
+          },
+          {
+            "name": "face_value_to",
+            "in": "query",
+            "description": "The face value from value for filtering ORDER_ITEM type transactions that are less than or equal to the provided value. Can also be passed along with face_value_from.\n",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/TransactionFaceValue"
+            }
+          },
+          {
+            "name": "search_text",
+            "in": "query",
+            "description": "A case-insensitive string that will be used to find an exact match on either order ID, order item ID (e-code), email, or description\n",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/SearchText"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with list of transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Transaction"
+                      }
+                    },
+                    "pagination": {
+                      "$ref": "#/components/schemas/TransactionsPagination"
+                    }
+                  }
+                },
+                "examples": {
+                  "listTransactions": {
+                    "summary": "List Transactions",
+                    "value": {
+                      "items": [
+                        {
+                          "id": "TR-232DWKEO234567",
+                          "transaction_type": "ORDER_ITEM",
+                          "description": "Employee: 43127 (Birthday gift)",
+                          "source_transaction_id": "E-5ZDGD4EQ",
+                          "order_id": "O-KAM22EYK",
+                          "currency": "USD",
+                          "timestamp": "2020-02-01T00:00:00.000",
+                          "amount": "40.50",
+                          "face_value": "100.5",
+                          "product_code": "AMZ-GB"
+                        }
+                      ],
+                      "pagination": {
+                        "cursors": {
+                          "after": "eyJ0aW1lc3RhbXAiOiAiMjAyNC0wMi0wN1QxMDowMDowMC4xMjMiLCAidHJhbnNhY3Rpb25faWQiOiAiVFItMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTYifQ",
+                          "before": "eyJ0aW1lc3RhbXAiOiAiMjAyNC0wMi0xNFQxMDowMDowMC4xMjMiLCAidHJhbnNhY3Rpb25faWQiOiAiVFItMTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTYifQ"
+                        },
+                        "page": {
+                          "limit": 1
+                        }
+                      }
                     }
                   }
                 }
@@ -1321,6 +1501,191 @@
         "enum": ["COMPLETED", "FAILED", "PROCESSING"],
         "description": "The status of the order."
       },
+      "DateFilter": {
+        "type": "string",
+        "format": "date",
+        "example": "2024-01-01"
+      },
+      "Transaction": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "The transaction ID.",
+            "type": "string",
+            "example": "TR-232DWKEO234567"
+          },
+          "transaction_type": {
+            "description": "The transaction type.",
+            "type": "string",
+            "example": "ORDER_ITEM",
+            "enum": [
+              "ADJUSTMENT",
+              "CURRENCY_EXCHANGE",
+              "FEES",
+              "ORDER_ITEM",
+              "TOP_UP"
+            ]
+          },
+          "description": {
+            "description": "A more verbose description of the transaction.",
+            "type": "string",
+            "example": "Employee: 43127 (Birthday gift)"
+          },
+          "source_transaction_id": {
+            "description": "The source transaction id",
+            "type": "string",
+            "example": "E-54YAXWE6"
+          },
+          "order_id": {
+            "description": "The order id",
+            "type": "string",
+            "example": "O-4LB79EZK"
+          },
+          "currency": {
+            "description": "The currency of the transaction, in ISO-4217 format (3 letter code).",
+            "type": "string",
+            "example": "USD",
+            "format": "iso-4217"
+          },
+          "transaction_currency": {
+            "description": "The currency of the transaction, in ISO-4217 format (3 letter code). It could be different from base currency for FX Transactions",
+            "type": "string",
+            "example": "USD",
+            "format": "iso-4217"
+          },
+          "timestamp": {
+            "description": "The timestamp of the transaction in ISO 8601 format, with the UTC timezone.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2020-01-01T00:00:00.000"
+          },
+          "amount": {
+            "description": "The amount of the transaction.",
+            "type": "string",
+            "pattern": "^\\d+\\.?\\d*$",
+            "example": "40.50"
+          },
+          "transaction_amount": {
+            "description": "The amount of the transaction which might be different from base amount for FX Transactions.",
+            "type": "string",
+            "pattern": "^\\d+\\.?\\d*$",
+            "example": "40.50"
+          },
+          "transaction_direction": {
+            "description": "Whether the transaction is credit/debit",
+            "type": "string",
+            "example": "DEBIT",
+            "enum": ["CREDIT", "DEBIT"]
+          },
+          "face_value": {
+            "description": "The face_value in case of an order item.",
+            "type": "string",
+            "pattern": "^\\d+\\.?\\d*$",
+            "example": "10.50"
+          },
+          "product_code": {
+            "description": "The product_code used for order item.",
+            "type": "string",
+            "example": "AMZ-GB"
+          },
+          "order_source": {
+            "description": "The source of an order item.",
+            "type": "string",
+            "example": "RUNA_ORDER_SERVICE",
+            "enum": [
+              "PORTAL",
+              "QUICK_ORDER",
+              "ORDER_TEMPLATE",
+              "RUNA_WEB_APP",
+              "SYNC_API",
+              "RUNA_API",
+              "RUNA_ORDER_SERVICE",
+              "INTERNAL_SERVICE_API",
+              "TEST_TOOL"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "transaction_type",
+          "source_transaction_id",
+          "currency",
+          "timestamp",
+          "amount",
+          "transaction_direction"
+        ]
+      },
+      "TransactionFaceValue": {
+        "type": "number",
+        "description": "The face value for order items.",
+        "example": 100
+      },
+      "TransactionType": {
+        "type": "string",
+        "description": "The type of the transaction",
+        "example": "ORDER_ITEM",
+        "enum": [
+          "ADJUSTMENT",
+          "CURRENCY_EXCHANGE",
+          "FEES",
+          "ORDER_ITEM",
+          "TOP_UP"
+        ]
+      },
+      "OrderSources": {
+        "type": "string",
+        "description": "The source(s) used to filter order item transactions. We use this instead of subtype for order items.",
+        "example": "PORTAL,QUICK_ORDER",
+        "enum": [
+          "PORTAL",
+          "QUICK_ORDER",
+          "ORDER_TEMPLATE",
+          "RUNA_WEB_APP",
+          "RUNA_ORDER_SERVICE",
+          "SYNC_API",
+          "RUNA_API",
+          "INTERNAL_SERVICE_API"
+        ]
+      },
+      "ProductCodes": {
+        "type": "string",
+        "description": "Code(s) used to filter transactions for specific products.\n",
+        "example": "ABO-GB,OBA-GB"
+      },
+      "TransactionsCursor": {
+        "type": "string",
+        "description": "A cursor used to paginate forwards or backwards through the list of transactions. It is a base64 encoded representation of the timestamp and transaction id of the first of last transaction in the list.\n",
+        "example": "eyJOZXh0VG9rZW4iOiBudWxsLCAiYm90b190cnVuY2F0ZV9hbW91bnQiOiAyfQ=="
+      },
+      "TransactionsPagination": {
+        "type": "object",
+        "properties": {
+          "cursors": {
+            "type": "object",
+            "properties": {
+              "after": {
+                "$ref": "#/components/schemas/TransactionsCursor"
+              },
+              "before": {
+                "$ref": "#/components/schemas/TransactionsCursor"
+              }
+            }
+          },
+          "page": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "$ref": "#/components/schemas/PageLimit"
+              }
+            }
+          }
+        }
+      },
+      "SearchText": {
+        "type": "string",
+        "description": "Search text",
+        "example": "example@email.com"
+      },
       "TransactionDetail": {
         "title": "TransactionDetail",
         "description": "A mapping of the subtotal of the order using the payout currency as a key.",
@@ -1421,6 +1786,17 @@
             "type": "string"
           }
         }
+      },
+      "PageLimit": {
+        "required": false,
+        "name": "limit",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500,
+          "default": 100
+        },
+        "in": "query"
       },
       "PageableMeta": {
         "title": "PageableMeta",
