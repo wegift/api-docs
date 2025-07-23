@@ -704,7 +704,6 @@
                         {
                           "id": "TR-232DWKEO234567",
                           "transaction_type": "ORDER_ITEM",
-                          "transaction_sub_type": "COMPLETED",
                           "description": "Employee: 43127 (Birthday gift)",
                           "source_transaction_id": "E-5ZDGD4EQ",
                           "order_id": "O-KAM22EYK",
@@ -1527,32 +1526,6 @@
               "TOP_UP"
             ]
           },
-          "transaction_sub_type": {
-            "description": "The transaction sub-type.",
-            "type": "string",
-            "example": "COMPLETED",
-            "enum": [
-              "BANK_TRANSFER",
-              "CANCELLATION",
-              "CARD_PAYMENT",
-              "CARD_PAYMENT_FEE",
-              "COMPLETED",
-              "CREDIT",
-              "DELAYED_DISCOUNT",
-              "DISCOUNT_ADJUSTMENT",
-              "FX_FEES",
-              "FX_TRANSFERS_IN",
-              "FX_TRANSFERS_OUT",
-              "OTHER",
-              "POS_CARD_PAYMENT",
-              "POS_CARD_PAYMENT_FEE",
-              "REACTIVATION",
-              "REBATE_BY_RUNA",
-              "RUNA_FUNDS_ADVANCE",
-              "RUNA_FUNDS_RECALL",
-              "UNSPENT_VALUE"
-            ]
-          },
           "description": {
             "description": "A more verbose description of the transaction.",
             "type": "string",
@@ -1635,7 +1608,6 @@
         "required": [
           "id",
           "transaction_type",
-          "transaction_sub_type",
           "source_transaction_id",
           "currency",
           "timestamp",
