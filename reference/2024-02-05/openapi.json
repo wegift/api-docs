@@ -352,6 +352,7 @@
     "/product": {
       "get": {
         "operationId": "getProducts",
+        "summary": "List all products in your catalog",
         "description": "List all products in your catalog",
         "tags": ["products"],
         "parameters": [
@@ -383,7 +384,19 @@
                 "description": "ISO 3166 ALPHA-2 country code"
               }
             },
-            "description": "Filter by countries where a product can be redeemed in. To specify multiple countries you repeat the parameter for each country, e.g. `?countries_redeemable_in=US&countries_redeemable_in=GB`"
+            "description": "Filter by countries where a product can be redeemed in. To specify multiple countries repeat the parameter for each country, e.g. `?countries_redeemable_in=US&countries_redeemable_in=GB`"
+          },
+          {
+            "in": "query",
+            "name": "categories",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "description": "Product category name"
+              }
+            },
+            "description": "Filter by product categories. To specify multiple categories repeat the parameter for each category, e.g. `?categories=fashion&categories=department-stores`. You can pull the list of categories from the [list categories](/reference/2024-02-05/endpoint/products/categories) endpoint."
           },
           {
             "in": "query",
@@ -448,6 +461,7 @@
         "operationId": "getSingleProduct",
         "tags": ["products"],
         "description": "Retrieve a single product's details",
+        "summary": "Retrieve a single product's details",
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           {
@@ -492,7 +506,7 @@
     },
     "/product/countries": {
       "get": {
-        "operationId": "getProductsCountries",
+        "operationId": "listProductsCountries",
         "tags": ["products"],
         "description": "Retrieves a list of countries where products are available",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
@@ -542,6 +556,65 @@
                         "SI",
                         "US",
                         "ZA"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
+    },
+    "/product/categories": {
+      "get": {
+        "operationId": "listProductsCategories",
+        "tags": ["products"],
+        "summary": "Retrieves a list of product categories",
+        "description": "Retrieves a list of product categories",
+        "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
+        "responses": {
+          "200": {
+            "description": "A list of all possible product categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "categories": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["code"]
+                      },
+                      "example": [
+                        { "code": "beauty-and-lifestyle" },
+                        { "code": "booksellers" },
+                        { "code": "department-stores" },
+                        { "code": "electricals" },
+                        { "code": "entertainment" },
+                        { "code": "experiences" },
+                        { "code": "fashion" },
+                        { "code": "food-and-drink" },
+                        { "code": "home-and-diy" },
+                        { "code": "jewellers" },
+                        { "code": "leisure-and-sports" },
+                        { "code": "mens-fashion" },
+                        { "code": "prepaid-card" },
+                        { "code": "supermarkets" },
+                        { "code": "toys-and-games" },
+                        { "code": "travel" },
+                        { "code": "womens-fashion" }
                       ]
                     }
                   }
@@ -1997,7 +2070,7 @@
             "items": {
               "type": "string"
             },
-            "description": "List of the categories that the product belongs to. Examples of values (not comprehensive): `department-stores` `home-and-diy` `toys-and-games` `supermarkets` `booksellers` `experiences` `fashion` `electricals` `entertainment` `travel` `leisure-and-sports` `food-and-drink` `beauty-and-lifestyle` `jewellers` `prepaid-card`"
+            "description": "List of the categories that the product belongs to. You can fetch the list of categories using the [`GET /product/categories` endpoint](/reference/2024-02-05/endpoint/products/categories)."
           },
           "code": {
             "type": "string",

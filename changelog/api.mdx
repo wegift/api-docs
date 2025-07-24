@@ -4,6 +4,22 @@ icon: newspaper
 description: "Changelog of all major API updates, new features, removals, and improvements."
 ---
 
+<Update label="July 2025" tags={["Feature", "Catalogue"]}>
+
+## Filtering the product catalogue by category
+
+We have introduced two new features to enhance how you work with product categories in the API.
+
+### Filter products by category
+
+The [List products](/reference/2024-02-05/endpoint/products/list) endpoint now supports a `categories` query string parameter. You can use this to filter the product catalogue by one or more categories. To specify multiple categories, repeat the parameter for each category, e.g. `?categories=fashion&categories=department-stores`.
+
+### List all available categories
+
+Filtering needs knowledge of the available categories. You can now fetch the full list of product categories supported by the API using the [List categories](/reference/2024-02-05/endpoint/products/categories) endpoint making it easier to build dynamic category selectors or validate category names.
+
+</Update>
+
 <Update label="March 2025" tags={["Feature", "Payment", "Ordering"]}>
 ## New payment payout type added
 To support the release of [Runa Pay to Card](https://runa.io/products/pay-to-card) a new payout type of `payment` has been added to the product catalogue. This new type joins the existing types of `gift_card` and `subscription`. For `payment` type products the new `payment` key will contain specific details about the product.
