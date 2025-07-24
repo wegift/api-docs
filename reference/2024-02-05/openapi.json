@@ -352,6 +352,7 @@
     "/product": {
       "get": {
         "operationId": "getProducts",
+        "summary": "List all products in your catalog",
         "description": "List all products in your catalog",
         "tags": ["products"],
         "parameters": [
@@ -460,6 +461,7 @@
         "operationId": "getSingleProduct",
         "tags": ["products"],
         "description": "Retrieve a single product's details",
+        "summary": "Retrieve a single product's details",
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           {
@@ -574,6 +576,7 @@
         "operationId": "listProductsCategories",
         "tags": ["products"],
         "summary": "Retrieves a list of product categories",
+        "description": "Retrieves a list of product categories",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
         "responses": {
           "200": {
@@ -586,26 +589,32 @@
                     "categories": {
                       "type": "array",
                       "items": {
-                        "type": "string"
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["code"]
                       },
                       "example": [
-                        "beauty-and-lifestyle",
-                        "booksellers",
-                        "department-stores",
-                        "electricals",
-                        "entertainment",
-                        "experiences",
-                        "fashion",
-                        "food-and-drink",
-                        "home-and-diy",
-                        "jewellers",
-                        "leisure-and-sports",
-                        "mens-fashion",
-                        "prepaid-card",
-                        "supermarkets",
-                        "toys-and-games",
-                        "travel",
-                        "womens-fashion"
+                        { "code": "beauty-and-lifestyle" },
+                        { "code": "booksellers" },
+                        { "code": "department-stores" },
+                        { "code": "electricals" },
+                        { "code": "entertainment" },
+                        { "code": "experiences" },
+                        { "code": "fashion" },
+                        { "code": "food-and-drink" },
+                        { "code": "home-and-diy" },
+                        { "code": "jewellers" },
+                        { "code": "leisure-and-sports" },
+                        { "code": "mens-fashion" },
+                        { "code": "prepaid-card" },
+                        { "code": "supermarkets" },
+                        { "code": "toys-and-games" },
+                        { "code": "travel" },
+                        { "code": "womens-fashion" }
                       ]
                     }
                   }
