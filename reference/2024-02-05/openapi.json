@@ -401,7 +401,7 @@
           {
             "in": "query",
             "name": "after",
-            "description": "A cursor for use in pagination to return the next set of products. The before and after cursors are mutually exclusive (you can't use them at the same time).",
+            "description": "A cursor for use in pagination to return the next set of products. The before and after cursors are mutually exclusive (you can't use them at the same time). See [pagination](/reference/pagination) for more information on how to use this parameter.",
             "schema": {
               "type": "string"
             }
@@ -409,7 +409,7 @@
           {
             "in": "query",
             "name": "before",
-            "description": "A cursor for use in pagination to return the previous set of products. The before and after cursors are mutually exclusive (you can't use them at the same time).",
+            "description": "A cursor for use in pagination to return the previous set of products. The before and after cursors are mutually exclusive (you can't use them at the same time). See [pagination](/reference/pagination) for more information on how to use this parameter.",
             "schema": {
               "type": "string"
             }
@@ -417,7 +417,7 @@
           {
             "in": "query",
             "name": "limit",
-            "description": "A limit on the number of items to be returned.",
+            "description": "A limit on the number of items to be returned. See [pagination](/reference/pagination) for more information on how to use this parameter.",
             "schema": {
               "type": "integer",
               "default": 500,
@@ -1499,6 +1499,7 @@
         "title": "PageableMeta",
         "required": ["cursors", "page"],
         "type": "object",
+        "description": "Information about the page of results returned. See [pagination](/reference/pagination) for more information on how to page through results.",
         "properties": {
           "cursors": {
             "title": "Cursors",
