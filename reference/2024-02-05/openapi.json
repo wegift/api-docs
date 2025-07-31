@@ -1764,6 +1764,7 @@
                 "type": "object",
                 "properties": {
                   "subscription_plans": {
+                    "description": "A list of subscription plans available for the product. You must use the `subscription_plan_code` when ordering a subscription plan, not the top-level `code`.",
                     "type": "array",
                     "items": {
                       "$ref": "#/components/schemas/ProductSubscriptionPlan"
@@ -1992,7 +1993,7 @@
       },
       "ProductIsOrderable": {
         "type": "boolean",
-        "description": "Indicates whether or not you are able to order the product. You should use this detail to determine whether or not to display the product to your end users."
+        "description": "Indicates whether or not you are able to order the product. You should use this detail to determine whether or not to display the product to your end users.\n\nWe recommend that you only display products to customers when this field is `true` - we will reject any orders placed for products where this is `false`. You can filter by `is_orderable` to only return products that can be ordered in the list endpoint."
       },
       "ProductDiscountMultiplier": {
         "type": "string",
@@ -2057,7 +2058,7 @@
       },
       "ContentResources": {
         "title": "Content resources",
-        "description": "Content resources for the product. Includes description, disclaimer, refund policy, reissuance policy, terms and conditions, redemption instructions. The content resources can be provided in a number of formats. The format returned is determined by the [`content` query string parameter](/reference/2024-02-05/endpoint/products/get#parameter-content). For the list endpoint the only content format supported is `url`.",
+        "description": "Content resources provide additional information about the product, including:\n\n- Product description\n- Disclaimers\n- Refund policy\n- Reissuance policy \n- Terms and conditions\n- Redemption instructions\n\nThis content can be returned in different formats based on the `content` query parameter in the [get product endpoint](/reference/2024-02-05/endpoint/products/get#parameter-content). The list endpoint only supports returning content as URLs.\n\nContent fields will be present when content is available, and `null` when content has been removed. We update content periodically - if content has been removed, requests will return a `403` or `404` error. Your implementation should handle these errors gracefully.",
         "oneOf": [
           { "$ref": "#/components/schemas/ContentResourcesUrl" },
           { "$ref": "#/components/schemas/ContentResourcesMarkdown" },
