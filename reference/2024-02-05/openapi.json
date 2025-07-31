@@ -795,12 +795,9 @@
             "title": "Distribution Method",
             "description": "The distribution method used for the payout link.",
             "oneOf": [
-              {
-                "$ref": "#/components/schemas/EmailDistribution"
-              },
-              {
-                "$ref": "#/components/schemas/LinkDistribution"
-              }
+              { "$ref": "#/components/schemas/EmailDistribution" },
+              { "$ref": "#/components/schemas/LinkDistribution" },
+              { "$ref": "#/components/schemas/RecipientDistribution" }
             ]
           },
           "products": {
@@ -1088,6 +1085,45 @@
         "enum": ["PAYOUT_LINK"],
         "description": "Supported link distribution types."
       },
+      "RecipientDistribution": {
+        "title": "Recipient",
+        "description": "Recipient distribution. Currently this method is only supported for distributing payment type products. For subsequent orders to known recipients we will attempt to make a repeat payout.",
+        "summary": "Send the payout link to a known recipient",
+        "required": ["type", "recipient_reference", "email_address"],
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/RecipientDistributionType"
+          },
+          "recipient_reference": {
+            "title": "Recipient Reference",
+            "description": "A customer provided reference to identify an individual recipient. It must be unique per recipient. When the same reference is used for a second order this will trigger a repeat payout. This is a free-form string limited to 255 characters. It can only contain alphanumeric characters, dashes, underscores, dots, and at-signs.",
+            "example": "abc123",
+            "type": "string",
+            "maxLength": 255,
+            "pattern": "^[A-z0-9-_@.]+$"
+          },
+          "email_address": {
+            "title": "Email Address",
+            "description": "The email address of the end user to send the payout link to.",
+            "example": "fred@example.com",
+            "type": "string",
+            "format": "email"
+          },
+          "template_id": {
+            "title": "Template ID",
+            "description": "The template ID for a User Redemption Template.",
+            "example": "DT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
+            "type": "string"
+          }
+        }
+      },
+      "RecipientDistributionType": {
+        "title": "RecipientDistributionType",
+        "type": "string",
+        "enum": ["RECIPIENT"],
+        "description": "Supported recipient distribution types."
+      },
       "MultipleProduct": {
         "title": "Multiple",
         "required": ["type", "values"],
@@ -1227,12 +1263,9 @@
             "title": "Distribution Method",
             "description": "Distribution method to send end users the payout link. Choose `EMAIL` if you want Runa to send the payout link to the end user directly. Choose `PAYOUT_LINK` if you want to send the payout link to the end user yourself.",
             "oneOf": [
-              {
-                "$ref": "#/components/schemas/EmailDistribution"
-              },
-              {
-                "$ref": "#/components/schemas/LinkDistribution"
-              }
+              { "$ref": "#/components/schemas/EmailDistribution" },
+              { "$ref": "#/components/schemas/LinkDistribution" },
+              { "$ref": "#/components/schemas/RecipientDistribution" }
             ]
           },
           "products": {
