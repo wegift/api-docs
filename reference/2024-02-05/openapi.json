@@ -47,7 +47,7 @@
       "get": {
         "operationId": "getBalance",
         "tags": ["balance"],
-        "summary": "Get Account Balance",
+        "summary": "Get account balance",
         "description": "Retrieves the account balance. Returns the balance in a specified currency if the currency parameter is provided. If not, returns all balances greater than 0.",
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
@@ -121,8 +121,8 @@
       "get": {
         "operationId": "getListOfOrders",
         "tags": ["orders"],
-        "summary": "Get a list of orders.",
-        "description": "Get a list of all of your orders.",
+        "summary": "List orders",
+        "description": "Get a list of all of your orders",
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           {
@@ -273,7 +273,7 @@
       "get": {
         "operationId": "getSingleOrder",
         "tags": ["orders"],
-        "summary": "Get an order's details",
+        "summary": "Get order details",
         "description": "Get the details and status of a specific order. Can be used for checking the status of an async order after it's been accepted.",
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
@@ -352,7 +352,7 @@
     "/product": {
       "get": {
         "operationId": "getProducts",
-        "summary": "List all products in your catalog",
+        "summary": "List products",
         "description": "List all products in your catalog",
         "tags": ["products"],
         "parameters": [
@@ -460,8 +460,8 @@
       "get": {
         "operationId": "getSingleProduct",
         "tags": ["products"],
+        "summary": "Get product details",
         "description": "Retrieve a single product's details",
-        "summary": "Retrieve a single product's details",
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           {
@@ -508,7 +508,8 @@
       "get": {
         "operationId": "listProductsCountries",
         "tags": ["products"],
-        "description": "Retrieves a list of countries where products are available",
+        "summary": "List countries",
+        "description": "Get a list of countries where products are available",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
         "responses": {
           "200": {
@@ -575,8 +576,8 @@
       "get": {
         "operationId": "listProductsCategories",
         "tags": ["products"],
-        "summary": "Retrieves a list of product categories",
-        "description": "Retrieves a list of product categories",
+        "summary": "List categories",
+        "description": "Get a list of all possible product categories",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
         "responses": {
           "200": {
