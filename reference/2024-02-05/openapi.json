@@ -877,7 +877,7 @@
       },
       "CompletedOrderWithBasicDetails": {
         "title": "Completed order",
-        "description": "Used for orders that have completed. This class is typically used when returning\na *list* of orders to the client.",
+        "description": "Used for orders that have completed. This class is typically used when returning a *list* of orders to the client.",
         "required": [
           "id",
           "status",
@@ -1003,7 +1003,7 @@
       },
       "CompletedOrderWithFullDetails": {
         "title": "Completed order",
-        "description": "Used for an order that has completed. This class is typically used when returning\na *single order* to the client.",
+        "description": "Used for an order that has completed. This class is typically used when returning a *single order* to the client.",
         "type": "object",
         "allOf": [
           {
@@ -1525,7 +1525,7 @@
             "type": "string"
           }
         },
-        "description": "Single product. The end user will be able to redeem the payout link for this\nspecific product."
+        "description": "Single product. The end user will be able to redeem the payout link for this specific product."
       },
       "SingleProductType": {
         "title": "SingleProductType",
@@ -1553,7 +1553,7 @@
             "uniqueItems": true
           }
         },
-        "description": "Multiple products. The end user will be able to split the payout link's value\nbetween these products."
+        "description": "Multiple products. The end user will be able to split the payout link's value between these products."
       },
       "MultipleProductType": {
         "title": "MultipleProductType",
@@ -1564,7 +1564,7 @@
       "UnknownProduct": {
         "title": "Unknown",
         "type": "object",
-        "description": "Product(s) unknown. It was not possible to determine which products were included\nin the order.",
+        "description": "Product(s) unknown. It was not possible to determine which products were included in the order.",
         "required": ["type"],
         "properties": {
           "type": {
