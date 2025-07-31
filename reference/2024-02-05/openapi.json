@@ -1562,17 +1562,19 @@
         "description": "Multiple products. When more than one product code is provided."
       },
       "UnknownProduct": {
-        "title": "UnknownProduct",
+        "title": "Unknown",
         "type": "object",
+        "description": "Product(s) unknown. It was not possible to determine which products were included\nin the order.",
+        "required": ["type"],
         "properties": {
           "type": {
             "title": "Type",
             "description": "It is not currently possible to determine which products were selected when this item was ordered.",
             "default": "UNKNOWN",
-            "type": "string"
+            "type": "string",
+            "enum": ["UNKNOWN"]
           }
-        },
-        "description": "Product(s) unknown. It was not possible to determine which products were included\nin the order."
+        }
       },
       "ProductUpdateWebhook": {
         "title": "Product update webhook",
