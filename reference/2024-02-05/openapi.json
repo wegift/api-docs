@@ -137,24 +137,8 @@
             "in": "query",
             "description": "The number (1&ndash;500) of orders to include in each page of orders. Default: 100."
           },
-          {
-            "required": false,
-            "name": "before",
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "description": "A cursor. Using this parameter will return the page of orders from *before* the cursor (i.e., the _previous_ page). The `before` and `after` cursors are mutually exclusive (you can't use them at the same time). Get this value from the `pagination` section of any page of orders."
-          },
-          {
-            "required": false,
-            "name": "after",
-            "schema": {
-              "type": "string"
-            },
-            "in": "query",
-            "description": "A cursor. Using this parameter will return the page of orders from *after* the cursor (i.e., the _next_ page). The `before` and `after` cursors are mutually exclusive (you can't use them at the same time). Get this value from the `pagination` section of any page of orders."
-          }
+          { "$ref": "#/components/parameters/BeforeCursor" },
+          { "$ref": "#/components/parameters/AfterCursor" }
         ],
         "responses": {
           "200": {
@@ -398,22 +382,8 @@
             },
             "description": "Filter by product categories. To specify multiple categories repeat the parameter for each category, e.g. `?categories=fashion&categories=department-stores`. You can pull the list of categories from the [list categories](/reference/2024-02-05/endpoint/products/categories) endpoint."
           },
-          {
-            "in": "query",
-            "name": "after",
-            "description": "A cursor for use in pagination to return the next set of products. The before and after cursors are mutually exclusive (you can't use them at the same time). See [pagination](/reference/pagination) for more information on how to use this parameter.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "before",
-            "description": "A cursor for use in pagination to return the previous set of products. The before and after cursors are mutually exclusive (you can't use them at the same time). See [pagination](/reference/pagination) for more information on how to use this parameter.",
-            "schema": {
-              "type": "string"
-            }
-          },
+          { "$ref": "#/components/parameters/BeforeCursor" },
+          { "$ref": "#/components/parameters/AfterCursor" },
           {
             "in": "query",
             "name": "limit",
@@ -693,6 +663,24 @@
         "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currency) for a listing of supported currencies.",
         "in": "query",
         "example": "USD"
+      },
+      "BeforeCursor": {
+        "name": "before",
+        "description": "A cursor for use in pagination to return the previous set of results. The before and after cursors are mutually exclusive (you can't use them at the same time). You can get a value from the `pagination.cursors.before` field in the response. See [pagination](/reference/pagination) for more information.",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "ABCaa"
+        }
+      },
+      "AfterCursor": {
+        "name": "after",
+        "description": "A cursor for use in pagination to return the next set of results. The before and after cursors are mutually exclusive (you can't use them at the same time). You can get a value from the `pagination.cursors.after` field in the response. See [pagination](/reference/pagination) for more information.",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "ZXYzz"
+        }
       }
     },
     "schemas": {
@@ -1484,13 +1472,13 @@
           "after": {
             "title": "After",
             "description": "Cursor to query the next page.",
-            "example": "ZXhhbXBsZW9mYWN1cnNvcg==",
+            "example": "ZXYzz",
             "type": "string"
           },
           "before": {
             "title": "Before",
             "description": "Cursor to query the previous page.",
-            "example": "ZXhhbXBsZW9mYWN1cnNvcg==",
+            "example": "ABCaa",
             "type": "string"
           }
         }
