@@ -24,6 +24,7 @@ We recommend that you query the [list endpoint](/reference/2024-02-05/endpoint/p
     icon="grid"
     href="/reference/2024-02-05/endpoint/products/list"
     horizontal
+    arrow
   >
     Endpoint details for listing all products, filterable by country
   </Card>
@@ -32,6 +33,7 @@ We recommend that you query the [list endpoint](/reference/2024-02-05/endpoint/p
     icon="square"
     href="/reference/2024-02-05/endpoint/products/get"
     horizontal
+    arrow
   >
     Endpoint details for getting details of a specific product by its code
   </Card>
@@ -186,3 +188,35 @@ The `payment` object will only be present when the `payout_type` is `payment`.
 
   </Card>
 </ResponseField>
+
+## Paging through the catalog
+
+The catalog is paginated, with a default page size of 500 products. You can use the `after` and `limit` query parameters to control the page size and the cursor to fetch the next page of products.
+
+```http
+GET /product?after={cursor}&limit=100
+```
+
+The response will include a `pagination` object with the following fields. You can use the `after` cursor to fetch the next page of products, and the `before` cursor to fetch the previous page of products.
+
+```json {3}
+"pagination": {
+    "cursors": {
+        "after": "MMM-US",
+        "before": "AAA-US"
+    },
+    "page": {
+        "limit": 100
+    }
+}
+```
+
+<Card
+  title="Pagination reference"
+  icon="file"
+  href="/reference/pagination"
+  horizontal
+  arrow
+>
+  More details on how pagination works in the Runa API.
+</Card>
