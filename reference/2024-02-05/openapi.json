@@ -368,7 +368,7 @@
                 "description": "ISO 3166 ALPHA-2 country code"
               }
             },
-            "description": "Filter by countries where a product can be redeemed in. To specify multiple countries repeat the parameter for each country, e.g. `?countries_redeemable_in=US&countries_redeemable_in=GB`"
+            "description": "Filter by countries where a product can be redeemed in. To specify multiple countries repeat the parameter for each country, e.g. `?countries_redeemable_in=US&countries_redeemable_in=GB`. You can pull the list of supported countries from the [list countries](/reference/2024-02-05/endpoint/products/countries) endpoint."
           },
           {
             "in": "query",
@@ -1269,9 +1269,7 @@
             "type": "number"
           },
           "discount_multiplier": {
-            "title": "Discount Multiplier",
-            "description": "The discount multiplier of the order item. 0 means no discount and 0.1 means 10% discount. The discount is applied on the price of the order item before any fees are applied.",
-            "type": "number"
+            "$ref": "#/components/schemas/ProductDiscountMultiplier"
           }
         },
         "description": "The computed discount for an order item."
@@ -1491,7 +1489,7 @@
         "properties": {
           "cursors": {
             "title": "Cursors",
-            "description": "Pagination cursors.",
+            "description": "Pagination cursors, use the `after` cursor to page forward and the `before` cursor to page backward.",
             "allOf": [
               {
                 "$ref": "#/components/schemas/PageCursors"
@@ -1500,7 +1498,7 @@
           },
           "page": {
             "title": "Page",
-            "description": "Page metadata.",
+            "description": "Extra information about the current page.",
             "allOf": [
               {
                 "$ref": "#/components/schemas/Page"
@@ -1580,10 +1578,7 @@
             "type": "string",
             "example": "0.8"
           },
-          "is_orderable": {
-            "type": "boolean",
-            "example": true
-          }
+          "is_orderable": { "$ref": "#/components/schemas/ProductIsOrderable" }
         }
       },
       "PayoutStatus": {
@@ -1681,63 +1676,157 @@
         },
         "description": "A validation error response. Returned when the request failed validation. This response can contain multiple validation errors, see the details key for each."
       },
-      "Assets": {
+      "Product": {
         "type": "object",
+        "description": "Product details",
         "properties": {
-          "card_image_url": {
+          "name": {
             "type": "string",
-            "format": "uri",
-            "nullable": true
+            "description": "The name of the product.",
+            "example": "Example Merchant"
           },
-          "icon_image_url": {
+          "code": {
             "type": "string",
-            "format": "uri",
-            "nullable": true
+            "description": "A unique code identifying the product. Use this code when placing an order. \n\n_For `subscription` products, this code identifies the top level product. You must use the `subscription_plan_code` instead when ordering._",
+            "example": "XYZ-US"
           },
-          "primary_color": {
+          "currency": {
             "type": "string",
-            "pattern": "^#[0-9A-Fa-f]{6}$",
-            "nullable": true
+            "pattern": "^[A-Z]{3}$",
+            "description": "The currency of the product, represented by an ISO 4217 currency code. See [currencies](/reference/currencies) for a list of supported currencies.",
+            "example": "USD"
+          },
+          "state": {
+            "type": "string",
+            "enum": ["LIVE", "TEMPORARILY_DISABLED", "TEMPORARILY_DEGRADED"],
+            "description": "The current state of the product.",
+            "example": "LIVE"
+          },
+          "is_orderable": { "$ref": "#/components/schemas/ProductIsOrderable" },
+          "payout_type": {
+            "type": "string",
+            "enum": ["gift_card", "subscription", "payment"],
+            "description": "The type of payout - this field will tell you the key of the additional object details that correspond to each payout type. The types currently supported are `gift_card`, `subscription`, or `payment`. Your implementation should account for additional payout types being addedin the future."
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of the categories that the product belongs to. You can fetch the list of categories using the [`GET /product/categories` endpoint](/reference/2024-02-05/endpoint/products/categories).",
+            "example": ["food-and-drink", "entertainment"]
+          },
+          "countries_redeemable_in": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$",
+              "description": "ISO 3166 ALPHA-2 country code"
+            },
+            "description": "Countries where the payout can be spent.",
+            "example": ["US"]
+          },
+          "customer_service": {
+            "$ref": "#/components/schemas/ProductCustomerService"
+          },
+          "discount_multiplier": {
+            "$ref": "#/components/schemas/ProductDiscountMultiplier"
+          },
+          "availability": {
+            "type": "string",
+            "enum": ["stocked", "realtime"],
+            "description": "The availability type of the product.",
+            "example": "realtime"
+          },
+          "gift_card": {
+            "description": "Specific details about the gift card product, only populated when the `payout_type` is `gift_card`.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PayoutTypeDetailsBase"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "denominations": {
+                    "$ref": "#/components/schemas/ProductDenominations"
+                  }
+                }
+              }
+            ]
+          },
+          "subscription": {
+            "description": "Details about the subscription product, only populated when the `payout_type` is `subscription`.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PayoutTypeDetailsBase"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "subscription_plans": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ProductSubscriptionPlan"
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "payment": {
+            "description": "Details about the payment product, only populated when the `payout_type` is `payment`.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProductPayment"
+              }
+            ]
           }
-        }
+        },
+        "required": [
+          "approval_state",
+          "categories",
+          "code",
+          "countries_redeemable_in",
+          "currency",
+          "customer_service",
+          "discount_multiplier",
+          "name",
+          "state",
+          "is_orderable",
+          "payout_type"
+        ]
       },
-      "BasePayoutTypeDetails": {
+      "PayoutTypeDetailsBase": {
         "type": "object",
         "properties": {
           "assets": {
-            "$ref": "#/components/schemas/Assets"
+            "$ref": "#/components/schemas/ProductAssets"
           },
           "balance_check_url": {
             "type": "string",
             "nullable": true,
             "format": "uri",
-            "description": "URL to check the gift card balance."
+            "description": "URL to check the gift card balance. This will be a provider specific URL that a consumer can use to check the balance of the gift card.",
+            "example": "https://merchant.example.com/balance-check"
           },
           "content_resources": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/ContentResources"
-              },
-              {
-                "$ref": "#/components/schemas/ContentResourcesMarkdown"
-              },
-              {
-                "$ref": "#/components/schemas/ContentResourcesHTML"
-              }
-            ]
+            "$ref": "#/components/schemas/ContentResources"
           },
           "expiry": {
-            "$ref": "#/components/schemas/Expiry"
+            "$ref": "#/components/schemas/ProductExpiry"
           },
           "redeemable_at": {
-            "description": "Defines where the gift card can be redeemed. Options are 'all' for both online and in-store, 'in-store' for in-store only, and 'online' for online only.",
+            "description": "Defines where the gift card can be redeemed. Options are `all` for both online and in-store, `in-store` for in-store only, and `online` for online only.",
             "type": "string",
-            "enum": ["all", "online", "in-store"]
+            "enum": ["all", "online", "in-store"],
+            "example": "all"
           },
           "website_url": {
+            "description": "The URL of the website for the product. This is the URL that a consumer can use to either redeem the payout or view details about where they can redeem the payout.",
             "type": "string",
             "format": "uri",
-            "nullable": true
+            "nullable": true,
+            "example": "https://merchant.example.com"
           },
           "barcode_format": {
             "type": "string",
@@ -1752,16 +1841,232 @@
               "other"
             ],
             "nullable": true,
-            "description": "The barcode format of the product."
+            "description": "The barcode format of the product.",
+            "example": "code-128"
           },
           "e_code_usage_type": {
             "type": "string",
             "enum": ["undefined", "url-recommended", "url-only"],
-            "description": "The e-code usage type of the product."
+            "description": "The e-code usage type of the product.",
+            "example": "url-only"
           }
         }
       },
+      "ProductSubscriptionPlan": {
+        "type": "object",
+        "properties": {
+          "length_unit": {
+            "description": "The unit of time for the subscription plan. Currently `DAYS` and `MONTHS` are supported.",
+            "type": "string",
+            "enum": ["DAYS", "MONTHS"],
+            "example": "MONTHS"
+          },
+          "length": {
+            "type": "integer",
+            "description": "The length of the subscription plan using the `length_unit`.",
+            "example": 12
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the subscription plan.",
+            "example": "3 month subscription"
+          },
+          "price": {
+            "type": "string",
+            "format": "decimal",
+            "description": "The price of the subscription plan.",
+            "example": "10.00"
+          },
+          "subscription_plan_code": {
+            "description": "Use this code during order creation, rather than the top level `code`.",
+            "type": "string",
+            "example": "XYZ-US-SUB-1"
+          }
+        }
+      },
+      "ProductPayment": {
+        "type": "object",
+        "properties": {
+          "assets": {
+            "type": "object",
+            "required": ["icon_image_url", "primary_color"],
+            "properties": {
+              "icon_image_url": {
+                "$ref": "#/components/schemas/ProductIconImageUrl"
+              },
+              "primary_color": {
+                "$ref": "#/components/schemas/ProductPrimaryColor"
+              }
+            }
+          },
+          "denominations": {
+            "type": "object",
+            "required": ["minimum_value", "maximum_value"],
+            "properties": {
+              "minimum_value": {
+                "$ref": "#/components/schemas/ProductMinimumValue"
+              },
+              "maximum_value": {
+                "$ref": "#/components/schemas/ProductMaximumValue"
+              }
+            }
+          },
+          "content_resources": {
+            "$ref": "#/components/schemas/ContentResources"
+          }
+        },
+        "required": ["assets", "denominations"]
+      },
+      "ProductCustomerService": {
+        "type": "object",
+        "description": "Contact information for customer service related to the product. Suitable for displaying to the customer.",
+        "properties": {
+          "phone_number": {
+            "type": "string",
+            "nullable": true,
+            "description": "The customer service phone number.",
+            "example": "+1234567890"
+          },
+          "website_url": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "description": "The customer service website URL.",
+            "example": "https://merchant.example.com/customer-service"
+          }
+        }
+      },
+      "ProductDenominations": {
+        "type": "object",
+        "description": "Defines the denomination options available for the product, including ranges and types.",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["open", "fixed"],
+            "description": "The type of denomination. Can be `open` or `fixed`. `open` is any amount between minimum and maximum value. Fixed is limited to those returned in the `available_list`."
+          },
+          "minimum_value": {
+            "$ref": "#/components/schemas/ProductMinimumValue"
+          },
+          "maximum_value": {
+            "$ref": "#/components/schemas/ProductMaximumValue"
+          },
+          "available_list": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "decimal"
+            },
+            "nullable": true,
+            "description": "A list of available denominations for the product. Will be `null` if the `type` is `OPEN`."
+          }
+        }
+      },
+      "ProductExpiry": {
+        "type": "object",
+        "properties": {
+          "date_policy": {
+            "type": "string",
+            "nullable": true,
+            "description": "Text description of the policy, suitable for displaying to the customer.",
+            "example": "Expires 2 years from issue date"
+          },
+          "in_months": {
+            "type": "integer",
+            "description": "Specifies the number of months until the gift expires.",
+            "example": 12
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of expiry policy. \n\n | Type | Description | \n | --- | --- | \n | `from-last-use` | The expiration period starts after the gift is used for a purchase. | \n | `from-last-balance-check` | The expiration period starts after the gift balance is checked using phone or online tools. | \n | `from-issue-date` | The expiration period starts from the date the gift was purchased. | \n | `indefinite` | The gift card does not expire and remains valid indefinitely. | \n | `do-not-show` | No expiration information is displayed. |",
+            "enum": [
+              "from-last-use",
+              "from-last-balance-check",
+              "from-issue-date",
+              "indefinite",
+              "do-not-show"
+            ],
+            "example": "from-issue-date"
+          }
+        }
+      },
+      "ProductIsOrderable": {
+        "type": "boolean",
+        "description": "Indicates whether or not you are able to order the product. You should use this detail to determine whether or not to display the product to your end users."
+      },
+      "ProductDiscountMultiplier": {
+        "type": "string",
+        "pattern": "^[0-9]+\\.[0-9]{2}$",
+        "description": "The discount multiplier used when ordering. `0` means no discount and `0.1` means 10% discount. The discount is applied on the price of the order item before any fees are applied.",
+        "example": "0.05"
+      },
+      "ProductMinimumValue": {
+        "type": "string",
+        "format": "decimal",
+        "description": "The minimum denomination value available for the product.",
+        "example": "10.00"
+      },
+      "ProductMaximumValue": {
+        "type": "string",
+        "format": "decimal",
+        "description": "The maximum denomination value available for the product.",
+        "example": "100.00"
+      },
+      "ProductIconImageUrl": {
+        "type": "string",
+        "format": "uri",
+        "description": "The URL of the icon image for the product.",
+        "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-icon.png"
+      },
+      "ProductPrimaryColor": {
+        "type": "string",
+        "pattern": "^#[0-9A-Fa-f]{6}$",
+        "description": "The primary color of the product.",
+        "example": "#000000"
+      },
+      "ProductAssets": {
+        "title": "Product assets",
+        "description": "Graphical assets for the product, including card image, icon image, and primary color.",
+        "type": "object",
+        "properties": {
+          "card_image_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-card.png"
+          },
+          "icon_image_url": {
+            "type": "string",
+            "format": "uri",
+            "nullable": true,
+            "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-icon.png"
+          },
+          "primary_color": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$",
+            "nullable": true,
+            "example": "#000000"
+          }
+        }
+      },
+      "ContentResourcesLocale": {
+        "type": "string",
+        "description": "What locale the content resources are in. This is an [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag) using an underscore to separate the language and country codes.",
+        "pattern": "^[a-z]{2}_[A-Z]{2}$",
+        "example": "en_US"
+      },
       "ContentResources": {
+        "title": "Content resources",
+        "description": "Content resources for the product. Includes description, disclaimer, refund policy, reissuance policy, terms and conditions, redemption instructions. The content resources can be provided in a number of formats. The format returned is determined by the [`content` query string parameter](/reference/2024-02-05/endpoint/products/get#parameter-content). For the list endpoint the only content format supported is `url`.",
+        "oneOf": [
+          { "$ref": "#/components/schemas/ContentResourcesUrl" },
+          { "$ref": "#/components/schemas/ContentResourcesMarkdown" },
+          { "$ref": "#/components/schemas/ContentResourcesHTML" }
+        ]
+      },
+      "ContentResourcesUrl": {
+        "title": "URL",
+        "description": "Content resources in URL format.",
         "type": "object",
         "required": [
           "description_markdown_url",
@@ -1778,51 +2083,57 @@
             "type": "string",
             "format": "uri",
             "nullable": false,
-            "description": "A URL pointing to a markdown file that contains the description of the resource."
+            "description": "A URL pointing to a markdown file that contains the description of the resource.",
+            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/description.md"
           },
           "disclaimer_markdown_url": {
             "type": "string",
             "format": "uri",
             "nullable": true,
-            "description": "A URL pointing to a markdown file that contains the disclaimer information."
+            "description": "A URL pointing to a markdown file that contains the disclaimer information.",
+            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/disclaimer_markdown.md"
           },
           "refund_policy_markdown_url": {
             "type": "string",
             "format": "uri",
             "nullable": true,
-            "description": "A URL pointing to a markdown file that outlines the refund policy, if applicable."
+            "description": "A URL pointing to a markdown file that outlines the refund policy, if applicable.",
+            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/refund_policy_markdown.md"
           },
           "reissuance_policy_markdown_url": {
             "type": "string",
             "format": "uri",
             "nullable": true,
-            "description": "A URL pointing to a markdown file that details the reissuance policy for the resource."
+            "description": "A URL pointing to a markdown file that details the reissuance policy for the resource.",
+            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/reissuance_policy_markdown.md"
           },
           "terms_buyer_markdown_url": {
             "type": "string",
             "format": "uri",
             "nullable": true,
-            "description": "A URL pointing to a markdown file that contains the terms and conditions applicable to buyers."
+            "description": "A URL pointing to a markdown file that contains the terms and conditions applicable to buyers.",
+            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/terms_buyer.md"
           },
           "terms_consumer_markdown_url": {
             "type": "string",
             "format": "uri",
             "nullable": true,
-            "description": "A URL pointing to a markdown file that contains the terms and conditions applicable to consumers."
+            "description": "A URL pointing to a markdown file that contains the terms and conditions applicable to consumers.",
+            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/terms_consumer.md"
           },
           "redemption_instructions_markdown_url": {
             "type": "string",
             "format": "uri",
             "nullable": true,
-            "description": "A URL pointing to a markdown file that provides instructions for redeeming the resource."
+            "description": "A URL pointing to a markdown file that provides instructions for redeeming the resource.",
+            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/redeem_markdown.md"
           },
-          "locale": {
-            "type": "string",
-            "description": "ISO2 format locale code. It denotes what locale the markdown urls are."
-          }
+          "locale": { "$ref": "#/components/schemas/ContentResourcesLocale" }
         }
       },
       "ContentResourcesMarkdown": {
+        "title": "Markdown",
+        "description": "Content resources in Markdown format.",
         "type": "object",
         "required": [
           "description_md",
@@ -1870,13 +2181,12 @@
             "nullable": true,
             "description": "Markdown instructions for redeeming the resource."
           },
-          "locale": {
-            "type": "string",
-            "description": "Locale code for the markdown content, in ISO2 format."
-          }
+          "locale": { "$ref": "#/components/schemas/ContentResourcesLocale" }
         }
       },
       "ContentResourcesHTML": {
+        "title": "HTML",
+        "description": "Content resources in HTML format.",
         "type": "object",
         "required": [
           "description_html",
@@ -1931,286 +2241,8 @@
             "nullable": true,
             "description": "HTML instructions for redeeming the resource."
           },
-          "locale": {
-            "type": "string",
-            "description": "Locale code for the HTML content, in ISO2 format."
-          }
+          "locale": { "$ref": "#/components/schemas/ContentResourcesLocale" }
         }
-      },
-      "CustomerService": {
-        "type": "object",
-        "description": "Contact information for customer service related to the product.",
-        "properties": {
-          "phone_number": {
-            "type": "string",
-            "nullable": true,
-            "description": "The customer service phone number."
-          },
-          "website_url": {
-            "type": "string",
-            "nullable": true,
-            "format": "uri",
-            "description": "The customer service website URL."
-          }
-        }
-      },
-      "Denominations": {
-        "type": "object",
-        "description": "Defines the denomination options available for the product, including ranges and types.",
-        "properties": {
-          "available_list": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "decimal"
-            },
-            "nullable": true,
-            "description": "A list of available denominations for the product. Null if `type` is `OPEN`."
-          },
-          "maximum_value": {
-            "type": "string",
-            "format": "decimal",
-            "description": "The maximum denomination value available for the product."
-          },
-          "minimum_value": {
-            "type": "string",
-            "format": "decimal",
-            "description": "The minimum denomination value available for the product."
-          },
-          "type": {
-            "type": "string",
-            "enum": ["open", "fixed"],
-            "description": "The type of denomination. Can be open or fixed. Open is Any amount between min and max value. Fixed is limited to those returned in the available_list."
-          }
-        }
-      },
-      "Expiry": {
-        "type": "object",
-        "properties": {
-          "date_policy": {
-            "type": "string",
-            "nullable": true,
-            "description": "Text description of the policy."
-          },
-          "in_months": {
-            "type": "integer",
-            "description": "Specifies the number of months until the gift expires."
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "from-last-use",
-              "from-last-balance-check",
-              "from-issue-date",
-              "indefinite",
-              "do-not-show"
-            ],
-            "x-enumDescriptions": {
-              "from-last-use": "The expiration period starts after the gift is used for a purchase.",
-              "from-last-balance-check": "The expiration period starts after the gift balance is checked using phone or online tools.",
-              "from-issue-date": "The expiration period starts from the date the gift was purchased.",
-              "indefinite": "The gift card does not expire and remains valid indefinitely.",
-              "do-not-show": "No expiration information is displayed."
-            }
-          }
-        }
-      },
-      "SubscriptionPlan": {
-        "type": "object",
-        "properties": {
-          "length_unit": {
-            "description": "The unit of time for the subscription plan. Currently only DAYS and MONTHS are supported.",
-            "type": "string",
-            "enum": ["DAYS", "MONTHS"]
-          },
-          "length": {
-            "type": "integer"
-          },
-          "name": {
-            "type": "string"
-          },
-          "price": {
-            "type": "string",
-            "format": "decimal"
-          },
-          "subscription_plan_code": {
-            "description": "Use this code during order creation, rather than the top level code that is part of Product.",
-            "type": "string"
-          }
-        }
-      },
-      "Product": {
-        "type": "object",
-        "description": "Base schema for all product types, containing common fields.",
-        "properties": {
-          "approval_state": {
-            "type": "string",
-            "enum": [
-              "REQUIRES_CUSTOMER_ACTION",
-              "INFORMATION_REQUESTED",
-              "PENDING",
-              "APPROVED",
-              "DENIED"
-            ],
-            "description": "Indicates weather product should be enabled for a customer based on customer supplied data. Currently only returning `APPROVED` products."
-          },
-          "categories": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "List of the categories that the product belongs to. You can fetch the list of categories using the [`GET /product/categories` endpoint](/reference/2024-02-05/endpoint/products/categories)."
-          },
-          "code": {
-            "type": "string",
-            "description": "A unique code identifying the product. You can filter for a specific product using this code, or use it for order creation - see SubscriptionPlan for more details on ordering subscription products."
-          },
-          "countries_redeemable_in": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "pattern": "^[A-Z]{2}$",
-              "description": "ISO 3166 ALPHA-2 country code"
-            },
-            "description": "Countries where the payout can be spent."
-          },
-          "currency": {
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "description": "The currency of the product, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
-          },
-          "customer_service": {
-            "$ref": "#/components/schemas/CustomerService"
-          },
-          "discount_multiplier": {
-            "type": "string",
-            "description": "A multiplier used to calculate the price of your order."
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the product."
-          },
-          "state": {
-            "type": "string",
-            "enum": ["LIVE", "TEMPORARILY_DISABLED", "TEMPORARILY_DEGRADED"],
-            "description": "The current state of the product."
-          },
-          "is_orderable": {
-            "type": "boolean",
-            "description": "Indicates whether or not you are able to order the product. You should use this detail to determine whether or not to display the product to your end users."
-          },
-          "payout_type": {
-            "type": "string",
-            "description": "The type of payout - this field will tell you the key of the additional object details that correspond to each payout type. It can be either `gift_card`, `subscription`, or `payment` for now, however, it will be extended to more types in the future, your implementation should account for it. Please check the Payout Type section in the guidelines for how to use this field."
-          },
-          "availability": {
-            "type": "string",
-            "enum": ["stocked", "realtime"],
-            "description": "The availability type of the product."
-          },
-          "gift_card": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/BasePayoutTypeDetails"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "denominations": {
-                    "$ref": "#/components/schemas/Denominations"
-                  }
-                }
-              }
-            ]
-          },
-          "subscription": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/BasePayoutTypeDetails"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "subscription_plans": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/SubscriptionPlan"
-                    }
-                  }
-                }
-              }
-            ]
-          },
-          "payment": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Payment"
-              }
-            ]
-          }
-        },
-        "required": [
-          "approval_state",
-          "categories",
-          "code",
-          "countries_redeemable_in",
-          "currency",
-          "customer_service",
-          "discount_multiplier",
-          "name",
-          "state",
-          "is_orderable",
-          "payout_type"
-        ]
-      },
-      "Payment": {
-        "type": "object",
-        "properties": {
-          "assets": {
-            "type": "object",
-            "required": ["icon_image_url", "primary_color"],
-            "properties": {
-              "icon_image_url": {
-                "type": "string",
-                "format": "uri"
-              },
-              "primary_color": {
-                "type": "string",
-                "pattern": "^#[0-9A-Fa-f]{6}$"
-              }
-            }
-          },
-          "denominations": {
-            "type": "object",
-            "required": ["minimum_value", "maximum_value"],
-            "properties": {
-              "maximum_value": {
-                "type": "string",
-                "format": "decimal",
-                "description": "The maximum denomination value available for the product."
-              },
-              "minimum_value": {
-                "type": "string",
-                "format": "decimal",
-                "description": "The minimum denomination value available for the product."
-              }
-            }
-          },
-          "content_resources": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/ContentResources"
-              },
-              {
-                "$ref": "#/components/schemas/ContentResourcesMarkdown"
-              },
-              {
-                "$ref": "#/components/schemas/ContentResourcesHTML"
-              }
-            ]
-          }
-        },
-        "required": ["assets", "denominations"]
       }
     },
     "responses": {
