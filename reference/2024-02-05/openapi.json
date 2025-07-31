@@ -1100,7 +1100,7 @@
             "example": "abc123",
             "type": "string",
             "maxLength": 255,
-            "pattern": "^[A-z0-9-_@.]+$"
+            "pattern": "^[A-Za-z0-9-_@.]+$"
           },
           "email_address": {
             "$ref": "#/components/schemas/DistributionEmailAddress"
