@@ -1959,7 +1959,8 @@
               "format": "decimal"
             },
             "nullable": true,
-            "description": "A list of available denominations for the product. Will be `null` if the `type` is `OPEN`."
+            "description": "A list of available denominations for the product. Will be `null` if the `type` is `OPEN`.",
+            "example": ["10.00", "20.00", "50.00", "100.00"]
           }
         }
       },
