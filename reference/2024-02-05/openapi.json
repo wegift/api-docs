@@ -351,14 +351,6 @@
           },
           {
             "in": "query",
-            "name": "code",
-            "schema": {
-              "type": "string"
-            },
-            "description": "Filter by product code"
-          },
-          {
-            "in": "query",
             "name": "countries_redeemable_in",
             "schema": {
               "type": "array",
@@ -1784,7 +1776,6 @@
           }
         },
         "required": [
-          "approval_state",
           "categories",
           "code",
           "countries_redeemable_in",
