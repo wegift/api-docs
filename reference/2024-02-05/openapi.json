@@ -1129,7 +1129,7 @@
         "description": "Payout selection template. Template having predefined set of products."
       },
       "PayoutSelectionTemplateDetailed": {
-        "title": "PayoutSelectionTemplateDetailed",
+        "title": "Template",
         "required": ["type", "template_id"],
         "type": "object",
         "properties": {
