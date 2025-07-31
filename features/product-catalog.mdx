@@ -4,32 +4,19 @@ description: "Fetch the latest catalog of products available for use in payouts"
 icon: "grid"
 ---
 
-Whether you're showing the latest product offering to your customers, or verifying constraints during your order process, you'll want the latest catalogue details.
+Whether you're showing the latest product offering to your customers, or verifying constraints during your order process, you'll want the latest catalog details.
 
-## Getting a list of countries that you can order in
+## Countries & currencies
 
-To create a payout link in the ordering process, you'll need to provide a list of products that are all redeemable in the same country. [The list of countries endpoint](/reference/2024-02-05/endpoint/products/countries) will provide you with a dynamic list with all of the countries in which you have available payout types.
+To create a payout link, you'll need to provide one or more products that are all redeemable in the same currency. See the [currencies](/reference/currencies) reference for a list of currency supported countries.
 
-This will return a list of ISO3166 ALPHA-2 country codes. We'll be modifying this list over time, so your implementation should handle the addition and removal of countries from this list.
+You may also want to limit the products you return to only those that can be redeemed in a specific country. You can fetch a list of countries using the [list countries](/reference/2024-02-05/endpoint/products/countries) endpoint. This will return a list of ISO3166 ALPHA-2 country codes. We'll be modifying this list over time, so your implementation should handle the addition and removal of countries from this list.
 
 You can use this to aggregate products that belong to a country for ordering by using the `countries_redeemable_in` query parameter, in the endpoint described below.
 
-<Card
-  title="List all countries"
-  icon="earth-europe"
-  href="/reference/2024-02-05/endpoint/products/countries"
-  horizontal
->
-  Endpoint details for listing all supported countries
-</Card>
-
 ## Retrieving your catalog
 
-We've updated our catalog to provide you with even more details than before, with improved filtering, pagination, and performance across the board.
-
-We've added new levels of granularity to payout types - differentiating between `gift_card`, `subscription`, and `payment` type products, and we'll be looking to add to these in the future. At the bottom of this page, in the Example response section, there are examples of a few permutations of responses.
-
-We recommend that you poll the [list endpoint](/reference/2024-02-05/endpoint/products/list) to retrieve full catalog details hourly and in any critical journeys where you [fetch the details of an individual product](/reference/2024-02-05/endpoint/products/get) by using the `code` query parameter to return the latest details of a product in a timely manner.
+We recommend that you query the [list endpoint](/reference/2024-02-05/endpoint/products/list) to retrieve full catalog details periodically and in any critical journeys where you [fetch the details of an individual product](/reference/2024-02-05/endpoint/products/get) by using the `code` query parameter to return the latest details of a product in a timely manner. You can also use the [product update webhook](/reference/2024-02-05/webhook/product.update) to be notified of changes to products.
 
 <CardGroup cols={2}>
   <Card
@@ -50,245 +37,152 @@ We recommend that you poll the [list endpoint](/reference/2024-02-05/endpoint/pr
   </Card>
 </CardGroup>
 
-## Field usage guidance
+## Filtering the catalog
 
-In this section, we'll detail a few of the key fields that should influence your implementation.
+You can filter by a number of fields in the list endpoint to reduce the number of products returned to only those that are relevant to your customers.
+
+| Query parameter           | Description                                                                                                                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `is_orderable`            | When set to `true` only returns products that can be ordered. If you're presenting a list of products to your customers, you should only display products where this is `true`. |
+| `countries_redeemable_in` | Only return products that can be redeemed in a specific country, see the [countries reference](/reference/countries) for currently supported countries.                         |
+| `categories`              | Limit the products to one or more categories, see the [categories endpoint](/reference/2024-02-05/endpoint/products/categories) for a list of all current categories.           |
+
+## Important fields
+
+A few of the key fields that should influence your implementation are detailed below. For details on all fields, see the [product list endpoint](/reference/2024-02-05/endpoint/products/list) reference.
 
 ### Generic fields
 
-#### `is_orderable`
+<ResponseField name="code" type="string">
+  <Card>
+    A unique code identifying the product. Use this code when placing an order.
+  </Card>
+</ResponseField>
 
-This field indicates whether you are currently able to order a product or not. We recommend that you only ever display products to people placing orders when this field is `true` - we will reject any orders placed for products where this is `false` . You can pass this as a query parameter as part of your request.
+<ResponseField name="is_orderable" type="boolean">
+  <Card>
+    This field indicates whether you are currently able to order a product or
+    not. We recommend that you only ever display products to people placing
+    orders when this field is `true` - we will reject any orders placed for
+    products where this is `false` . You can pass this as a query parameter as
+    part of your request.
+  </Card>
+</ResponseField>
 
-#### `currency & countries_redeemable_in`
+<ResponseField name="currency" type="string">
+  <Card>
+    The currency of the product, represented by an ISO 4217 currency code. See
+    [currencies](/reference/currencies) for a list of supported currencies.
+    Orders can only be placed in one currency at a time, ensure you don't mix
+    currencies in the same order.
+  </Card>
+</ResponseField>
 
-As detailed in the Currencies section of this guide - we're constantly expanding our network to increase the payouts we can offer you and your customers. Your implementation should handle additions to these fields in their respective ISO formats.
+<ResponseField name="countries_redeemable_in" type="string[]">
+  <Card>
+    The countries in which the product can be redeemed. See the [countries
+    reference](/reference/countries) for a list of supported countries. You can
+    filter by this field to only return products that can be redeemed in a
+    specific country.
+  </Card>
+</ResponseField>
 
-#### `discount_multiplier`
+### Type specific fields
 
-The discount is represented as a decimal between 0 & 1. e.g. a discount_multiplier of 0.10 would be a 10% discount.
+There are three different payout types that you can order, each with their own specific object for details.
 
-#### `payout_type`
+- `gift_card`: A gift card is a payout that can be redeemed for a specific value.
+- `subscription`: A subscription is a payout that can be ordered for a specific duration.
+- `payment`: A payment is a payout that can be ordered for a specific value.
 
-You'll notice in the API specification that there are currently three fields, `gift_card`, `subscription`, and `payment` that are nullable and will not be present in certain responses. The `payout_type` field will indicate which of these fields is present, and your implementation should then use this key to extract the relevant required details.
+<ResponseField name="payout_type" type="string">
+  <Card>
+    You should use the `payout_type` field to determine which object to use to extract details for the product.
 
-We'll be adding more payout types in the future, and your implementation should handle these additions gracefully.
+    We'll be adding more payout types in the future, and your implementation should handle these additions gracefully.
 
-#### `categories`
+  </Card>
+</ResponseField>
 
-Used for categorizing the products.
+#### Specific `gift_card` fields
 
-Examples of values (not comprehensive): `department-stores` `home-and-diy` `toys-and-games` `supermarkets` `booksellers` `experiences` `fashion` `electricals` `entertainment` `travel` `leisure-and-sports` `food-and-drink` `beauty-and-lifestyle` `jewellers` `prepaid-card`.
+The `gift_card` object will only be present when the `payout_type` is `gift_card`.
 
-#### `content_resources`
+<ResponseField name="gift_card.denominations" type="object">
+  <Card>
+    Gift cards are either `open` or `fixed` denomination.
 
-The URL fields in this response object will contain URL's to markdown files containing their respective content. You can use this markdown and render it with your own styling as you wish.
+    - `open` products will include `minimum_value` and `maximum_value` fields. This means that you can order gift cards within the range of `minimum_value` and `maximum_value`.
+    - `fixed` products will include a list of values in the `available_list` field. You can only order values contained in the list that is returned to you.
 
-The fields will be `null` when the text has been removed, and present when added. We'll update this content semi-regularly; a `403` / `404` will be returned, should this content have been removed. Your implementation should handle this.
-
-### Gift card specific fields
-
-#### `denominations`
-
-This field will return you the constraints of values that you can order.
-
-The example responses below contain the different responses that the API can return, whether the denominations are `open` or `fixed` :
-
-- `open` products will include `minimum_value` and `maximum_value` fields. This means that you can order gift cards within the range of `minimum_value` and `maximum_value`.
-- `fixed` products will include a list of values in the `available_denominations` field. You can only order values contained in the list that is returned to you.
-
-### Subscription specific fields
-
-#### `subscription_plans`
-
-Subscriptions each come with a list of subscription plans, detailing things such as the duration of the subscription and the price it costs to order each of the subscription plans - this is without your discount applied.
-
-**subscription_plan_code** is returned as part of the subscription plan - use this code, not the top-level object code as part of your order. We'll add more subscription plans for your customers to order over time.
-
-### Payment specific fields
-
-#### `denominations`
-
-Similar to gift cards, payments have denomination constraints with `minimum_value` and `maximum_value` fields that define the allowed payment ranges, but will always be open denomination. Therefore, we don't have the list of available denominations here.
-
-## Example Response
-
-```Text JSON
-{
-    "catalog": [
-        {
-            "approval_state": "APPROVED",
-            "categories": [
-                "experiences"
-            ],
-            "code": "EXAMPLEFIXED-US",
-            "countries_redeemable_in": [
-                "US"
-            ],
-            "currency": "USD",
-            "customer_service": {
-                "phone_number": "+1 (123) 456-7890",
-                "website_url": "https:/example.com/contact"
-            },
-            "discount_multiplier": "0.1000",
-            "is_orderable": true,
-            "name": "Example Fixed Denominations US",
-            "payout_type": "gift_card",
-            "state": "LIVE",
-            "gift_card": {
-                "assets": {
-                    "card_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEFIXED-US/EXAMPLEFIXED-US-card.png",
-                    "icon_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEFIXED-US/EXAMPLEFIXED-US-icon.png",
-                    "primary_color": "#FFFFFF"
-                },
-                "balance_check_url": "https://example.com/balance-check-url",
-                "content_resources": {
-                    "description_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/description.md",
-                    "disclaimer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/disclaimer.md",
-                    "locale": "en_US",
-                    "redemption_instructions_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/redemption_instructions.md",
-                    "refund_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/refund_policy.md",
-                    "reissuance_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/reissuance_policy.md",
-                    "terms_buyer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/terms_buyer.md",
-                    "terms_consumer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEFIXED-US/terms_consumer.md"
-                },
-                "denominations": {
-                    "available_list": [
-                        "0.5",
-                        "1",
-                        "5",
-                        "10",
-                        "25",
-                        "50",
-                        "100"
-                    ],
-                    "maximum_value": "100",
-                    "minimum_value": "0.5",
-                    "type": "fixed"
-                },
-                "expiry": {
-                    "date_policy": "Does not expire",
-                    "in_months": 0,
-                    "type": "indefinite"
-                },
-                "redeemable_at": "online",
-                "website_url": "https://example.com"
-            }
-        },
-        {
-            "approval_state": "APPROVED",
-            "categories": [
-                "electricals"
-            ],
-            "code": "EXAMPLEOPEN-US",
-            "countries_redeemable_in": [
-                "US"
-            ],
-            "currency": "USD",
-            "customer_service": {
-                "phone_number": "+1 (123) 456-7890",
-                "website_url": "https:/example.com/contact"
-            },
-            "discount_multiplier": "0.3",
-            "is_orderable": true,
-            "name": "Example Open Denominations US",
-            "payout_type": "gift_card",
-            "state": "TEMPORARILY_DISABLED",
-            "gift_card": {
-                "assets": {
-                    "card_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEOPEN-US/EXAMPLEOPEN-US-card.png",
-                    "icon_image_url": "https:/gift.runa.io/static/product_assets/EXAMPLEOPEN-US/EXAMPLEOPEN-US-icon.png",
-                    "primary_color": "#FFFFFF"
-                },
-                "balance_check_url": "https://example.com/balance-check-url",
-                "content_resources": {
-                    "description_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/description.md",
-                    "disclaimer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/disclaimer.md",
-                    "locale": "en_US",
-                    "redemption_instructions_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/redemption_instructions.md",
-                    "refund_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/refund_policy.md",
-                    "reissuance_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/reissuance_policy.md",
-                    "terms_buyer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/terms_buyer.md",
-                    "terms_consumer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/EXAMPLEOPEN-US/terms_consumer.md"
-                },
-                "denominations": {
-                    "available_list": null,
-                    "maximum_value": "500.00",
-                    "minimum_value": "15",
-                    "type": "open"
-                },
-                "expiry": {
-                    "date_policy": "Does not expire",
-                    "in_months": 0,
-                    "type": "indefinite"
-                },
-                "redeemable_at": "all",
-                "website_url": "https://example.com"
-            }
-        },
-        {
-            "approval_state": "APPROVED",
-            "categories": [
-                "beauty-and-fashion"
-            ],
-            "code": "SUBSCRIPTION-GB",
-            "countries_redeemable_in": [
-                "GN"
-            ],
-            "currency": "GBP",
-            "customer_service": {
-                "phone_number": "+4420 1234 5678",
-                "website_url": "https://example.com/subscription-customer-service"
-            },
-            "discount_multiplier": "0.1940",
-            "is_orderable": true,
-            "name": "Subscription Example GB",
-            "payout_type": "subscription",
-            "state": "LIVE",
-            "subscription": {
-                "assets": {
-                    "card_image_url": "https:/gift.runa.io/static/product_assets/SUBSCRIPTION-GB/SUBSCRIPTION-GB-card.png",
-                    "icon_image_url": "https:/gift.runa.io/static/product_assets/SUBSCRIPTION-GB/SUBSCRIPTION-GB-icon.png",
-                    "primary_color": "#FFFFFF"
-                },
-                "balance_check_url": "https://example.com/subscription-balance-check-url",
-                "content_resources": {
-                    "description_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/description.md",
-                    "disclaimer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/disclaimer.md",
-                    "locale": "es_ES",
-                    "redemption_instructions_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/redemption_instructions.md",
-                    "refund_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/refund_policy.md",
-                    "reissuance_policy_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/reissuance_policy.md",
-                    "terms_buyer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/terms_buyer.md",
-                    "terms_consumer_markdown_url": "https:/catalog-service-prod-content-resource-download-bucket.s3.eu-west-1.amazonaws.com/resources/SUBSCRIPTION-GB/terms_consumer.md"
-                },
-                "expiry": {
-                    "date_policy": "Expires 1 year from issue date",
-                    "in_months": 12,
-                    "type": "from-issue-date"
-                },
-                "redeemable_at": "online",
-                "subscription_plans": [
-                    {
-                        "length": 6,
-                        "length_unit": "MONTHS",
-                        "name": "Subscription Example 6 months",
-                        "price": 107.94,
-                        "subscription_plan_code": "SUBSCRIPTION-GB"
-                    }
-                ],
-                "website_url": "https://example.com/subscription-details"
-            }
-        }
-    ],
-    "pagination": {
-        "cursors": {
-            "after": "After Cursor",
-            "before": "Before Cursor"
-        },
-        "page": {
-            "limit": 500
-        }
+    <CodeGroup>
+    ```json Open denomination example
+    "denominations": {
+        "type": "open",
+        "minimum_value": "5.00",
+        "maximum_value": "250.00",
+        "available_list": null
     }
-}
-```
+    ```
+
+    ```json Fixed denomination example
+    "denominations": {
+        "type": "fixed",
+        "minimum_value": "10.00",
+        "maximum_value": "100.00",
+        "available_list": ["10.00", "20.00", "50.00", "100.00"]
+    }
+    ```
+    </CodeGroup>
+
+  </Card>
+</ResponseField>
+
+#### Specific `subscription` fields
+
+The `subscription` object will only be present when the `payout_type` is `subscription`.
+
+<ResponseField name="subscription.subscription_plans" type="object[]">
+<Card>
+    Subscriptions each come with a list of subscription plans, detailing things such as the duration of the subscription and the price it costs to order each of the subscription plans – this is without your discount applied.
+
+    ```json Subscription plan example
+    {
+        "length_unit": "MONTHS",
+        "length": 3,
+        "name": "3 month subscription",
+        "price": "10.00",
+        "subscription_plan_code": "XYZ-US-SUB-1"
+    },
+    {
+        "length_unit": "MONTHS",
+        "length": 6,
+        "name": "6 month subscription",
+        "price": "20.00",
+        "subscription_plan_code": "XYZ-US-SUB-2"
+    }
+    ```
+    <Info>
+    **`subscription_plan_code`** is returned as part of the subscription plan. You must use this code, not the top-level code as part of your order.
+    </Info>
+
+  </Card>
+</ResponseField>
+
+#### Specific `payment` fields
+
+The `payment` object will only be present when the `payout_type` is `payment`.
+
+<ResponseField name="payment.denominations" type="object">
+  <Card>
+    Similar to gift cards, payments have denomination constraints with `minimum_value` and `maximum_value` fields that define the allowed payment ranges, but will always be open denomination. Therefore, we don't have the list of available denominations here.
+
+    ```json Payment denomination example
+    "denominations": {
+        "minimum_value": "5.00",
+        "maximum_value": "250.00",
+    }
+    ```
+
+  </Card>
+</ResponseField>
