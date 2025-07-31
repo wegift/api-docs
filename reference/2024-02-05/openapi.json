@@ -447,7 +447,7 @@
             "name": "content",
             "in": "query",
             "required": false,
-            "description": "Defines the format for product content resources. It accepts 'url' (default), 'md', or 'html' to return URLs, raw Markdown, or HTML content, respectively.",
+            "description": "Defines the format for product content resources.\n\n- `url` _(default)_ for external URLs to markdown content\n- `md` for Markdown content in the response\n- `html` for rendered HTML in the response",
             "schema": {
               "type": "string",
               "enum": ["url", "md", "html"],
