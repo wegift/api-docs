@@ -759,6 +759,25 @@
         ],
         "example": "PROCESSING"
       },
+      "DistributionEmailAddress": {
+        "title": "Email Address",
+        "description": "The email address of the end user to send the payout link to.",
+        "example": "fred@example.com",
+        "type": "string",
+        "format": "email"
+      },
+      "PayoutSelectionTemplateId": {
+        "title": "Template ID",
+        "description": "The template ID for a Payout Selection Template.",
+        "example": "PT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
+        "type": "string"
+      },
+      "RedemptionTemplateId": {
+        "title": "Template ID",
+        "description": "The template ID for a User Redemption Template.",
+        "example": "DT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
+        "type": "string"
+      },
       "AccountPayment": {
         "title": "AccountPayment",
         "required": ["type"],
@@ -796,12 +815,9 @@
             "title": "Distribution Method",
             "description": "The distribution method used for the payout link.",
             "oneOf": [
-              {
-                "$ref": "#/components/schemas/EmailDistribution"
-              },
-              {
-                "$ref": "#/components/schemas/LinkDistribution"
-              }
+              { "$ref": "#/components/schemas/EmailDistribution" },
+              { "$ref": "#/components/schemas/LinkDistribution" },
+              { "$ref": "#/components/schemas/RecipientDistribution" }
             ]
           },
           "products": {
@@ -862,7 +878,7 @@
       },
       "CompletedOrderWithBasicDetails": {
         "title": "Completed order",
-        "description": "Used for orders that have completed. This class is typically used when returning\na *list* of orders to the client.",
+        "description": "Used for orders that have completed. This class is typically used when returning a *list* of orders to the client.",
         "required": [
           "id",
           "status",
@@ -988,7 +1004,7 @@
       },
       "CompletedOrderWithFullDetails": {
         "title": "Completed order",
-        "description": "Used for an order that has completed. This class is typically used when returning\na *single order* to the client.",
+        "description": "Used for an order that has completed. This class is typically used when returning a *single order* to the client.",
         "type": "object",
         "allOf": [
           {
@@ -1021,36 +1037,6 @@
           }
         ]
       },
-      "EmailDistribution": {
-        "title": "Email",
-        "required": ["type", "email_address"],
-        "type": "object",
-        "properties": {
-          "type": {
-            "$ref": "#/components/schemas/EmailDistributionType"
-          },
-          "email_address": {
-            "title": "Email Address",
-            "description": "The email address of the end user to send the payout link to.",
-            "example": "fred@bloggs.com",
-            "type": "string",
-            "format": "email"
-          },
-          "template_id": {
-            "title": "Template ID",
-            "description": "The template ID for a User Redemption Template.",
-            "example": "DT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
-            "type": "string"
-          }
-        },
-        "description": "Email distribution. Send the payout link to the end user directly via email."
-      },
-      "EmailDistributionType": {
-        "title": "EmailDistributionType",
-        "type": "string",
-        "enum": ["EMAIL"],
-        "description": "Supported email distribution types."
-      },
       "IncompleteOrder": {
         "title": "Incomplete order",
         "required": ["id", "status", "message"],
@@ -1066,20 +1052,32 @@
         },
         "description": "Order that has been accepted but is not complete."
       },
+      "EmailDistribution": {
+        "title": "Email",
+        "required": ["type", "email_address"],
+        "type": "object",
+        "properties": {
+          "type": { "$ref": "#/components/schemas/EmailDistributionType" },
+          "email_address": {
+            "$ref": "#/components/schemas/DistributionEmailAddress"
+          },
+          "template_id": { "$ref": "#/components/schemas/RedemptionTemplateId" }
+        },
+        "description": "Email distribution. Send the payout link to the end user directly via email."
+      },
+      "EmailDistributionType": {
+        "title": "EmailDistributionType",
+        "type": "string",
+        "enum": ["EMAIL"],
+        "description": "Supported email distribution types."
+      },
       "LinkDistribution": {
         "title": "Link",
         "required": ["type"],
         "type": "object",
         "properties": {
-          "type": {
-            "$ref": "#/components/schemas/LinkDistributionType"
-          },
-          "template_id": {
-            "title": "Template ID",
-            "description": "The template ID for a User Redemption Template.",
-            "example": "DT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
-            "type": "string"
-          }
+          "type": { "$ref": "#/components/schemas/LinkDistributionType" },
+          "template_id": { "$ref": "#/components/schemas/RedemptionTemplateId" }
         },
         "description": "Link distribution. Send the payout link to the end user yourself."
       },
@@ -1089,33 +1087,33 @@
         "enum": ["PAYOUT_LINK"],
         "description": "Supported link distribution types."
       },
-      "MultipleProduct": {
-        "title": "Multiple",
-        "required": ["type", "values"],
+      "RecipientDistribution": {
+        "title": "Recipient",
+        "description": "Recipient distribution. Currently this method is only supported for distributing payment type products. For subsequent orders to known recipients we will attempt to make a repeat payout.",
+        "summary": "Send the payout link to a known recipient",
+        "required": ["type", "recipient_reference", "email_address"],
         "type": "object",
         "properties": {
-          "type": {
-            "$ref": "#/components/schemas/MultipleProductType"
+          "type": { "$ref": "#/components/schemas/RecipientDistributionType" },
+          "recipient_reference": {
+            "title": "Recipient Reference",
+            "description": "A customer provided reference to identify an individual recipient. It must be unique per recipient. When the same reference is used for a second order this will trigger a repeat payout. This is a free-form string limited to 255 characters. It can only contain alphanumeric characters, dashes, underscores, dots, and at-signs.",
+            "example": "abc123",
+            "type": "string",
+            "maxLength": 255,
+            "pattern": "^[A-Za-z0-9-_@.]+$"
           },
-          "values": {
-            "title": "Values",
-            "description": "The codes for the products the end user can choose from when redeeming their payout link. All products _must_ use the same currency.",
-            "example": ["AMZ-US", "AIRBNB-US"],
-            "minItems": 2,
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "uniqueItems": true
-          }
-        },
-        "description": "Multiple products. The end user will be able to split the payout link's value\nbetween these products."
+          "email_address": {
+            "$ref": "#/components/schemas/DistributionEmailAddress"
+          },
+          "template_id": { "$ref": "#/components/schemas/RedemptionTemplateId" }
+        }
       },
-      "MultipleProductType": {
-        "title": "MultipleProductType",
+      "RecipientDistributionType": {
+        "title": "RecipientDistributionType",
         "type": "string",
-        "enum": ["MULTIPLE"],
-        "description": "Multiple products. When more than one product code is provided."
+        "enum": ["RECIPIENT"],
+        "description": "Supported recipient distribution types."
       },
       "PayoutSelectionTemplate": {
         "title": "Template",
@@ -1126,16 +1124,13 @@
             "$ref": "#/components/schemas/PayoutSelectionTemplateType"
           },
           "template_id": {
-            "title": "Template ID",
-            "description": "The template ID for a Payout Selection Template.",
-            "example": "PT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
-            "type": "string"
+            "$ref": "#/components/schemas/PayoutSelectionTemplateId"
           }
         },
         "description": "Payout selection template. Template having predefined set of products."
       },
       "PayoutSelectionTemplateDetailed": {
-        "title": "PayoutSelectionTemplateDetailed",
+        "title": "Template",
         "required": ["type", "template_id"],
         "type": "object",
         "properties": {
@@ -1143,10 +1138,7 @@
             "$ref": "#/components/schemas/PayoutSelectionTemplateType"
           },
           "template_id": {
-            "title": "Template ID",
-            "description": "The template ID for a Payout Selection Template.",
-            "example": "PT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
-            "type": "string"
+            "$ref": "#/components/schemas/PayoutSelectionTemplateId"
           },
           "values": {
             "title": "Values",
@@ -1228,12 +1220,9 @@
             "title": "Distribution Method",
             "description": "Distribution method to send end users the payout link. Choose `EMAIL` if you want Runa to send the payout link to the end user directly. Choose `PAYOUT_LINK` if you want to send the payout link to the end user yourself.",
             "oneOf": [
-              {
-                "$ref": "#/components/schemas/EmailDistribution"
-              },
-              {
-                "$ref": "#/components/schemas/LinkDistribution"
-              }
+              { "$ref": "#/components/schemas/EmailDistribution" },
+              { "$ref": "#/components/schemas/LinkDistribution" },
+              { "$ref": "#/components/schemas/RecipientDistribution" }
             ]
           },
           "products": {
@@ -1537,7 +1526,7 @@
             "type": "string"
           }
         },
-        "description": "Single product. The end user will be able to redeem the payout link for this\nspecific product."
+        "description": "Single product. The end user will be able to redeem the payout link for this specific product."
       },
       "SingleProductType": {
         "title": "SingleProductType",
@@ -1545,18 +1534,48 @@
         "enum": ["SINGLE"],
         "description": "Single product. When only one product code is provided."
       },
-      "UnknownProduct": {
-        "title": "UnknownProduct",
+      "MultipleProduct": {
+        "title": "Multiple",
+        "required": ["type", "values"],
         "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/MultipleProductType"
+          },
+          "values": {
+            "title": "Values",
+            "description": "The codes for the products the end user can choose from when redeeming their payout link. All products _must_ use the same currency.",
+            "example": ["AMZ-US", "AIRBNB-US"],
+            "minItems": 2,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "uniqueItems": true
+          }
+        },
+        "description": "Multiple products. The end user will be able to split the payout link's value between these products."
+      },
+      "MultipleProductType": {
+        "title": "MultipleProductType",
+        "type": "string",
+        "enum": ["MULTIPLE"],
+        "description": "Multiple products. When more than one product code is provided."
+      },
+      "UnknownProduct": {
+        "title": "Unknown",
+        "type": "object",
+        "description": "Product(s) unknown. It was not possible to determine which products were included in the order.",
+        "required": ["type"],
         "properties": {
           "type": {
             "title": "Type",
             "description": "It is not currently possible to determine which products were selected when this item was ordered.",
             "default": "UNKNOWN",
-            "type": "string"
+            "type": "string",
+            "enum": ["UNKNOWN"]
           }
-        },
-        "description": "Product(s) unknown. It was not possible to determine which products were included\nin the order."
+        }
       },
       "ProductUpdateWebhook": {
         "title": "Product update webhook",
