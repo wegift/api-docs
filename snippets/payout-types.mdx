@@ -1,0 +1,7 @@
+This endpoint returns different payout types:
+
+- `gift_card`: A gift card is a payout that can be redeemed for a specific value.
+- `subscription`: A subscription is a payout that can be ordered for a specific duration.
+- `payment`: A payment is a payout that can be ordered for a specific value.
+
+You should use the `payout_type` field to determine which object to use to extract details for the product. The different payout types have different fields, so you should use the appropriate object to extract the details you need.
