@@ -4,15 +4,15 @@ icon: newspaper
 description: "Changelog of all major API updates, new features, removals, and improvements."
 ---
 
-<Update label="July 2025" tags={["Feature", "Catalogue"]}>
+<Update label="July 2025" tags={["Feature", "Catalog"]}>
 
-## Filtering the product catalogue by category
+## Filtering the product catalog by category
 
 We have introduced two new features to enhance how you work with product categories in the API.
 
 ### Filter products by category
 
-The [List products](/reference/2024-02-05/endpoint/products/list) endpoint now supports a `categories` query string parameter. You can use this to filter the product catalogue by one or more categories. To specify multiple categories, repeat the parameter for each category, e.g. `?categories=fashion&categories=department-stores`.
+The [List products](/reference/2024-02-05/endpoint/products/list) endpoint now supports a `categories` query string parameter. You can use this to filter the product catalog by one or more categories. To specify multiple categories, repeat the parameter for each category, e.g. `?categories=fashion&categories=department-stores`.
 
 ### List all available categories
 
@@ -22,7 +22,7 @@ Filtering needs knowledge of the available categories. You can now fetch the ful
 
 <Update label="March 2025" tags={["Feature", "Payment", "Ordering"]}>
 ## New payment payout type added
-To support the release of [Runa Pay to Card](https://runa.io/products/pay-to-card) a new payout type of `payment` has been added to the product catalogue. This new type joins the existing types of `gift_card` and `subscription`. For `payment` type products the new `payment` key will contain specific details about the product.
+To support the release of [Runa Pay to Card](https://runa.io/products/pay-to-card) a new payout type of `payment` has been added to the product catalog. This new type joins the existing types of `gift_card` and `subscription`. For `payment` type products the new `payment` key will contain specific details about the product.
 
 [Runa Pay to Card](https://runa.io/products/pay-to-card) enables you to push funds to global cards and bank accounts instantly. Funds can be sent instantly to billions of users in 190 countries, powered by Visa Direct and Mastercard. Existing customers should contact their account manager for more details.
 
@@ -49,13 +49,13 @@ For more details on our versioning strategy see the [API versioning](/best-pract
 
 </Update>
 
-<Update label="January 2025" tags={["Feature", "Catalogue", "Webhook"]}>
+<Update label="January 2025" tags={["Feature", "Catalog", "Webhook"]}>
 ## Product orderable state now supported in the Product Update webhook
 You can now receive programmatic real-time updates to the availability of products, the `is_orderable` field is now a supported field in the [Product Update webhook](/reference/2024-02-05/webhook/product.update).
 
 ### Use cases
 
-- Updating a local replica or cache of product availability. If you keep a copy of your product catalogue the availability of products could become out of sync. Using the product update webhook you can update this copy in real-time ensuring your customers don't face ordering issues for unavailable products.
+- Updating a local replica or cache of product availability. If you keep a copy of your product catalog the availability of products could become out of sync. Using the product update webhook you can update this copy in real-time ensuring your customers don't face ordering issues for unavailable products.
 - Getting live quicker with new products and products awaiting approval. The moment a product is ready for you to use the webhook will let you know.
 - Notifying your customers of the availability of products in the Runa network.
 
@@ -82,7 +82,7 @@ Check the [Product Update webhook reference](/reference/2024-02-05/webhook/produ
 
 ### Getting started with webhooks
 
-If you're not already using webhooks to receive real-time updates from Runa about the product catalogue or the state of orders you can [read about getting started here](/reference/webhooks).
+If you're not already using webhooks to receive real-time updates from Runa about the product catalog or the state of orders you can [read about getting started here](/reference/webhooks).
 
 </Update>
 
