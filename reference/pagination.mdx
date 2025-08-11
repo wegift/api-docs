@@ -13,8 +13,8 @@ A `pagination` object is returned for paged endpoints, use the `after` cursor to
 ```json Pagination object in a response {3}
 "pagination": {
     "cursors": {
-        "after": "ZXYzz",
-        "before": "ABCaa"
+        "after": "A-789",
+        "before": "A-123"
     },
     "page": {
         "limit": 100
@@ -22,7 +22,7 @@ A `pagination` object is returned for paged endpoints, use the `after` cursor to
 }
 ```
 
-For the above response you would add `?after=ZXYzz` to the request to get the next page of results.
+For the above response you would add `?after=A-789` to the request to get the next page of results.
 
 ## Detecting the end of the results
 
@@ -30,7 +30,7 @@ The `after` cursor is always returned in the response if there are results in th
 
 ## Paging backwards
 
-You can page in reverse by using the `before` cursor. For example you would `?before=ABCaa` to the request to get the previous page of results.
+You can page in reverse by using the `before` cursor. For example you would `?before=A-123` to the request to get the previous page of results.
 
 ## Controlling the number of records returned
 

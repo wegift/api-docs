@@ -662,7 +662,7 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "example": "ABCaa"
+          "example": "A-123"
         }
       },
       "AfterCursor": {
@@ -671,7 +671,7 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "example": "ZXYzz"
+          "example": "A-789"
         }
       }
     },
@@ -1462,13 +1462,13 @@
           "after": {
             "title": "After",
             "description": "Cursor to query the next page.",
-            "example": "ZXYzz",
+            "example": "A-789",
             "type": "string"
           },
           "before": {
             "title": "Before",
             "description": "Cursor to query the previous page.",
-            "example": "ABCaa",
+            "example": "A-123",
             "type": "string"
           }
         }
