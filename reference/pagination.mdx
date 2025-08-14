@@ -1,0 +1,37 @@
+---
+title: "Pagination"
+icon: "file"
+description: "Handling endpoints that return multiple pages of data"
+---
+
+Some Runa API endpoints split large sets of results into multiple pages. We return an array of records and a token to get the next page of data. The tokens are cursor-based rather than page numbers to prevent missing or duplicating returned records if new items are added to the set while you're paging through the results.
+
+## Paging through results
+
+A `pagination` object is returned for paged endpoints, use the `after` cursor to get the next page of results.
+
+```json Pagination object in a response {3}
+"pagination": {
+    "cursors": {
+        "after": "A-789",
+        "before": "A-123"
+    },
+    "page": {
+        "limit": 100
+    }
+}
+```
+
+For the above response you would add `?after=A-789` to the request to get the next page of results.
+
+## Detecting the end of the results
+
+The `after` cursor is always returned in the response if there are results in the current page. There are no more results if you receive an empty data array in the response.
+
+## Paging backwards
+
+You can page in reverse by using the `before` cursor. For example you would `?before=A-123` to the request to get the previous page of results.
+
+## Controlling the number of records returned
+
+Some endpoints support a `limit` parameter to control the number of records returned. The default page size is documented in the endpoint's reference.
