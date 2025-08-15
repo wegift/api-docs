@@ -2,9 +2,9 @@ name: Validate Documentation Pages
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
   # Allow manual triggering
   workflow_dispatch:
 
