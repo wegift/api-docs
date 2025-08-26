@@ -24,3 +24,54 @@ Use the `product_code` to identify the product that was updated, then refer to t
   You should store the `timestamp` and discard any events that are older than
   the last event you received.
 </Info>
+
+## Denomination Structure
+
+The `denominations` object within both `old_state` and `new_state` represents the available purchase amounts for a product. It has the following structure:
+
+### Properties
+
+- `type` - The denomination type, either:
+  - `"fixed"` - Product has predetermined fixed denominations
+  - `"open"` - Product accepts any amount within specified range
+
+- `available_list` - Array of strings representing available denomination amounts (only for `"fixed"` type)
+
+- `minimum_value` - String representing the minimum purchase amount (only for `"open"` type)
+
+- `maximum_value` - String representing the maximum purchase amount (only for `"open"` type)
+
+### Usage Examples
+
+#### Fixed Denominations
+```json
+{
+  "denominations": {
+    "type": "fixed",
+    "available_list": ["10", "25", "50", "100"]
+  }
+}
+```
+
+#### Open Denominations
+```json
+{
+  "denominations": {
+    "type": "open",
+    "minimum_value": "5",
+    "maximum_value": "500"
+  }
+}
+```
+
+#### Product Becomes Non-Orderable
+```json
+{
+  "denominations": {
+    "type": "fixed",
+    "available_list": []
+  }
+}
+```
+
+When a product becomes non-orderable (`is_orderable: false`), the `denominations.available_list` will be empty for fixed denomination products.
