@@ -25,53 +25,225 @@ Use the `product_code` to identify the product that was updated, then refer to t
   the last event you received.
 </Info>
 
-## Denomination Structure
+<Warning>
+The primary purpose of this webhook is to prevent order failures. Always update your catalog promptly when receiving these events to ensure the best customer experience.
+</Warning>
 
-The `denominations` object within both `old_state` and `new_state` represents the available purchase amounts for a product. It has the following structure:
+## How to Use This Webhook
 
-### Properties
+This webhook helps you keep your product catalog synchronized with Runa's system and minimize order failures. Here's how to handle each field:
 
-- `type` - The denomination type, either:
-  - `"fixed"` - Product has predetermined fixed denominations
-  - `"open"` - Product accepts any amount within specified range
+### Product Availability (`is_orderable`)
 
-- `available_list` - Array of strings representing available denomination amounts (only for `"fixed"` type)
-
-- `minimum_value` - String representing the minimum purchase amount (only for `"open"` type)
-
-- `maximum_value` - String representing the maximum purchase amount (only for `"open"` type)
-
-### Usage Examples
-
-#### Fixed Denominations
-```json
-{
-  "denominations": {
-    "type": "fixed",
-    "available_list": ["10", "25", "50", "100"]
+**When a product becomes non-orderable:**
+- **Action:** Immediately disable the product in your catalog
+- **Reason:** New orders will be rejected by Runa's system
+- **Implementation:** Hide the product from customers or mark as "Currently Unavailable"
+- **Example:** 
+  ```json
+  {
+    "product_code": "AMAZON-US",
+    "old_state": {
+      "price_multiplier": "0.0098",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["10", "25", "50"],
+        "minimum_value": "10.0",
+        "maximum_value": "50.0"
+      }
+    },
+    "new_state": {
+      "price_multiplier": "0.0098",
+      "is_orderable": false,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["10", "25", "50"],
+        "minimum_value": "10.0",
+        "maximum_value": "50.0"
+      }
+    },
+    "timestamp": "2025-08-26T18:39:27.006833+00:00"
   }
-}
-```
+  ```
 
-#### Open Denominations
-```json
-{
-  "denominations": {
-    "type": "open",
-    "minimum_value": "5",
-    "maximum_value": "500"
+**When a product becomes orderable again:**
+- **Action:** Re-enable the product in your catalog
+- **Reason:** Orders can now be successfully processed
+- **Example:**
+  ```json
+  {
+    "product_code": "AMAZON-US",
+    "old_state": {
+      "price_multiplier": "0.0098",
+      "is_orderable": false,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["10", "25", "50"],
+        "minimum_value": "10.0",
+        "maximum_value": "50.0"
+      }
+    },
+    "new_state": {
+      "price_multiplier": "0.0098",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["10", "25", "50"],
+        "minimum_value": "10.0",
+        "maximum_value": "50.0"
+      }
+    },
+    "timestamp": "2025-08-26T18:39:27.006833+00:00"
   }
-}
-```
+  ```
 
-#### Product Becomes Non-Orderable
-```json
-{
-  "denominations": {
-    "type": "fixed",
-    "available_list": ["10", "25", "50"]
+### Pricing Changes (`price_multiplier`)
+
+**When the price multiplier changes:**
+- **Action:** Update your product pricing and discounts accordingly
+- **Implementation:** Use the new multiplier to calculate updated prices
+- **Note:** For detailed pricing questions, contact your account manager
+- **Example:**
+  ```json
+  {
+    "product_code": "STARBUCKS-US",
+    "old_state": {
+      "price_multiplier": "0.0095",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["10", "25", "50"],
+        "minimum_value": "10.0",
+        "maximum_value": "50.0"
+      }
+    },
+    "new_state": {
+      "price_multiplier": "0.0090",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["10", "25", "50"],
+        "minimum_value": "10.0",
+        "maximum_value": "50.0"
+      }
+    },
+    "timestamp": "2025-08-26T18:39:27.006833+00:00"
   }
-}
-```
+  ```
 
-When a product becomes non-orderable (`is_orderable: false`), the `denominations.available_list` continues to contain the same denomination values that were available when the product was orderable.
+### Denomination Updates (`denominations`)
+
+The `denominations` object represents available purchase amounts for a product. There are two types:
+
+- **Fixed denominations** - Predetermined amounts like $10, $25, $50
+- **Open denominations** - Any amount within a specified range
+
+**For Fixed Denomination Products:**
+
+**When denominations are removed from `available_list`:**
+- **Action:** Remove those denominations from your product options
+- **Reason:** Specific denominations are out of stock - orders for these amounts will fail
+- **Example:** 
+  ```json
+  {
+    "product_code": "MSFT-US",
+    "old_state": {
+      "price_multiplier": "0.0104",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["15", "25", "50", "100"],
+        "minimum_value": "15.0",
+        "maximum_value": "100.0"
+      }
+    },
+    "new_state": {
+      "price_multiplier": "0.0104",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["25", "50", "100"],
+        "minimum_value": "25.0",
+        "maximum_value": "100.0"
+      }
+    },
+    "timestamp": "2025-08-26T18:39:27.006833+00:00"
+  }
+  ```
+  Remove the $15 option from your interface.
+
+**When denominations are added back to `available_list`:**
+- **Action:** Re-enable those denomination options
+- **Reason:** Stock has been replenished for those amounts
+- **Example:**
+  ```json
+  {
+    "product_code": "MSFT-US",
+    "old_state": {
+      "price_multiplier": "0.0104",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["15", "25", "50", "100"],
+        "minimum_value": "15.0",
+        "maximum_value": "100.0"
+      }
+    },
+    "new_state": {
+      "price_multiplier": "0.0104",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["5", "15", "25", "50", "100"],
+        "minimum_value": "5.0",
+        "maximum_value": "100.0"
+      }
+    },
+    "timestamp": "2025-08-26T18:39:27.006833+00:00"
+  }
+  ```
+  Add the $5 option to your interface.
+
+**For Open Denomination Products:**
+
+**When `minimum_value` or `maximum_value` changes:**
+- **Action:** Update your input validation and UI constraints
+- **Reason:** Orders outside the new range will be rejected
+- **Example:**
+  ```json
+  {
+    "product_code": "VISA-PREPAID-US",
+    "old_state": {
+      "price_multiplier": "1.0",
+      "is_orderable": true,
+      "denominations": {
+        "type": "open",
+        "minimum_value": "5",
+        "maximum_value": "500"
+      }
+    },
+    "new_state": {
+      "price_multiplier": "1.0", 
+      "is_orderable": true,
+      "denominations": {
+        "type": "open",
+        "minimum_value": "10",
+        "maximum_value": "300"
+      }
+    },
+    "timestamp": "2024-04-10T17:11:26.601254"
+  }
+  ```
+  Update your form validation to only accept amounts between $10-$300.
+
+**Note:** When a product becomes non-orderable (`is_orderable: false`), both the `denominations` and `price_multiplier` information are preserved and continue to show the same values that were available when the product was orderable.
+
+## Field Reference
+
+### `denominations` Object Structure
+
+- `type` - The denomination type: `"fixed"` or `"open"`
+- `available_list` - Array of available amounts (fixed type only)
+- `minimum_value` - Minimum purchase amount (open type only) 
+- `maximum_value` - Maximum purchase amount (open type only)
