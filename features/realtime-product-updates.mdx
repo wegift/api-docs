@@ -4,11 +4,13 @@ description: "Using webhooks to get real-time updates on product catalog changes
 icon: "webhook"
 ---
 
-Instead of polling the product catalog for changes, you can use the `product.update` webhook to get real-time update pushed to your system when a product is added, updated or removed from your catalog. If multiple products are updated at once, an event is triggered for each product.
+Instead of polling the product catalog for changes, you can use the `product.update` webhook to get real-time update pushed to your system when a product is added, updated or removed from your catalog.
 
 ## How to use the `product.update` webhook
 
-If you maintain a copy of the product catalog in your system, you can use the `product.update` webhook to keep it synchronized with Runa's system and minimize order failures. Attempts to order a product that is no longer available or for a denomination that is no longer available will be rejected. If you subscribe to the webhook, you will receive an event for each product that is updated and can take action to avoid these rejections.
+An event is triggered when there is an update to a product in the catalog. If multiple products are updated at once, an event is triggered for each product. This can be a product being added, updated or removed from the catalog.
+
+Attempts to order a product that is no longer available or for a denomination that is no longer available will be rejected. If you subscribe to the webhook, you will receive an event for each product that is updated and can take action to avoid these rejections.
 
 We won't cover the generic details of how to set up a webhook subscription, but you can read about that in the [webhook reference](/reference/webhooks).
 

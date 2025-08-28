@@ -1587,10 +1587,12 @@
         "required": ["price_multiplier", "is_orderable"],
         "properties": {
           "price_multiplier": {
-            "type": "string",
-            "example": "0.8"
+            "$ref": "#/components/schemas/ProductDiscountMultiplier"
           },
-          "is_orderable": { "$ref": "#/components/schemas/ProductIsOrderable" }
+          "is_orderable": { "$ref": "#/components/schemas/ProductIsOrderable" },
+          "denominations": {
+            "$ref": "#/components/schemas/ProductDenominations"
+          }
         }
       },
       "PayoutStatus": {
@@ -1955,7 +1957,8 @@
           "type": {
             "type": "string",
             "enum": ["open", "fixed"],
-            "description": "The type of denomination. Can be `open` or `fixed`. `open` is any amount between minimum and maximum value. Fixed is limited to those returned in the `available_list`."
+            "description": "The type of denomination. Can be `open` or `fixed`. `open` is any amount between minimum and maximum value. Fixed is limited to those returned in the `available_list`.",
+            "example": "fixed"
           },
           "minimum_value": {
             "$ref": "#/components/schemas/ProductMinimumValue"
