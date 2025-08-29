@@ -55,6 +55,7 @@
             "group": "Features",
             "pages": [
               "features/product-catalog",
+              "features/realtime-product-updates",
               "features/estimate",
               "features/balances",
               "features/limiting-available-products",

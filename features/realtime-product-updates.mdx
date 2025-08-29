@@ -1,0 +1,226 @@
+---
+title: "Real-time catalog updates"
+description: "Using webhooks to get real-time updates on product catalog changes"
+icon: "webhook"
+---
+
+Instead of polling the product catalog for changes, you can use the `product.update` webhook to get real-time update pushed to your system when a product is added, updated or removed from your catalog.
+
+## How to use the `product.update` webhook
+
+An event is triggered when there is an update to a product in the catalog. If multiple products are updated at once, an event is triggered for each product. This can be a product being added, updated or removed from the catalog.
+
+Attempts to order a product that is no longer available or for a denomination that is no longer available will be rejected. If you subscribe to the webhook, you will receive an event for each product that is updated and can take action to avoid these rejections.
+
+We won't cover the generic details of how to set up a webhook subscription, but you can read about that in the [webhook reference](/reference/webhooks).
+
+<CardGroup cols={2}>
+  <Card
+    title="Webhook reference"
+    icon="webhook"
+    href="/reference/webhooks"
+    horizontal
+    arrow
+  >
+    Read about how webhooks work in the Runa API and how to set up a
+    subscription in your system.
+  </Card>
+  <Card
+    title="Product update webhook reference"
+    icon="money-check-pen"
+    href="/reference/2024-02-05/webhook/product.update"
+    horizontal
+    arrow
+  >
+    The specific details of the `product.update` webhook event
+  </Card>
+</CardGroup>
+
+### Order of events
+
+<Warning>
+  Due to the nature of webhooks you **cannot rely on the order of the events**.
+</Warning>
+
+If two updates happen in quick succession, you may receive the events in the wrong order. For example:
+
+- An event for `is_orderable: false` followed by an event for `is_orderable: true`.
+- When the product was actually made non-orderable, `is_orderable: false`.
+- The events arrived in the wrong order.
+
+Each event has a `timestamp` attached. You should store the `timestamp` and discard any events that are older than the last event you received. This will ensure that you always have the most up-to-date information about the product.
+
+### Product Availability `is_orderable`
+
+#### When a product becomes non-orderable
+
+- _Action:_ Disable the product in your catalog or mark as "Unavailable"
+- _Reason:_ Orders for this product will be rejected by the ordering endpoint
+
+```json Example payload where a product becomes non-orderable {5,15} [expandable]
+{
+  "product_code": "XYZ-US",
+  "old_state": {
+    "price_multiplier": "0.0098",
+    "is_orderable": true,
+    "denominations": {
+      "type": "fixed",
+      "available_list": ["10", "25", "50"],
+      "minimum_value": "10.0",
+      "maximum_value": "50.0"
+    }
+  },
+  "new_state": {
+    "price_multiplier": "0.0098",
+    "is_orderable": false,
+    "denominations": {
+      "type": "fixed",
+      "available_list": ["10", "25", "50"],
+      "minimum_value": "10.0",
+      "maximum_value": "50.0"
+    }
+  },
+  "timestamp": "2025-08-26T18:39:27.006833+00:00"
+}
+```
+
+#### When a product becomes orderable again
+
+- _Action:_ Enable the product in your catalog
+- _Reason:_ Orders for this product can now be successfully processed
+
+```json Example payload where a product becomes orderable again {5,15} [expandable]
+{
+  "product_code": "XYZ-US",
+  "old_state": {
+    "price_multiplier": "0.0098",
+    "is_orderable": false,
+    "denominations": {
+      "type": "fixed",
+      "available_list": ["10", "25", "50"],
+      "minimum_value": "10.0",
+      "maximum_value": "50.0"
+    }
+  },
+  "new_state": {
+    "price_multiplier": "0.0098",
+    "is_orderable": true,
+    "denominations": {
+      "type": "fixed",
+      "available_list": ["10", "25", "50"],
+      "minimum_value": "10.0",
+      "maximum_value": "50.0"
+    }
+  },
+  "timestamp": "2025-08-26T18:39:27.006833+00:00"
+}
+```
+
+### Pricing Changes `price_multiplier`
+
+#### When the price multiplier changes
+
+- _Action:_ Update the product pricing and discounts in your catalog
+- _Reason:_ The product's discount has changed
+
+```json Example payload where the price multiplier changes {4,14} [expandable]
+{
+  "product_code": "STARBUCKS-US",
+  "old_state": {
+    "price_multiplier": "0.0095",
+    "is_orderable": true,
+    "denominations": {
+      "type": "fixed",
+      "available_list": ["10", "25", "50"],
+      "minimum_value": "10.0",
+      "maximum_value": "50.0"
+    }
+  },
+  "new_state": {
+    "price_multiplier": "0.0090",
+    "is_orderable": true,
+    "denominations": {
+      "type": "fixed",
+      "available_list": ["10", "25", "50"],
+      "minimum_value": "10.0",
+      "maximum_value": "50.0"
+    }
+  },
+  "timestamp": "2025-08-26T18:39:27.006833+00:00"
+}
+```
+
+### Denomination Updates `denominations`
+
+The `denominations` object represents available values you can order for a product. There are two types:
+
+- `fixed`: Predetermined amounts like \$10, \$25, \$50
+- `open`: Any amount within a specified range
+
+#### When `fixed` denominations change
+
+- _Action:_ Update the product denominations in your catalog
+- _Reason:_ The product denominations have changed, orders for the removed denominations will be rejected
+
+```json Example payload where a denomination is removed {4,14} [expandable]
+{
+  "product_code": "XYZ-US",
+  "old_state": {
+    "price_multiplier": "0.0104",
+    "is_orderable": true,
+    "denominations": {
+      "type": "fixed",
+      "available_list": ["15", "25", "50", "100"],
+      "minimum_value": "15.0",
+      "maximum_value": "100.0"
+    }
+  },
+  "new_state": {
+    "price_multiplier": "0.0104",
+    "is_orderable": true,
+    "denominations": {
+      "type": "fixed",
+      "available_list": ["25", "50", "100"],
+      "minimum_value": "25.0",
+      "maximum_value": "100.0"
+    }
+  },
+  "timestamp": "2025-08-26T18:39:27.006833+00:00"
+}
+```
+
+#### When `open` denominations change
+
+- _Action:_ Update the product denominations in your catalog
+- _Reason:_ The product `minimum_value` or `maximum_value` has changed, orders outside the new range will be rejected
+
+```json Example payload where minimum and maximum values change for an open denomination type {4,14} [expandable]
+{
+  "product_code": "XYZ-US",
+  "old_state": {
+    "price_multiplier": "1.0",
+    "is_orderable": true,
+    "denominations": {
+      "type": "open",
+      "minimum_value": "5",
+      "maximum_value": "500"
+    }
+  },
+  "new_state": {
+    "price_multiplier": "1.0",
+    "is_orderable": true,
+    "denominations": {
+      "type": "open",
+      "minimum_value": "10",
+      "maximum_value": "300"
+    }
+  },
+  "timestamp": "2024-04-10T17:11:26.601254"
+}
+```
+
+<Note>
+  When a product becomes non-orderable (`is_orderable: false`), both the
+  `denominations` and `price_multiplier` information are preserved and continue
+  to show the same values that were available when the product was orderable.
+</Note>
