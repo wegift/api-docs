@@ -4,6 +4,21 @@ This repo contains the documentation for the Runa Developer Hub aka API Docs. Th
 
 This repository is publicly hosted at https://github.com/wegift/api-docs.
 
+## Project Structure
+
+- `assets` contains graphics and screenshots
+- `bin` contains scripts
+- `best-practices` contains pages under 'Best Practices'
+- `changelog` contains pages under 'Changelogs'
+- `features` contains the feature guides
+- `getting-started` contains the getting started guides
+- `reference` contains the API reference pages including the OpenAPI spec for each version of the API
+- `snippets` contains reusable content for all pages
+- `styles` contains configuration for the spell checker
+- `docs.json` contains the configuration for the docs, new pages need to be referenced in this file
+- `introduction.mdx` is the root page of the guides section
+- `welcome.mdx` is the home page of the site
+
 ## Writing
 
 Read https://mintlify.com/guides
