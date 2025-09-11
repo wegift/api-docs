@@ -9,12 +9,6 @@ icon: calculator-simple
   environment](/reference/2024-02-05/playground).
 </Info>
 
-<Info>
-  The estimate endpoint currently does not support [Embedded
-  FX](/features/embedded-fx) orders. The currency of the payment method must be
-  the same as the currency of the order items.
-</Info>
-
 ## Order pricing
 
 The total price of an order is determined by the face value and discounts of the items you're purchasing, plus any additional fees that apply to the order.
@@ -22,11 +16,6 @@ The total price of an order is determined by the face value and discounts of the
 ## Estimate order price
 
 To provide you with a clear breakdown of the order price before you confirm your purchase the [estimate order](/reference/2024-02-05/endpoint/orders/estimate) endpoint can optionally be used to get your estimated order price including fees. It accepts a request similar to the one used for creating an order and responds with a detailed breakdown of the estimated price for both the overall order and each individual item within the order.
-
-<Note>
-  Please note that the order price estimate endpoint does **not** support
-  Embedded FX orders.
-</Note>
 
 Below is an estimate request and response for an order with 2 order items.
 
