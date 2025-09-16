@@ -45,6 +45,14 @@ pnpm dev
 A local server will then serve the docs at http://localhost:3000
 Hot-reload is supported
 
+⚠️ Note: If you get an error similar to `Error: Could not load the "sharp" module using the darwin-arm64 runtime`, try installing the pre-built arm64 package like so:
+
+```bash
+pnpm add @img/sharp-darwin-arm64 --force
+```
+
+and then run `pnpm dev`.
+
 ## Mintlify
 
 See [Mintlify docs](https://mintlify.com/docs) for more information. The `docs.json` file is the configuration file. Pages are written in MDX, a markdown variant with JSX support.

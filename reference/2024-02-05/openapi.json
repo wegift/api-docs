@@ -1224,7 +1224,13 @@
       },
       "OrderItemDiscount": {
         "title": "OrderItemDiscount",
-        "required": ["products", "face_value", "price", "discount_multiplier"],
+        "required": [
+          "products",
+          "face_value",
+          "price",
+          "discount_multiplier",
+          "currency"
+        ],
         "type": "object",
         "properties": {
           "products": {
@@ -1252,6 +1258,13 @@
           },
           "discount_multiplier": {
             "$ref": "#/components/schemas/ProductDiscountMultiplier"
+          },
+          "currency": {
+            "title": "Currency",
+            "example": "USD",
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "The currency of the product, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
           }
         },
         "description": "The computed discount for an order item."
@@ -1352,6 +1365,9 @@
             "title": "Total Price",
             "description": "Total price of the entire order.",
             "type": "number"
+          },
+          "transaction_detail": {
+            "$ref": "#/components/schemas/TransactionDetail"
           }
         },
         "description": "Response object for a order price estimate."

@@ -122,6 +122,76 @@ To help you understand the costs involved in making this embedded FX order, we p
 2. An exchange rate (`fx.rate`) of 1.2 was applied for converting GBP to USD. (See below for more details on how our rates work.)
 3. A `fee` of £0.16 GBP was charged for the currency conversion. This fee is included in the `total_price` of the order and is always charged in the currency specified for the `payment_method`.
 
+## Getting the price estimate for an Embedded FX order
+
+You can get an estimate of how much an Embedded FX order will cost by using the `/v2/order/estimate` endpoint. Detailed guidance on how to use it can be found in the [order estimate reference](/reference/2024-02-05/endpoint/orders/estimate).
+
+### Example
+
+Here's an example of a basic request and response for getting the estimate of an order with embedded FX.
+
+<CodeGroup>
+```json Request {4}
+{
+  "payment_method": {
+    "type": "ACCOUNT_BALANCE",
+    "currency": "GBP"
+  },
+  "items": [
+    {
+      "face_value": 10,
+      "distribution_method": {
+        "type": "EMAIL",
+        "email_address": "fred@bloggs.com"
+      },
+      "products": {
+        "type": "MULTIPLE",
+        "values": ["AMZ-US", "AMC-US"]
+      }
+    }
+  ]
+}
+```
+
+```json Response {21-33}
+{
+  "payment_method": {
+    "type": "ACCOUNT_BALANCE",
+    "currency": "GBP"
+  },
+  "currency": "GBP",
+  "total_discount": "0.00",
+  "total_price": "8.49",
+  "items": [
+    {
+      "products": {
+        "type": "MULTIPLE",
+        "values": ["AMZ-US", "AMC-US"]
+      },
+      "currency": "USD",
+      "face_value": "10.00",
+      "price": "10.00",
+      "discount_multiplier": "0.05"
+    }
+  ],
+  "transaction_detail": {
+    "USD": {
+      "value": "10.00",
+      "fx": {
+        "rate": "1.2",
+        "rate_symbol": "GBPUSD",
+        "fee": {
+          "value": "0.16",
+          "currency": "GBP"
+        }
+      }
+    }
+  }
+}
+```
+
+</CodeGroup>
+
 ## Rates and Fees
 
 ### FX Rates
