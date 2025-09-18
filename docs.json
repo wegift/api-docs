@@ -376,6 +376,10 @@
     {
       "source": "/reference/product-update",
       "destination": "/reference/2024-02-05/webhook/product.update"
+    },
+    {
+      "source": "/rate-limits",
+      "destination": "/best-practices/rate-limits"
     }
   ]
 }
