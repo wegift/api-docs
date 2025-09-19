@@ -4,6 +4,32 @@ icon: newspaper
 description: "Changelog of all major API updates, new features, removals, and improvements."
 ---
 
+<Update label="September 2025" tags={["Feature", "Ordering"]}>
+
+## New metadata field added to order response
+
+We've added a new `metadata` field to the order response. You can use this field to attach additional, customer-specific data to the order. This is for your internal use, the information stored here will not be exposed to the end user.
+
+When you query for an order we will return the metadata you have attached to the order.
+
+We support up to 20 key-value pairs, keys have a maximum length of 40 characters, and values can be up to 200 characters long. Both keys and values must be strings.
+
+Check out the [order create reference](/reference/2024-02-05/endpoint/orders/create#body-metadata) for more details.
+
+### Example
+
+Let's say you're placing orders for a campaign. You could attach several key-value pairs to the order to map the Runa order to your internal order ID, which department is running the campaign, and which campaign the order belongs to.
+
+```json
+"metadata": {
+  "internal_id": "12345",
+  "department": "marketing",
+  "campaign": "summer_2024"
+}
+```
+
+</Update>
+
 <Update label="September 2025" tags={["Feature", "Embedded FX", "Ordering"]}>
 ## Order Estimate now supports Embedded FX orders
 
