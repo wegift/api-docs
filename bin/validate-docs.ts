@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 interface DocsConfig {
   navigation: {
@@ -24,32 +24,40 @@ interface DocsConfig {
 
 function extractAllPages(config: DocsConfig): Set<string> {
   const pages = new Set<string>();
-  
-  function processPages(pageList: Array<string | { group: string; pages: string[] | Array<string | { group: string; pages: string[] }> }>): void {
+
+  function processPages(
+    pageList: Array<
+      | string
+      | {
+          group: string;
+          pages: string[] | Array<string | { group: string; pages: string[] }>;
+        }
+    >,
+  ): void {
     for (const item of pageList) {
-      if (typeof item === 'string') {
+      if (typeof item === "string") {
         pages.add(item);
       } else if (item.group && item.pages) {
         processPages(item.pages as any);
       }
     }
   }
-  
+
   for (const tab of config.navigation.tabs) {
     if (tab.pages) {
       processPages(tab.pages as any);
     }
-    
+
     if (tab.groups) {
       for (const group of tab.groups) {
         processPages(group.pages as any);
       }
     }
-    
+
     if (tab.versions) {
       for (const version of tab.versions) {
         if (version.openapi) {
-          pages.add(version.openapi.replace(/^\//, ''));
+          pages.add(version.openapi.replace(/^\//, ""));
         }
         if (version.groups) {
           for (const group of version.groups) {
@@ -59,17 +67,17 @@ function extractAllPages(config: DocsConfig): Set<string> {
       }
     }
   }
-  
+
   return pages;
 }
 
 function validatePageExists(pagePath: string): boolean {
   // Check if the path already has a file extension (.json, .mdx, etc.)
   const ext = path.extname(pagePath);
-  if (ext === '.json' || ext === '.mdx') {
+  if (ext === ".json" || ext === ".mdx") {
     return fs.existsSync(pagePath);
   }
-  
+
   // Otherwise check for .mdx or .json extensions
   const mdxPath = `${pagePath}.mdx`;
 
@@ -78,14 +86,16 @@ function validatePageExists(pagePath: string): boolean {
 
 async function main(): Promise<void> {
   try {
-    const docsConfig: DocsConfig = JSON.parse(fs.readFileSync('docs.json', 'utf8'));
+    const docsConfig: DocsConfig = JSON.parse(
+      fs.readFileSync("docs.json", "utf8"),
+    );
     const allPages = extractAllPages(docsConfig);
-    
+
     console.log(`Found ${allPages.size} page references in docs.json`);
-    
+
     const missingPages: string[] = [];
     const existingPages: string[] = [];
-    
+
     for (const page of allPages) {
       if (validatePageExists(page)) {
         existingPages.push(page);
@@ -93,9 +103,9 @@ async function main(): Promise<void> {
         missingPages.push(page);
       }
     }
-    
+
     console.log(`✅ ${existingPages.length} pages found`);
-    
+
     if (missingPages.length > 0) {
       console.error(`❌ ${missingPages.length} missing pages:`);
       for (const page of missingPages.sort()) {
@@ -103,11 +113,10 @@ async function main(): Promise<void> {
       }
       process.exit(1);
     } else {
-      console.log('🎉 All pages referenced in docs.json exist!');
+      console.log("🎉 All pages referenced in docs.json exist!");
     }
-    
   } catch (error) {
-    console.error('Error validating docs:', error);
+    console.error("Error validating docs:", error);
     process.exit(1);
   }
 }
