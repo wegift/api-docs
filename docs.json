@@ -119,6 +119,10 @@
                 "pages": ["reference/2024-02-05/endpoint/balance/get"]
               },
               {
+                "group": "Utility",
+                "pages": ["reference/2024-02-05/endpoint/utility/ping"]
+              },
+              {
                 "group": "Webhooks",
                 "pages": [
                   "reference/2024-02-05/webhook/order.completion",

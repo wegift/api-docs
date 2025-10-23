@@ -30,6 +30,10 @@
   ],
   "tags": [
     {
+      "name": "utility",
+      "description": "Utility endpoints."
+    },
+    {
       "name": "balance",
       "description": "Operations related to account balance."
     },
@@ -43,6 +47,37 @@
     }
   ],
   "paths": {
+    "/ping": {
+      "get": {
+        "operationId": "ping",
+        "tags": ["utility"],
+        "summary": "Ping endpoint",
+        "description": "Check your integration can connect to the Runa API",
+        "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "pong"
+                    }
+                  },
+                  "required": ["message"]
+                },
+                "example": {
+                  "message": "pong"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/balance": {
       "get": {
         "operationId": "getBalance",

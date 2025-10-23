@@ -14,7 +14,7 @@ description: "Create an API key to authenticate your requests"
 
   </Step>
   <Step title="Choose the environment">
-    You now need to choose the environment to create the API key in. For this guide we will use the playground environment.
+    You now need to choose the environment to create the API key in. For this guide we will use the **playground** environment.
     <Frame caption="The environment modal is displayed when you click the 'Create new API key' button.">
     ![](/assets/screenshots/api-key-page-env-modal.png)
     </Frame>
@@ -31,7 +31,7 @@ description: "Create an API key to authenticate your requests"
     ![](/assets/screenshots/api-key-page-created.png)
     </Frame>
     <Note>
-#### Securing your API key
+**Securing your API key**
 
 It is your responsibility to keep your API keys safe and secure. Anyone holding your key will be able to make requests to the API on your behalf.
 Review our [security best practices](/best-practices/security) for information on how to keep your API keys secure.
@@ -48,13 +48,38 @@ Once you have created an API key you can view it on the [API keys page](https://
   ![](/assets/screenshots/api-key-page-success.png)
 </Frame>
 
-## Using the API key
+## Using your API key
+
+### The API key header
 
 When making requests to the API you will need to include the API key in the request headers. It must be included in the `X-Api-Key` header for all requests.
 
 ```http
 X-Api-Key: YOUR_API_KEY
 ```
+
+### Testing your API key
+
+You can verify that your API key is working correctly by making a request to the [ping endpoint](/reference/2024-02-05/endpoint/utility/ping). This is a simple health check endpoint that requires authentication but doesn't perform any other operations.
+
+```bash
+curl -X GET https://playground.runa.io/v2/ping \
+  -H "X-Api-Key: YOUR_API_KEY"
+```
+
+If your API key is valid, you'll receive this response:
+
+```json
+{
+  "message": "pong"
+}
+```
+
+If you receive an error, check that:
+
+- You've copied the entire API key correctly
+- You're using the correct environment URL (playground or production)
+- The API key hasn't been revoked
 
 <br />
 <Card
