@@ -130,10 +130,6 @@
                 ]
               }
             ]
-          },
-          {
-            "version": "2023-07-27",
-            "openapi": "/reference/2023-07-27/openapi.json"
           }
         ]
       },
