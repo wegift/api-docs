@@ -4,6 +4,16 @@ icon: newspaper
 description: "Changelog of all major API updates, new features, removals, and improvements."
 ---
 
+<Update label="November 2025" tags={["Removal", "Version"]}>
+
+## 2023-07-27 API version end-of-life
+
+As of **14 November 2025** the **2023-07-27** version of the API is no longer available.
+
+All affected customers were notified ahead of time. As of today requests for the specific version using the `X-Api-Version` header will respond with a `410 Gone` error code. Requests without this header will default to the current API version.
+
+</Update>
+
 <Update label="September 2025" tags={["Feature", "Ordering"]}>
 
 ## New metadata field added to ordering endpoint
