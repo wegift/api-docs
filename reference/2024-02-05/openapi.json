@@ -1249,7 +1249,7 @@
         "properties": {
           "face_value": {
             "title": "Face Value",
-            "description": "Face value of the payout link. The currency of the face value is inferred from the product selection.\n\nWhat value is allowed depends on the product mode:\n- When ordering a `SINGLE` product this field follows the allowed values from the selected product.\n- If using `MULTIPLE` or `TEMPLATE` this value must be: equal or greater than the minimum face value of the products selected and be a round number.",
+            "description": "Face value of the payout link. The currency of the face value is inferred from the product selection.\n\nWhat value is allowed depends on the product mode:\n- When ordering a `SINGLE` product this field follows the allowed values from the selected product.\n- If using `MULTIPLE` or `TEMPLATE` this value must be: equal or greater than the minimum face value of the products selected and be a whole number.",
             "minimum": 0.01,
             "example": 10,
             "type": "number"
