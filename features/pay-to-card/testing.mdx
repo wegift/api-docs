@@ -1,0 +1,67 @@
+---
+title: "Testing"
+description: "Steps to simulate different pay to card redemption scenarios in playground."
+icon: "gears"
+---
+
+This document covers testing process for Pay to Card redemption journey. For testing and simulating errors during ordering, refer to [Runa API Playground section](/docs/playground).
+
+Here's a high level summary of the Pay to Card redemption journey:
+
+<img className="block dark:hidden" src="/assets/graphics/p2c-flow-light.png" />
+<img className="hidden dark:block" src="/assets/graphics/p2c-flow-dark.png" />
+
+Different parts of the journey and steps to simulate successful and error scenarios at each step are described below. 
+
+Note that email delivery of links is disabled in playground by default. You can still use the link returned from our API response to proceed.
+
+###  ✉️ Email verification
+
+Playground supports email verification via one time code, just like our live environment.
+
+You can test both successful and error cases by trying scenarios such as:
+1. Correct email and code.
+2. Incorrect code.
+
+
+
+
+#### 💳 Billing address and card details
+
+<Warning>
+  Never enter your actual address or card details on playground links.
+</Warning>
+
+There is no billing address validation in the Playground environment, so you can use any dummy address.
+
+The playground environment only works with a specific set of cards. Use the following cards to trigger different scenarios.
+
+1. Valid card details
+   
+   Use the following details to trigger a success response:
+   
+   Card Number: `4111 1111 1111 1111`
+   
+   CVV, Expiry Date, and Cardholder name: any values
+
+2. Card details for validation error
+   
+   Following should immediately trigger a warning for incorrect card number
+   
+   Card Number: `4111 1111 1111 1112`
+   
+   CVV, Expiry Date, and Cardholder name: any values
+
+#### Returning user
+
+A returning user will already have their card and other details saved.
+
+To simulate a returning recipient flow in the Playground environment, append `+repeat` to the username part of your email address.
+
+For example, if your email is `user.name@mailserver.com`, use `user.name+repeat@mailserver.com`.
+
+You will still receive the one-time code in your usual inbox.
+
+### Support
+
+If you face any issues while testing, feel free to contact your account manager or Runa support at: support@runa.io
