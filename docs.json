@@ -20,6 +20,9 @@
       "source": "https://brand-assets.runa.io/design-system/fonts/f37lineca/F37Lineca-Bold.woff2"
     }
   },
+  "styling": {
+    "eyebrows": "breadcrumbs"
+  },
   "navigation": {
     "tabs": [
       {
@@ -61,7 +64,16 @@
               "features/limiting-available-products",
               "features/user-redemption-templates",
               "features/merchant-selection-template",
-              "features/embedded-fx"
+              "features/embedded-fx",
+              {
+                "group": "Pay to Card",
+                "icon": "boxes-stacked",
+                "pages": [
+                  "features/pay-to-card/introduction",
+                  "features/pay-to-card/testing",
+                  "features/pay-to-card/support"
+                ]
+              }
             ]
           },
           {
