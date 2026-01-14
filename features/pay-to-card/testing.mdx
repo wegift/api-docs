@@ -1,32 +1,46 @@
 ---
 title: "Testing"
 description: "Steps to simulate different pay to card redemption scenarios in playground."
-icon: "gears"
+icon: "flask"
 ---
 
-This document covers testing process for Pay to Card redemption journey. For testing and simulating errors during ordering, refer to [Runa API Playground section](/docs/playground).
+The Pay to Card redemption journey requires a few steps from the recipient. To test this journey in the playground environment, you can use the following steps.
+
+<Info>
+  For testing and simulating errors during placing of the order, refer to the
+  [playground reference section](/docs/playground).
+</Info>
 
 Here's a high level summary of the Pay to Card redemption journey:
 
 <img className="block dark:hidden" src="/assets/graphics/p2c-flow-light.png" />
 <img className="hidden dark:block" src="/assets/graphics/p2c-flow-dark.png" />
 
-Different parts of the journey and steps to simulate successful and error scenarios at each step are described below. 
+You're able to walk through each step of the journey in the playground environment.
 
-Note that email delivery of links is disabled in playground by default. You can still use the link returned from our API response to proceed.
+<Info>
+  **Delivery of links for orders is disabled in the playground environment by
+  default**
+  <br />
+  Every distribution method will still return a link in the `payout.url` field
+  that you can use to access the redemption journey. See the [playground
+  reference](/docs/playground) for more information.
+</Info>
 
-###  ✉️ Email verification
+## Testing the redemption journey
+
+After placing the order, you can access the redemption journey by following the link in the `payout.url` field.
+
+### Email verification
 
 Playground supports email verification via one time code, just like our live environment.
 
 You can test both successful and error cases by trying scenarios such as:
+
 1. Correct email and code.
 2. Incorrect code.
 
-
-
-
-#### 💳 Billing address and card details
+### Billing address and card details
 
 <Warning>
   Never enter your actual address or card details on playground links.
@@ -37,22 +51,22 @@ There is no billing address validation in the Playground environment, so you can
 The playground environment only works with a specific set of cards. Use the following cards to trigger different scenarios.
 
 1. Valid card details
-   
+
    Use the following details to trigger a success response:
-   
+
    Card Number: `4111 1111 1111 1111`
-   
+
    CVV, Expiry Date, and Cardholder name: any values
 
 2. Card details for validation error
-   
+
    Following should immediately trigger a warning for incorrect card number
-   
+
    Card Number: `4111 1111 1111 1112`
-   
+
    CVV, Expiry Date, and Cardholder name: any values
 
-#### Returning user
+### The returning user case
 
 A returning user will already have their card and other details saved.
 
