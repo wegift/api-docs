@@ -20,6 +20,9 @@
       "source": "https://brand-assets.runa.io/design-system/fonts/f37lineca/F37Lineca-Bold.woff2"
     }
   },
+  "styling": {
+    "eyebrows": "breadcrumbs"
+  },
   "navigation": {
     "tabs": [
       {
@@ -69,7 +72,6 @@
                   "features/pay-to-card/introduction",
                   "features/pay-to-card/testing",
                   "features/pay-to-card/support"
-                  
                 ]
               }
             ]
