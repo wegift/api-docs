@@ -17,7 +17,7 @@ Pay to Card facilitates instant transfers to other accounts, powering use cases 
 
 Retrieve the Pay to Card products using the [product list endpoint](/reference/2024-02-05/endpoint/products/list). You can identify these products by the `payout_type` field, which will be set to `payment`. Each Pay to Card product supports a specific currency and country. You can refer to the [product listing guide](/features/product-catalog) for more information on this endpoint.
 
-```json title="Pay to Card product example, fields truncated to for brevity" icon="file" expandable
+```json title="Pay to Card product example, fields truncated for brevity" icon="file" expandable
 {
   "code": "P2C-US",
   "name": "Pay To Card US",
@@ -33,7 +33,7 @@ Retrieve the Pay to Card products using the [product list endpoint](/reference/2
 
 To make an order for a payment you simply specify the Pay to Card product code for the currency and country you wish to send funds in.
 
-For our example we will be using the `P2C-US` product code for a $10 payment to a recipient. The payment will be sent to the recipient's email address via the `EMAIL` distribution method.
+For our example, we will be using the `P2C-US` product code for a $10 payment to a recipient. The payment will be sent to the recipient's email address via the `EMAIL` distribution method.
 
 ```http title="Example pay to card order" icon="globe" expandable
 POST https://api.runa.io/v2/order
@@ -75,7 +75,7 @@ Refer to the [order endpoint reference](/reference/2024-02-05/endpoint/orders/cr
 <img className="block dark:hidden" src="/assets/graphics/p2c-flow-light.png" />
 <img className="hidden dark:block" src="/assets/graphics/p2c-flow-dark.png" />
 
-When a recipient opens the payment they will be guided through the following flow on their first redemption:
+When a recipient opens the payment link, they will be guided through the following flow on their first redemption:
 
 1. Enter their email address to authenticate
 2. Securely enter their card details
@@ -87,7 +87,7 @@ For a returning recipient, they will only need to enter their email address to a
 
 <CardGroup cols="2">
   <Card title="Testing" icon="flask" href="/features/pay-to-card/testing">
-    Test out the pay to card redemption jouney in our playground environment.
+    Test out the pay to card redemption journey in our playground environment.
   </Card>
   <Card title="Support" icon="circle-info" href="/features/pay-to-card/support">
     Read through the potential failure scenarios and suggested resolution for

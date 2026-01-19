@@ -19,17 +19,17 @@ Here's a high level summary of the Pay to Card redemption journey:
 You're able to walk through each step of the journey in the playground environment.
 
 <Info>
-  **Delivery of links for orders is disabled in the playground environment by
+  **Email delivery of links for orders is disabled in the playground environment by
   default**
-  <br />
-  Every distribution method will still return a link in the `payout.url` field
+
+  Every order via API will always return a link in the `payout.url` field
   that you can use to access the redemption journey. See the [playground
   reference](/docs/playground) for more information.
 </Info>
 
 ## Testing the redemption journey
 
-After placing the order, you can access the redemption journey by following the link in the `payout.url` field.
+After placing the order, you can access the redemption journey by following the link in the `payout.url` field of the API response.
 
 ### Email verification
 
@@ -43,7 +43,7 @@ You can test both successful and error cases by trying scenarios such as:
 ### Billing address and card details
 
 <Warning>
-  Never enter your actual address or card details on playground links.
+  Never enter your real address or card details on playground links.
 </Warning>
 
 There is no billing address validation in the Playground environment, so you can use any dummy address.
@@ -60,7 +60,7 @@ The playground environment only works with a specific set of cards. Use the foll
 
 2. Card details for validation error
 
-   Following should immediately trigger a warning for incorrect card number
+   Any incrrect card should immediately trigger an error (example below):
 
    Card Number: `4111 1111 1111 1112`
 
@@ -70,7 +70,7 @@ The playground environment only works with a specific set of cards. Use the foll
 
 A returning user will already have their card and other details saved.
 
-To simulate a returning recipient flow in the Playground environment, append `+repeat` to the username part of your email address.
+To simulate a returning recipient experience in the Playground environment, append `+repeat` to the username part of your email address.
 
 For example, if your email is `user.name@mailserver.com`, use `user.name+repeat@mailserver.com`.
 
