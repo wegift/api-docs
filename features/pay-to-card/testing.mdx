@@ -1,0 +1,81 @@
+---
+title: "Testing"
+description: "Steps to simulate different pay to card redemption scenarios in playground."
+icon: "flask"
+---
+
+The Pay to Card redemption journey requires a few steps from the recipient. To test this journey in the playground environment, you can use the following steps.
+
+<Info>
+  For testing and simulating errors during placing of the order, refer to the
+  [playground reference section](/docs/playground).
+</Info>
+
+Here's a high level summary of the Pay to Card redemption journey:
+
+<img className="block dark:hidden" src="/assets/graphics/p2c-flow-light.png" />
+<img className="hidden dark:block" src="/assets/graphics/p2c-flow-dark.png" />
+
+You're able to walk through each step of the journey in the playground environment.
+
+<Info>
+  **Email delivery of links for orders is disabled in the playground environment by
+  default**
+
+  Every order via API will always return a link in the `payout.url` field
+  that you can use to access the redemption journey. See the [playground
+  reference](/docs/playground) for more information.
+</Info>
+
+## Testing the redemption journey
+
+After placing the order, you can access the redemption journey by following the link in the `payout.url` field of the API response.
+
+### Email verification
+
+Playground supports email verification via one time code, just like our live environment.
+
+You can test both successful and error cases by trying scenarios such as:
+
+1. Correct email and code.
+2. Incorrect code.
+
+### Billing address and card details
+
+<Warning>
+  Never enter your real address or card details on playground links.
+</Warning>
+
+There is no billing address validation in the Playground environment, so you can use any dummy address.
+
+The playground environment only works with a specific set of cards. Use the following cards to trigger different scenarios.
+
+1. Valid card details
+
+   Use the following details to trigger a success response:
+
+   Card Number: `4111 1111 1111 1111`
+
+   CVV, Expiry Date, and Cardholder name: any values
+
+2. Card details for validation error
+
+   Any incorrect card should immediately trigger an error (example below):
+
+   Card Number: `4111 1111 1111 1112`
+
+   CVV, Expiry Date, and Cardholder name: any values
+
+### The returning recipient case
+
+A returning recipient will already have their card and other details saved.
+
+To simulate a returning recipient experience in the Playground environment, append `+repeat` to the username part of your email address.
+
+For example, if your email is `user@example.com`, use `user+repeat@example.com`.
+
+You will still receive the one-time code in your usual inbox.
+
+### Support
+
+If you face any issues while testing, feel free to contact your account manager or Runa support at: support@runa.io
