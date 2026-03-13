@@ -1,32 +1,32 @@
 ---
-title: "Custom Fulfilment Domain"
-description: "Use your own domain for Runa fulfilment links to provide a branded experience for your recipients."
+title: "Custom payout domain"
+description: "Use your own domain for Runa payout links to provide a branded experience for your recipients."
 icon: "globe"
 ---
 
 <Info>
-  Custom fulfilment domains are not available by default. To enable this
-  feature, contact your Account Manager.
+  Custom payout domains are not available by default. To enable this feature,
+  contact your Account Manager.
 </Info>
 
-By default, Runa fulfilment links are served from `spend.runa.io` and `payout.runa.io`. With a custom fulfilment domain, your recipients will see links on your own domain instead, improving trust and brand consistency.
+By default, Runa payout links are served from `spend.runa.io` and `payout.runa.io`. With a custom payout domain, your recipients will see links on your own domain instead, improving trust and brand consistency.
 
-A custom domain will apply to all orders in your account, and all new fulfilment links will use the custom domain automatically. Existing links will continue to function on the original Runa domains.
+A custom domain will apply to all orders in your account, and all new payout links will use the custom domain automatically. Existing links will continue to function on the original Runa domains.
 
 ## Setting up your custom domain
 
 <Steps>
   <Step title="Choose a subdomain">
-    Select a subdomain of a domain you own. For example, if your domain is `company.com`, you might use `spend.company.com`. This subdomain must be dedicated to Runa fulfilment links and cannot be used for other purposes.
+    Select a subdomain of a domain you own. For example, if your domain is `company.com`, you might use `example.company.com`. This subdomain must be dedicated to Runa payout links and cannot be used for other purposes.
   </Step>
   <Step title="Create a CNAME DNS record">
     Create a `CNAME` DNS record on your chosen subdomain pointing to `spend.runa.io`.
 
-    For example, if your subdomain is `spend.company.com`:
+    For example, if your subdomain is `example.company.com`:
 
     | Type    | Name    | Value           |
     | ------- | ------- | --------------- |
-    | `CNAME` | `spend` | `spend.runa.io` |
+    | `CNAME` | `example` | `spend.runa.io` |
 
   </Step>
   <Step title="Inform Runa">
@@ -34,4 +34,4 @@ A custom domain will apply to all orders in your account, and all new fulfilment
   </Step>
 </Steps>
 
-Once configured, all new fulfilment links for your account will use your custom domain automatically.
+Once configured, all new payout links for your account will use your custom domain automatically.
