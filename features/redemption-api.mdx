@@ -128,7 +128,9 @@ GET {payout.url}?format=json
 | `RE999` | An unexpected error occurred. Please contact Runa or try again later.                                          |
 
 <RequestExample>
-  ```http GET https://spend.runa.io/-/abc123…def?format=json ```
+```http
+GET https://spend.runa.io/-/abc123…def?format=json
+```
 </RequestExample>
 
 <ResponseExample>
@@ -164,5 +166,4 @@ GET {payout.url}?format=json
   "error_string": "The e-code has expired. You may need to place a new order."
 }
 ```
-
 </ResponseExample>
