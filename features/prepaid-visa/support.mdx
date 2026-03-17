@@ -22,7 +22,7 @@ If a consumer receives multiple payment emails for the same reloadable card, but
 
 Recipients can add their card to a mobile wallet (Apple Pay, Google Pay, or Samsung Pay) by clicking the **Add to Wallet** button in the UI. A one-time verification code from the wallet provider is required as part of the card tokenisation step.
 
-- **Reward Cards**: The recipient will be asked to provide their email address or phone number to receive the verification code.
+- **Reward Cards**: The recipient will be asked to provide their email address and optionally their phone number to receive the verification code.
 - **Reload Cards**: The email address from authentication is used by default. The recipient can optionally provide their phone number instead.
 
 ### Reload Card — recipient using a different email
@@ -33,7 +33,7 @@ Recipients must always authenticate with the same email address their Reload Car
 
 Insufficient balance at order time.
 
-- If your account has insufficient balance you will be unable to create the order for the payment. The API response with a 400 status code, the error message body will contain the type `insufficient_funds`. Check the [order endpoint reference](/reference/2024-02-05/endpoint/orders/create) for more information.
+- If your account has insufficient balance you will be unable to create the order for the payment. The API responds with a 400 status code, the error message body will contain the type `insufficient_funds`. Check the [order endpoint reference](/reference/2024-02-05/endpoint/orders/create) for more information.
 
 
 ## All other issues
