@@ -73,6 +73,14 @@
                   "features/pay-to-card/testing",
                   "features/pay-to-card/support"
                 ]
+              },
+              {
+                "group": "Prepaid Visa Cards",
+                "icon": "credit-card",
+                "pages": [
+                  "features/prepaid-visa/introduction",
+                  "features/prepaid-visa/support"
+                ]
               }
             ]
           },
