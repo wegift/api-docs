@@ -71,7 +71,37 @@ X-Api-Key: <your API key>
 In the example above we used the `EMAIL` distribution method to send the card to the recipient's email address.
 
 - You can also use the `PAYOUT_LINK` distribution method to receive a link in the API response and handle distribution yourself.
-- For **Reload Cards only**, you can use the `RECIPIENT` distribution method. Specify a unique `recipient_reference` to identify the recipient. For subsequent orders, use the same `recipient_reference` and we will automatically reload the existing card.
+
+## Reloading a Prepaid Visa Card
+
+For Reload Cards, you can use the `RECIPIENT` distribution method to enable automatic top-ups. Specify a unique `recipient_reference` to identify the recipient. For subsequent orders, use the same `recipient_reference` and we will automatically reload the existing card.
+
+```http title="Example Reload Card order" icon="globe" expandable
+POST https://api.runa.io/v2/order
+Content-Type: application/json
+X-Api-Key: <your API key>
+
+{
+    "payment_method": {
+        "type": "ACCOUNT_BALANCE",
+        "currency": "USD"
+    },
+    "items": [
+        {
+            "face_value": 10,
+            "distribution_method": {
+                "type": "RECIPIENT",
+                "recipient_reference": "<your unique recipient identifier>",
+                "email_address": "<your recipient's email address>"
+            },
+            "products": {
+                "type": "SINGLE",
+                "value": "VISARL-USD"
+            }
+        }
+    ]
+}
+```
 
 Refer to the [order endpoint reference](/reference/2024-02-05/endpoint/orders/create) for more information on the request schema and other options available.
 
