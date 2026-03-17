@@ -66,12 +66,12 @@
               "features/merchant-selection-template",
               "features/embedded-fx",
               {
-                "group": "Pay to Card",
+                "group": "Push to Card",
                 "icon": "boxes-stacked",
                 "pages": [
-                  "features/pay-to-card/introduction",
-                  "features/pay-to-card/testing",
-                  "features/pay-to-card/support"
+                  "features/push-to-card/introduction",
+                  "features/push-to-card/testing",
+                  "features/push-to-card/support"
                 ]
               }
             ]
@@ -221,6 +221,18 @@
     "options": ["copy", "view", "chatgpt", "claude"]
   },
   "redirects": [
+    {
+      "source": "/features/pay-to-card/introduction",
+      "destination": "/features/push-to-card/introduction"
+    },
+    {
+      "source": "/features/pay-to-card/support",
+      "destination": "/features/push-to-card/support"
+    },
+    {
+      "source": "/features/pay-to-card/testing",
+      "destination": "/features/push-to-card/testing"
+    },
     {
       "source": "/changelog/2023-01-16-api-version-no-longer-available",
       "destination": "/changelog/api#2023-01-16-api-version-end-of-life"
