@@ -66,12 +66,12 @@
               "features/merchant-selection-template",
               "features/embedded-fx",
               {
-                "group": "Pay to Card",
+                "group": "Push to Card",
                 "icon": "boxes-stacked",
                 "pages": [
-                  "features/pay-to-card/introduction",
-                  "features/pay-to-card/testing",
-                  "features/pay-to-card/support"
+                  "features/push-to-card/introduction",
+                  "features/push-to-card/testing",
+                  "features/push-to-card/support"
                 ]
               }
             ]

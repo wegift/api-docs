@@ -1,26 +1,26 @@
 ---
-title: "Using Pay to Card"
+title: "Using Push to Card"
 description: "Provide faster access to funds for your recipients by pushing funds to cards."
 icon: "credit-card"
 ---
 
-Powered by Visa Direct and Mastercard Send, Runa Pay to Card is the fastest and simplest way to send funds directly to your recipients' bank account.
+Powered by Visa Direct and Mastercard Send, Runa Push to Card is the fastest and simplest way to send funds directly to your recipients' bank account.
 
-Pay to Card facilitates instant transfers to other accounts, powering use cases like gig worker payments, rewards, incentives, insurance claims, corporate rebates, payroll, government aid, and reimbursements.
+Push to Card facilitates instant transfers to other accounts, powering use cases like gig worker payments, rewards, incentives, insurance claims, corporate rebates, payroll, government aid, and reimbursements.
 
 <Info>
-  To get access to Pay to Card, please reach out to your Account Manager or
+  To get access to Push to Card, please reach out to your Account Manager or
   email support@runa.io.
 </Info>
 
-## Fetching the Pay to Card products
+## Fetching the Push to Card products
 
-Retrieve the Pay to Card products using the [product list endpoint](/reference/2024-02-05/endpoint/products/list). You can identify these products by the `payout_type` field, which will be set to `payment`. Each Pay to Card product supports a specific currency and country. You can refer to the [product listing guide](/features/product-catalog) for more information on this endpoint.
+Retrieve the Push to Card products using the [product list endpoint](/reference/2024-02-05/endpoint/products/list). You can identify these products by the `payout_type` field, which will be set to `payment`. Each Push to Card product supports a specific currency and country. You can refer to the [product listing guide](/features/product-catalog) for more information on this endpoint.
 
-```json title="Pay to Card product example, fields truncated for brevity" icon="file" expandable
+```json title="Push to Card product example, fields truncated for brevity" icon="file" expandable
 {
   "code": "P2C-US",
-  "name": "Pay To Card US",
+  "name": "Push To Card US",
   "currency": "USD",
   "state": "LIVE",
   "payout_type": "payment",
@@ -29,13 +29,13 @@ Retrieve the Pay to Card products using the [product list endpoint](/reference/2
 }
 ```
 
-## Placing a Pay to Card order
+## Placing a Push to Card order
 
-To make an order for a payment you simply specify the Pay to Card product code for the currency and country you wish to send funds in.
+To make an order for a payment you simply specify the Push to Card product code for the currency and country you wish to send funds in.
 
 For our example, we will be using the `P2C-US` product code for a $10 payment to a recipient. The payment will be sent to the recipient's email address via the `EMAIL` distribution method.
 
-```http title="Example pay to card order" icon="globe" expandable
+```http title="Example push to card order" icon="globe" expandable
 POST https://api.runa.io/v2/order
 Content-Type: application/json
 X-Api-Key: <your API key>
@@ -86,10 +86,10 @@ For a returning recipient, they will only need to enter their email address to a
 ## Next steps
 
 <CardGroup cols="2">
-  <Card title="Testing" icon="flask" href="/features/pay-to-card/testing">
-    Test out the pay to card redemption journey in our playground environment.
+  <Card title="Testing" icon="flask" href="/features/push-to-card/testing">
+    Test out the push to card redemption journey in our playground environment.
   </Card>
-  <Card title="Support" icon="circle-info" href="/features/pay-to-card/support">
+  <Card title="Support" icon="circle-info" href="/features/push-to-card/support">
     Read through the potential failure scenarios and suggested resolution for
     each.
   </Card>
