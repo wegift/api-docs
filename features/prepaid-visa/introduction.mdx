@@ -1,0 +1,127 @@
+---
+title: "Using Prepaid Visa Cards"
+description: "Send funds to recipients via instantly delivered, digital Visa prepaid cards."
+icon: "credit-card"
+---
+
+Runa Prepaid Cards are instantly delivered, digital Visa prepaid cards that recipients can spend online or in-store anywhere Visa is accepted. They are sent through the same ordering flow as any other payout on the Runa Network.
+
+- **No bank account needed**: Perfect for users without access to traditional financial tools
+- **Custom branding options**: Make every payout feel personal and on-brand with a fully customizable experience
+- **Two prepaid options**: Enable both the Runa Reward Card and the Runa Reload Card for your business needs
+
+<Info>
+  To get access to Prepaid Visa Cards, please reach out to your Account Manager or
+  email support@runa.io.
+</Info>
+
+## Card types
+
+| | Runa Reload Card | Runa Reward Card |
+|---|---|---|
+| **Type** | Reloadable | Single-load |
+| **Expiry** | 47 months from first activation | 3, 6, or 12 months from first activation |
+| **Product code** | `VISARL-USD` | `VISASL-3M-USD`, `VISASL-6M-USD`, `VISASL-12M-USD` |
+
+<Warning>
+  For Reload Cards, recipients must use the same email address the card was originally sent to. Future top-ups will fail if a different email is used.
+</Warning>
+
+## Getting started
+
+- Ensure you have [created an API key](/getting-started/api-key).
+- Ensure you have funded your account with the required balance to cover the cards you intend to issue. You can use the [balance endpoint](/reference/2024-02-05/endpoint/balance/get) to check your account balance.
+- Retrieve the Prepaid Visa Card products using the [product list endpoint](/reference/2024-02-05/endpoint/products/list). Each Prepaid Visa Card product supports a different use case (reward or reload), and Reward Card products are available with different expiry durations. You can refer to the [product listing guide](/features/product-catalog) for more information on this endpoint.
+- Familiarize yourself with the [ordering endpoint](/getting-started/first-order/sync). To make an order for a prepaid card you simply specify the Prepaid Visa Card product code you wish to issue.
+
+## Placing a Prepaid Visa Card order
+
+To place an order you simply specify the Prepaid Visa Card product code you wish to issue.
+
+For our example, we will be using the `VISASL-3M-USD` product code for a $10 Reward Card. The card will be sent to the recipient's email address via the `EMAIL` distribution method.
+
+```http title="Example Prepaid Visa Card order" icon="globe" expandable
+POST https://api.runa.io/v2/order
+Content-Type: application/json
+X-Api-Key: <your API key>
+
+{
+    "payment_method": {
+        "type": "ACCOUNT_BALANCE",
+        "currency": "USD"
+    },
+    "items": [
+        {
+            "face_value": 10,
+            "distribution_method": {
+                "type": "EMAIL",
+                "email_address": "<your recipient's email address>"
+            },
+            "products": {
+                "type": "SINGLE",
+                "value": "VISASL-3M-USD"
+            }
+        }
+    ]
+}
+```
+
+### Distribution methods
+
+In the example above we used the `EMAIL` distribution method to send the card to the recipient's email address.
+
+- You can also use the `PAYOUT_LINK` distribution method to receive a link in the API response and handle distribution yourself.
+
+## Reloading a Prepaid Visa Card
+
+For Reload Cards, you can use the `RECIPIENT` distribution method to enable automatic top-ups. Specify a unique `recipient_reference` to identify the recipient. For subsequent orders, use the same `recipient_reference` and we will automatically reload the existing card.
+
+```http title="Example Reload Card order" icon="globe" expandable
+POST https://api.runa.io/v2/order
+Content-Type: application/json
+X-Api-Key: <your API key>
+
+{
+    "payment_method": {
+        "type": "ACCOUNT_BALANCE",
+        "currency": "USD"
+    },
+    "items": [
+        {
+            "face_value": 10,
+            "distribution_method": {
+                "type": "RECIPIENT",
+                "recipient_reference": "<your unique recipient identifier>",
+                "email_address": "<your recipient's email address>"
+            },
+            "products": {
+                "type": "SINGLE",
+                "value": "VISARL-USD"
+            }
+        }
+    ]
+}
+```
+
+Refer to the [order endpoint reference](/reference/2024-02-05/endpoint/orders/create) for more information on the request schema and other options available.
+
+## Recipient redemption experience
+
+### Reward Card
+
+When a recipient opens the payout link, they will immediately see their Visa card and card details. No authentication is required.
+
+Recipients can also view their transaction history, including balances, merchant details, and dates for each transaction.
+
+### Reload Card
+
+When a recipient opens the payout link for the first time, they will be guided through the following flow:
+
+1. Enter their email address to authenticate with Runa
+2. Enter their first and last name
+3. Set a card PIN
+4. View their Visa card details and start spending anywhere Visa is accepted
+
+For subsequent reloads, the card will be automatically topped up with the payout amount. If the recipient wishes to see their card details again, the confirmation email will contain a link where the card details will be securely presented upon authentication.
+
+Recipients can also view their transaction history, including balances, merchant details, and dates for each transaction.
