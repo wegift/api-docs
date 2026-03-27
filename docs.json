@@ -65,7 +65,6 @@
               "features/user-redemption-templates",
               "features/merchant-selection-template",
               "features/embedded-fx",
-              "features/custom-domain",
               {
                 "group": "Push to Card",
                 "icon": "boxes-stacked",
