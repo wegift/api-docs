@@ -11,6 +11,16 @@ icon: "code"
 
 The Redemption API allows you to retrieve raw gift card redemption details at the point where you need to display them to your customers. This gives you control over the customer journey by presenting gift card details within your own experience, rather than using the default Runa redemption page.
 
+## Availability
+
+The Redemption API is available in both the [Playground](/reference/2024-02-05/playground) and Production environments. The same feature gate applies to both — contact your Account Manager to enable it on your account before testing in Playground.
+
+In Playground, the `payout.url` returned on an order will be on the `spend.playground.runa.io` domain. Append `?format=json` to that URL just as you would in Production:
+
+```http
+GET https://spend.playground.runa.io/{payout-id}?format=json
+```
+
 ## How it works
 
 1. [Create an order](/reference/2024-02-05/endpoint/orders/create) as usual.
