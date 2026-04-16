@@ -688,7 +688,7 @@
           "type": "string",
           "pattern": "^[A-Z]{3}$"
         },
-        "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currency) for a listing of supported currencies.",
+        "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currencies) for a listing of supported currencies.",
         "in": "query",
         "example": "USD"
       },
@@ -782,7 +782,7 @@
       "CurrencyForAccount": {
         "type": "string",
         "pattern": "^[A-Z]{3}$",
-        "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currency) for a listing of supported currencies.",
+        "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currencies) for a listing of supported currencies.",
         "example": "USD"
       },
       "OrderStatus": {

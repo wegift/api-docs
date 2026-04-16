@@ -433,6 +433,10 @@
     {
       "source": "/rate-limits",
       "destination": "/best-practices/rate-limits"
+    },
+    {
+      "source": "/reference/currency",
+      "destination": "/reference/currencies"
     }
   ]
 }
