@@ -71,13 +71,17 @@ The top-level fields below are present on every response. The contents of `e_cod
 
 ## Response shapes
 
-The `e_code.type` field tells you how to render the gift card. There are three shapes in practice:
+The `e_code.type` field tells you how to render the gift card:
 
-| `type`   | When to use it                                 | Render as                          |
-| -------- | ---------------------------------------------- | ---------------------------------- |
-| `code`   | Plain alphanumeric code (with optional PIN)    | Display `code` (and `pin` if set)  |
-| `code`   | Barcode-backed redemption                      | Render a barcode from `barcode_string` using `barcode_format` (no `code` is returned) |
-| `url`    | Redemption hosted by the brand                 | Redirect the customer to `url`     |
+| `type`   | What's returned                                                              | How to render                                                  |
+| -------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `code`   | Some non-empty subset of `code`, `pin`, and a barcode                        | Display whichever of `code`, `pin`, and the barcode are non-null |
+| `url`    | A redemption `url` hosted by the brand                                       | Redirect the customer to `url`                                 |
+
+<Note>
+  For `type: "code"`, the simplest integration is to render whatever fields
+  are non-null rather than branching on which combination you got back.
+</Note>
 
 ### Common `e_code` fields
 
@@ -113,51 +117,39 @@ These fields are present on every shape:
   Per-`e_code` error description, or `null`.
 </ResponseField>
 
-### Shape 1 — `type: "code"`, plain code
+### `type: "code"`
 
-The customer redeems by entering the `code` (and `pin`, if present) at the brand. Barcode fields are `null`.
+The response includes a non-empty subset of `code`, `pin`, and a barcode (`barcode_format` + `barcode_string`). Any of the following combinations can occur:
+
+- `code` only
+- `pin` only
+- `code` + `pin`
+- `code` + barcode
+- `pin` + barcode
+- `code` + `pin` + barcode
+
+Fields not part of the redemption are returned as `null`. To keep your integration simple, just render whatever is non-null.
 
 <ResponseField name="code" type="string">
-  The gift card code.
+  Alphanumeric gift card code, or `null`.
 </ResponseField>
 
 <ResponseField name="pin" type="string">
-  PIN, if the brand requires one. `null` otherwise. Only present on plain-code
-  redemptions — never set alongside a barcode.
+  PIN, or `null`.
 </ResponseField>
-
-<ResponseField name="barcode_format" type="null">
-  Always `null` for this shape.
-</ResponseField>
-
-<ResponseField name="barcode_string" type="null">
-  Always `null` for this shape.
-</ResponseField>
-
-### Shape 2 — `type: "code"`, barcode
-
-The customer redeems by scanning a barcode in-store. Render the barcode from `barcode_string` using `barcode_format` — those two fields are always set together, since you need the format to decode the string. `code` and `pin` are always `null` for this shape.
 
 <ResponseField name="barcode_format" type="string">
-  One of `code-128`, `code-39`, `ean-13`, `QR`, `pdf417`. Use this to choose
-  the right barcode renderer. Also returned by the [product details
+  One of `code-128`, `code-39`, `ean-13`, `QR`, `pdf417`, or `null`. Use this
+  to choose the right barcode renderer. Also returned by the [product details
   endpoint](/reference/2024-02-05/endpoint/products/list).
 </ResponseField>
 
 <ResponseField name="barcode_string" type="string">
-  The value to encode. Pass through your barcode library using
-  `barcode_format`.
+  The value to encode in the barcode, or `null`. Always set together with
+  `barcode_format` — you need the format to decode the string.
 </ResponseField>
 
-<ResponseField name="code" type="null">
-  Always `null` for this shape.
-</ResponseField>
-
-<ResponseField name="pin" type="null">
-  Always `null` for this shape.
-</ResponseField>
-
-### Shape 3 — `type: "url"`
+### `type: "url"`
 
 The brand hosts redemption on their own site. Redirect the customer to `url`. There is no code to display.
 
@@ -184,7 +176,7 @@ The brand hosts redemption on their own site. Redirect the customer to `url`. Th
 ## Examples
 
 <CodeGroup>
-```json Plain code
+```json Code only
 {
   "status": "SUCCESS",
   "order_id": "O-XW2BQAM2",
@@ -207,7 +199,7 @@ The brand hosts redemption on their own site. Redirect the customer to `url`. Th
 }
 ```
 
-```json Barcode
+```json Code + PIN + barcode
 {
   "status": "SUCCESS",
   "order_id": "O-QRXNZBJV",
@@ -215,8 +207,8 @@ The brand hosts redemption on their own site. Redirect the customer to `url`. Th
     "type": "code",
     "status": "SUCCESS",
     "amount": "50.00",
-    "code": null,
-    "pin": null,
+    "code": "6280399992147003",
+    "pin": "25468113",
     "barcode_format": "QR",
     "barcode_string": "54390399548343003",
     "expiry_date": "2025-02-28",
