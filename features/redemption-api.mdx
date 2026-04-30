@@ -141,6 +141,41 @@ To see each response shape in practice, place a sync order for one of the produc
 | `ABO-GB`     | GBP, face value `5`   | `type: "code"`, with `code` + `pin` + `QR` barcode       |
 | `LUSH-CA`    | CAD, face value `10`  | `type: "url"`                                            |
 
+<CodeGroup>
+```json Success
+{
+  "status": "SUCCESS",
+  "order_id": "O-QRXNZBJV",
+  "e_code": {
+    "type": "code",
+    "status": "SUCCESS",
+    "amount": "5.00",
+    "code": "7756580246805369",
+    "pin": "359000",
+    "barcode_format": "QR",
+    "barcode_string": "7756580246805369",
+    "expiry_date": "2028-04-30",
+    "url": "https://spend.runa.io/-/cc3ec71d-6086-4bb7-a61a-55b42e098233",
+    "error_code": null,
+    "error_string": null
+  },
+  "error_code": null,
+  "error_string": null,
+  "error_details": null
+}
+```
+
+```json Error
+{
+  "status": "ERROR",
+  "order_id": "O-QRXNZBJV",
+  "error_code": "RE004",
+  "error_string": "The e-code has expired. You may need to place a new order.",
+  "error_details": "Asset has expired"
+}
+```
+</CodeGroup>
+
 ## Error codes
 
 | Code    | Description                                                                                                    |
