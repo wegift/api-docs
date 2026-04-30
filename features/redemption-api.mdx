@@ -142,7 +142,9 @@ To see each response shape in practice, place a sync order for one of the produc
 
 | Product code | Order as              | Returned shape                                           |
 | ------------ | --------------------- | -------------------------------------------------------- |
+| `BAW-GB`     | GBP, face value `5`   | `type: "code"`, with `code` only                         |
 | `FIVEG-US`   | USD, face value `5`   | `type: "code"`, with `code` + `pin`                      |
+| `CDISC-FR`   | EUR, face value `20`  | `type: "code"`, with `code` + `code-128` barcode         |
 | `AUCHAN-FR`  | EUR, face value `10`  | `type: "code"`, with `code` + `pin` + `code-128` barcode |
 | `ABO-GB`     | GBP, face value `5`   | `type: "code"`, with `code` + `pin` + `QR` barcode       |
 | `LUSH-CA`    | CAD, face value `10`  | `type: "url"`                                            |
