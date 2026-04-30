@@ -65,35 +65,21 @@ The top-level fields below are present on every response. The contents of `e_cod
 </ResponseField>
 
 <ResponseField name="e_code" type="object">
-  The gift card redemption details. The populated fields depend on
-  `e_code.type` — see [Response shapes](#response-shapes) below.
+  The gift card redemption details. See [`e_code` object](#e-code-object)
+  below.
 </ResponseField>
 
-## Response shapes
+## `e_code` object
 
-The `e_code.type` field tells you how to render the gift card:
+The `type` field determines how to render the gift card:
 
-| `type`   | What's returned                                                              | How to render                                                  |
-| -------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| `code`   | Some non-empty subset of `code`, `pin`, and a barcode                        | Display whichever of `code`, `pin`, and the barcode are non-null |
-| `url`    | A redemption `url` hosted by the brand                                       | Redirect the customer to `url`                                 |
+- **`type: "code"`** — display whichever of `code`, `pin`, `barcode_format`, and `barcode_string` are non-null. The brand decides which subset is populated; render whatever is available rather than branching on the combination.
+- **`type: "url"`** — redirect the customer to `url`. The `code` field duplicates `url` (kept for backwards compatibility); `pin` and the barcode fields are always `null`.
 
-<Note>
-  For `type: "code"`, the simplest integration is to render whatever fields
-  are non-null rather than branching on which combination you got back.
-</Note>
-
-### Common `e_code` fields
-
-These fields are present on every shape:
+See [Examples](#examples) for representative payloads.
 
 <ResponseField name="type" type="string">
-  `code` or `url`. Determines which other fields are populated.
-</ResponseField>
-
-<ResponseField name="status" type="string">
-  Mirrors the top-level `status`. Always equal to it — provided for backwards
-  compatibility.
+  `code` or `url`.
 </ResponseField>
 
 <ResponseField name="amount" type="string">
@@ -109,29 +95,8 @@ These fields are present on every shape:
   A URL where the customer can access their gift card. Always present.
 </ResponseField>
 
-<ResponseField name="error_code" type="string">
-  Per-`e_code` error code, or `null`. See [Error codes](#error-codes).
-</ResponseField>
-
-<ResponseField name="error_string" type="string">
-  Per-`e_code` error description, or `null`.
-</ResponseField>
-
-### `type: "code"`
-
-The response includes a non-empty subset of `code`, `pin`, and a barcode (`barcode_format` + `barcode_string`). Any of the following combinations can occur:
-
-- `code` only
-- `pin` only
-- `code` + `pin`
-- `code` + barcode
-- `pin` + barcode
-- `code` + `pin` + barcode
-
-Fields not part of the redemption are returned as `null`. To keep your integration simple, just render whatever is non-null.
-
 <ResponseField name="code" type="string">
-  Alphanumeric gift card code, or `null`.
+  Alphanumeric gift card code, or `null`. For `type: "url"`, duplicates `url`.
 </ResponseField>
 
 <ResponseField name="pin" type="string">
@@ -149,28 +114,16 @@ Fields not part of the redemption are returned as `null`. To keep your integrati
   `barcode_format` — you need the format to decode the string.
 </ResponseField>
 
-### `type: "url"`
-
-The brand hosts redemption on their own site. Redirect the customer to `url`. There is no code to display.
-
-<ResponseField name="url" type="string">
-  Redirect the customer here to redeem.
+<ResponseField name="status" type="string">
+  Mirrors the top-level `status`. Provided for backwards compatibility.
 </ResponseField>
 
-<ResponseField name="code" type="string">
-  Duplicate of `url` — kept for backwards compatibility. Prefer `url`.
+<ResponseField name="error_code" type="string">
+  Per-`e_code` error code, or `null`. See [Error codes](#error-codes).
 </ResponseField>
 
-<ResponseField name="pin" type="null">
-  Always `null` for this shape.
-</ResponseField>
-
-<ResponseField name="barcode_format" type="null">
-  Always `null` for this shape.
-</ResponseField>
-
-<ResponseField name="barcode_string" type="null">
-  Always `null` for this shape.
+<ResponseField name="error_string" type="string">
+  Per-`e_code` error description, or `null`.
 </ResponseField>
 
 ## Examples
