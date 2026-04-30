@@ -64,14 +64,9 @@ The top-level fields below are present on every response. The contents of `e_cod
   Additional error details, or `null`.
 </ResponseField>
 
-<ResponseField name="e_code" type="object">
-  The gift card redemption details. See [`e_code` object](#e-code-object)
-  below.
-</ResponseField>
-
 ## `e_code` object
 
-The `type` field determines how to render the gift card:
+The gift card redemption details. The `type` field determines how to render the gift card:
 
 - **`type: "code"`** — display whichever of `code`, `pin`, `barcode_format`, and `barcode_string` are non-null. The brand decides which subset is populated; render whatever is available rather than branching on the combination.
 - **`type: "url"`** — redirect the customer to `url`. The `code` field duplicates `url` (kept for backwards compatibility); `pin` and the barcode fields are always `null`.
