@@ -76,7 +76,7 @@ The `e_code.type` field tells you how to render the gift card. There are three s
 | `type`   | When to use it                                 | Render as                          |
 | -------- | ---------------------------------------------- | ---------------------------------- |
 | `code`   | Plain alphanumeric code (with optional PIN)    | Display `code` (and `pin` if set)  |
-| `code`   | Barcode-backed code                            | Display `code` and render a barcode from `barcode_string` using `barcode_format` |
+| `code`   | Barcode-backed redemption                      | Render a barcode from `barcode_string` using `barcode_format` (no `code` is returned) |
 | `url`    | Redemption hosted by the brand                 | Redirect the customer to `url`     |
 
 ### Common `e_code` fields
@@ -136,11 +136,7 @@ The customer redeems by entering the `code` (and `pin`, if present) at the brand
 
 ### Shape 2 — `type: "code"`, barcode
 
-The customer redeems by scanning a barcode in-store. `barcode_format` and `barcode_string` are always set together — you need the format to decode the string. `pin` is always `null` for this shape.
-
-<ResponseField name="code" type="string">
-  The gift card code (also encoded in the barcode).
-</ResponseField>
+The customer redeems by scanning a barcode in-store. Render the barcode from `barcode_string` using `barcode_format` — those two fields are always set together, since you need the format to decode the string. `code` and `pin` are always `null` for this shape.
 
 <ResponseField name="barcode_format" type="string">
   One of `code-128`, `code-39`, `ean-13`, `QR`, `pdf417`. Use this to choose
@@ -151,6 +147,10 @@ The customer redeems by scanning a barcode in-store. `barcode_format` and `barco
 <ResponseField name="barcode_string" type="string">
   The value to encode. Pass through your barcode library using
   `barcode_format`.
+</ResponseField>
+
+<ResponseField name="code" type="null">
+  Always `null` for this shape.
 </ResponseField>
 
 <ResponseField name="pin" type="null">
@@ -215,7 +215,7 @@ The brand hosts redemption on their own site. Redirect the customer to `url`. Th
     "type": "code",
     "status": "SUCCESS",
     "amount": "50.00",
-    "code": "6280399992147003",
+    "code": null,
     "pin": null,
     "barcode_format": "QR",
     "barcode_string": "54390399548343003",
