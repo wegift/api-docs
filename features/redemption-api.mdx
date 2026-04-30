@@ -41,6 +41,12 @@ GET {payout.url}?format=json
 
 ## Response
 
+<Note>
+  Both success and error responses return HTTP `200`. Check the JSON `status`
+  field (and `error_code` when it's `ERROR`) to distinguish them — don't rely
+  on the HTTP status code.
+</Note>
+
 <ResponseField name="status" type="string">
   `SUCCESS` or `ERROR`. On `ERROR`, see the top-level `error_code` and
   `error_string`. On `SUCCESS`, redemption details are in `e_code`.
