@@ -132,86 +132,14 @@ GET {payout.url}?format=json
 
 ## Examples
 
-<CodeGroup>
-```json Code only
-{
-  "status": "SUCCESS",
-  "order_id": "O-XW2BQAM2",
-  "e_code": {
-    "type": "code",
-    "status": "SUCCESS",
-    "amount": "1.00",
-    "code": "WE3K-XTLHHZ-EKAL",
-    "pin": null,
-    "barcode_format": null,
-    "barcode_string": null,
-    "expiry_date": "2036-02-26",
-    "url": "https://spend.runa.io/-/88333b9f-ce8d-48f6-b851-eedd401cc3d2",
-    "error_code": null,
-    "error_string": null
-  },
-  "error_code": null,
-  "error_string": null,
-  "error_details": null
-}
-```
+To see each response shape in practice, place a sync order for one of the products below in the [Playground](/reference/2024-02-05/playground), then `GET` the resulting `payout.url` with `?format=json`.
 
-```json Code + PIN + barcode
-{
-  "status": "SUCCESS",
-  "order_id": "O-QRXNZBJV",
-  "e_code": {
-    "type": "code",
-    "status": "SUCCESS",
-    "amount": "50.00",
-    "code": "6280399992147003",
-    "pin": "25468113",
-    "barcode_format": "QR",
-    "barcode_string": "54390399548343003",
-    "expiry_date": "2025-02-28",
-    "url": "https://spend.runa.io/-/9b98244b-ab9b-4bff-b5f6-7777786b9f62",
-    "error_code": null,
-    "error_string": null
-  },
-  "error_code": null,
-  "error_string": null,
-  "error_details": null
-}
-```
-
-```json URL
-{
-  "status": "SUCCESS",
-  "order_id": "O-N5PX9YBW",
-  "e_code": {
-    "type": "url",
-    "status": "SUCCESS",
-    "amount": "10.00",
-    "code": "https://spend.runa.io/-/68802d8e-3e58-41dd-aea7-9e472debf656",
-    "pin": null,
-    "barcode_format": null,
-    "barcode_string": null,
-    "expiry_date": "2028-04-30",
-    "url": "https://spend.runa.io/-/68802d8e-3e58-41dd-aea7-9e472debf656",
-    "error_code": null,
-    "error_string": null
-  },
-  "error_code": null,
-  "error_string": null,
-  "error_details": null
-}
-```
-
-```json Error
-{
-  "status": "ERROR",
-  "order_id": "O-QRXNZBJV",
-  "error_code": "RE004",
-  "error_string": "The e-code has expired. You may need to place a new order.",
-  "error_details": "Asset has expired"
-}
-```
-</CodeGroup>
+| Product code | Order as              | Returned shape                                           |
+| ------------ | --------------------- | -------------------------------------------------------- |
+| `FIVEG-US`   | USD, face value `5`   | `type: "code"`, with `code` + `pin`                      |
+| `AUCHAN-FR`  | EUR, face value `10`  | `type: "code"`, with `code` + `pin` + `code-128` barcode |
+| `ABO-GB`     | GBP, face value `5`   | `type: "code"`, with `code` + `pin` + `QR` barcode       |
+| `LUSH-CA`    | CAD, face value `10`  | `type: "url"`                                            |
 
 ## Error codes
 
