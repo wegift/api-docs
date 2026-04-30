@@ -5,21 +5,26 @@ icon: "code"
 ---
 
 <Info>
-  The Redemption API is not available by default. To enable this feature,
-  contact your Account Manager.
+  The Redemption API is not available by default. To enable it, contact your
+  Account Manager. The same feature gate applies to both the
+  [Playground](/reference/2024-02-05/playground) and Production environments.
 </Info>
 
-The Redemption API allows you to retrieve raw gift card redemption details at the point where you need to display them to your customers. This gives you control over the customer journey by presenting gift card details within your own experience, rather than using the default Runa redemption page.
-
-## Availability
-
-The Redemption API is available in both the [Playground](/reference/2024-02-05/playground) and Production environments. The same feature gate applies to both — contact your Account Manager to enable it on your account before testing in Playground.
+The Redemption API lets you fetch raw gift card redemption details — codes, PINs, barcodes, or redemption URLs — so you can present them inside your own customer experience instead of redirecting customers to the default Runa redemption page.
 
 ## How it works
 
 1. [Create an order](/reference/2024-02-05/endpoint/orders/create) as usual.
-2. The order response contains a `url` field in the `payout` object.
-3. Append `?format=json` to the URL to retrieve the redemption details in a structured format.
+2. Read the `url` field from the `payout` object in the order response.
+3. Append `?format=json` to that URL and `GET` it to receive structured redemption data.
+
+The URL itself is the credential — it is unique per payout and grants access to that payout's redemption details. No additional API key or header is required.
+
+<Note>
+  Without `?format=json`, the URL returns the default Runa redemption web page
+  and is rate limited. The `json` format is intended for server-to-server use
+  and must be enabled by your Account Manager.
+</Note>
 
 ## Request
 
@@ -30,87 +35,234 @@ GET {payout.url}?format=json
 ### Query parameters
 
 <ParamField path="format" type="string" default="html">
-  Response format. Set to `json` to receive structured gift card data. The
-  `json` format must be enabled by your Account Manager. Rate limiting applies
-  when using `html`.
+  Set to `json` to receive structured gift card data. Omit, or set to `html`,
+  to receive the default Runa redemption page.
 </ParamField>
 
 ## Response
 
+The wrapper is the same for every successful response:
+
 <ResponseField name="status" type="string">
-  `SUCCESS` or `ERROR` If `ERROR`, check the `error_code` and `error_string`
-  fields for details. If `SUCCESS`, the gift card redemption details are in the
-  `e_code` field.
+  `SUCCESS` or `ERROR`. On `ERROR`, see the top-level `error_code` and
+  `error_string`. On `SUCCESS`, redemption details are in `e_code`.
 </ResponseField>
 
 <ResponseField name="order_id" type="string">
   Your order ID (e.g. `O-ABC123`).
 </ResponseField>
 
-<ResponseField name="e_code" type="object">
-  The gift card redemption details.
-
-  <Expandable title="child attributes">
-
-<ResponseField name="type" type="string">
-  `code` or `url` For `code` type products, gift card details are in the `code`,
-  `pin`, etc. fields. For `url` type products, redirect your customer to the
-  `url` field.
-</ResponseField>
-
-<ResponseField name="code" type="string">
-  The primary gift card code, if applicable.
-</ResponseField>
-
-<ResponseField name="pin" type="string">
-  The gift card PIN, if applicable. For `url` type products, this contains the
-  URL.
-</ResponseField>
-
-<ResponseField name="url" type="string">
-  URL where your customer can access their gift card.
-</ResponseField>
-
-<ResponseField name="amount" type="string">
-  Amount in major units as a decimal string.
-</ResponseField>
-
-<ResponseField name="expiry_date" type="string">
-  Expiry date of the gift card, if applicable. `3000-01-01` indicates the gift
-  card is valid indefinitely.
-</ResponseField>
-
-<ResponseField name="barcode_format" type="string">
-  Barcode format: `code-128`, `code-39`, `ean-13`, `QR`, or `pdf417`. Also
-  available from the [product details
-  endpoint](/reference/2024-02-05/endpoint/products/list).
-</ResponseField>
-
-<ResponseField name="barcode_string" type="string">
-  The barcode value. Encode using `barcode_format` to produce a valid barcode.
-</ResponseField>
-
 <ResponseField name="error_code" type="string">
-  Error code if the product was not retrieved.
-</ResponseField>
-
-  <ResponseField name="error_string" type="string">
-    Description of the error if the product was not retrieved.
-  </ResponseField>
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="error_code" type="string">
-  Top-level error code, or `null`.
+  Top-level error code, or `null`. See [Error codes](#error-codes).
 </ResponseField>
 
 <ResponseField name="error_string" type="string">
-  Description of the error, or `null`.
+  Human-readable description of the top-level error, or `null`.
 </ResponseField>
 
 <ResponseField name="error_details" type="string">
   Additional error details, or `null`.
 </ResponseField>
+
+<ResponseField name="e_code" type="object">
+  The gift card redemption details. The populated fields depend on
+  `e_code.type` — see [Response shapes](#response-shapes) below.
+</ResponseField>
+
+## Response shapes
+
+The `e_code.type` field tells you how to render the gift card. There are three shapes in practice:
+
+| `type`   | When to use it                                 | Render as                          |
+| -------- | ---------------------------------------------- | ---------------------------------- |
+| `code`   | Plain alphanumeric code (with optional PIN)    | Display `code` (and `pin` if set)  |
+| `code`   | Barcode-backed code                            | Display `code` and render a barcode from `barcode_string` using `barcode_format` |
+| `url`    | Redemption hosted by the brand                 | Redirect the customer to `url`     |
+
+### Common `e_code` fields
+
+These fields are present on every shape:
+
+<ResponseField name="type" type="string">
+  `code` or `url`. Determines which other fields are populated.
+</ResponseField>
+
+<ResponseField name="status" type="string">
+  Mirrors the top-level `status`. Always equal to it — provided for backwards
+  compatibility.
+</ResponseField>
+
+<ResponseField name="amount" type="string">
+  Amount in major units, as a decimal string (e.g. `"50.00"`).
+</ResponseField>
+
+<ResponseField name="expiry_date" type="string">
+  Expiry date of the gift card. The sentinel value `3000-01-01` indicates the
+  gift card does not expire.
+</ResponseField>
+
+<ResponseField name="url" type="string">
+  A URL where the customer can access their gift card. Always present.
+</ResponseField>
+
+<ResponseField name="error_code" type="string">
+  Per-`e_code` error code, or `null`. See [Error codes](#error-codes).
+</ResponseField>
+
+<ResponseField name="error_string" type="string">
+  Per-`e_code` error description, or `null`.
+</ResponseField>
+
+### Shape 1 — `type: "code"`, plain code
+
+The customer redeems by entering the `code` (and `pin`, if present) at the brand. Barcode fields are `null`.
+
+<ResponseField name="code" type="string">
+  The gift card code.
+</ResponseField>
+
+<ResponseField name="pin" type="string">
+  PIN, if the brand requires one. `null` otherwise. Only present on plain-code
+  redemptions — never set alongside a barcode.
+</ResponseField>
+
+<ResponseField name="barcode_format" type="null">
+  Always `null` for this shape.
+</ResponseField>
+
+<ResponseField name="barcode_string" type="null">
+  Always `null` for this shape.
+</ResponseField>
+
+### Shape 2 — `type: "code"`, barcode
+
+The customer redeems by scanning a barcode in-store. `barcode_format` and `barcode_string` are always set together — you need the format to decode the string. `pin` is always `null` for this shape.
+
+<ResponseField name="code" type="string">
+  The gift card code (also encoded in the barcode).
+</ResponseField>
+
+<ResponseField name="barcode_format" type="string">
+  One of `code-128`, `code-39`, `ean-13`, `QR`, `pdf417`. Use this to choose
+  the right barcode renderer. Also returned by the [product details
+  endpoint](/reference/2024-02-05/endpoint/products/list).
+</ResponseField>
+
+<ResponseField name="barcode_string" type="string">
+  The value to encode. Pass through your barcode library using
+  `barcode_format`.
+</ResponseField>
+
+<ResponseField name="pin" type="null">
+  Always `null` for this shape.
+</ResponseField>
+
+### Shape 3 — `type: "url"`
+
+The brand hosts redemption on their own site. Redirect the customer to `url`. There is no code to display.
+
+<ResponseField name="url" type="string">
+  Redirect the customer here to redeem.
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  Duplicate of `url` — kept for backwards compatibility. Prefer `url`.
+</ResponseField>
+
+<ResponseField name="pin" type="null">
+  Always `null` for this shape.
+</ResponseField>
+
+<ResponseField name="barcode_format" type="null">
+  Always `null` for this shape.
+</ResponseField>
+
+<ResponseField name="barcode_string" type="null">
+  Always `null` for this shape.
+</ResponseField>
+
+## Examples
+
+<CodeGroup>
+```json Plain code
+{
+  "status": "SUCCESS",
+  "order_id": "O-XW2BQAM2",
+  "e_code": {
+    "type": "code",
+    "status": "SUCCESS",
+    "amount": "1.00",
+    "code": "WE3K-XTLHHZ-EKAL",
+    "pin": null,
+    "barcode_format": null,
+    "barcode_string": null,
+    "expiry_date": "2036-02-26",
+    "url": "https://spend.runa.io/-/88333b9f-ce8d-48f6-b851-eedd401cc3d2",
+    "error_code": null,
+    "error_string": null
+  },
+  "error_code": null,
+  "error_string": null,
+  "error_details": null
+}
+```
+
+```json Barcode
+{
+  "status": "SUCCESS",
+  "order_id": "O-QRXNZBJV",
+  "e_code": {
+    "type": "code",
+    "status": "SUCCESS",
+    "amount": "50.00",
+    "code": "6280399992147003",
+    "pin": null,
+    "barcode_format": "QR",
+    "barcode_string": "54390399548343003",
+    "expiry_date": "2025-02-28",
+    "url": "https://spend.runa.io/-/9b98244b-ab9b-4bff-b5f6-7777786b9f62",
+    "error_code": null,
+    "error_string": null
+  },
+  "error_code": null,
+  "error_string": null,
+  "error_details": null
+}
+```
+
+```json URL
+{
+  "status": "SUCCESS",
+  "order_id": "O-N5PX9YBW",
+  "e_code": {
+    "type": "url",
+    "status": "SUCCESS",
+    "amount": "10.00",
+    "code": "https://spend.runa.io/-/68802d8e-3e58-41dd-aea7-9e472debf656",
+    "pin": null,
+    "barcode_format": null,
+    "barcode_string": null,
+    "expiry_date": "2028-04-30",
+    "url": "https://spend.runa.io/-/68802d8e-3e58-41dd-aea7-9e472debf656",
+    "error_code": null,
+    "error_string": null
+  },
+  "error_code": null,
+  "error_string": null,
+  "error_details": null
+}
+```
+
+```json Error
+{
+  "status": "ERROR",
+  "order_id": "O-QRXNZBJV",
+  "error_code": "RE004",
+  "error_string": "The e-code has expired. You may need to place a new order.",
+  "error_details": "Asset has expired"
+}
+```
+</CodeGroup>
 
 ## Error codes
 
@@ -136,38 +288,3 @@ GET {payout.url}?format=json
 GET https://spend.runa.io/-/abc123…def?format=json
 ```
 </RequestExample>
-
-<ResponseExample>
-```json Success response
-{
-  "status": "SUCCESS",
-  "order_id": "O-QRXNZBJV",
-  "e_code": {
-    "amount": "50.00",
-    "barcode_format": "QR",
-    "barcode_string": "54390399548343003",
-    "code": "6280399992147003",
-    "error_code": null,
-    "error_string": null,
-    "expiry_date": "2025-02-28",
-    "pin": "25468113",
-    "status": "SUCCESS",
-    "type": "code",
-    "url": "https://spend.runa.io/-/9b98244b-ab9b-4bff-b5f6-7777786b9f62"
-  },
-  "error_code": null,
-  "error_details": null,
-  "error_string": null
-}
-```
-
-```json Error response
-{
-  "status": "ERROR",
-  "order_id": "O-QRXNZBJV",
-  "error_code": "RE004",
-  "error_details": "Asset has expired",
-  "error_string": "The e-code has expired. You may need to place a new order."
-}
-```
-</ResponseExample>
