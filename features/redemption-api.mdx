@@ -83,7 +83,8 @@ See [Examples](#examples) for representative payloads.
 
 <ResponseField name="expiry_date" type="string">
   Expiry date of the gift card. The sentinel value `3000-01-01` indicates the
-  gift card does not expire.
+  gift card does not expire. This reflects the product's own expiry policy and
+  is separate from the payout link expiry returned by the order endpoints.
 </ResponseField>
 
 <ResponseField name="url" type="string">
