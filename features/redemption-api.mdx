@@ -41,8 +41,6 @@ GET {payout.url}?format=json
 
 ## Response
 
-The top-level fields below are present on every response. The contents of `e_code` depend on the gift card `type` — see [`e_code` object](#e_code-object).
-
 <ResponseField name="status" type="string">
   `SUCCESS` or `ERROR`. On `ERROR`, see the top-level `error_code` and
   `error_string`. On `SUCCESS`, redemption details are in `e_code`.
@@ -64,62 +62,72 @@ The top-level fields below are present on every response. The contents of `e_cod
   Additional error details, or `null`.
 </ResponseField>
 
-## `e_code` object
+<ResponseField name="e_code" type="object">
+  The gift card redemption details. The `type` field determines how to render
+  the gift card:
 
-The gift card redemption details. The `type` field determines how to render the gift card:
+  - **`type: "code"`** — display whichever of `code`, `pin`, `barcode_format`,
+    and `barcode_string` are non-null. The brand decides which subset is
+    populated; render whatever is available rather than branching on the
+    combination.
+  - **`type: "url"`** — redirect the customer to `url`. The `code` field
+    duplicates `url` (kept for backwards compatibility); `pin` and the barcode
+    fields are always `null`.
 
-- **`type: "code"`** — display whichever of `code`, `pin`, `barcode_format`, and `barcode_string` are non-null. The brand decides which subset is populated; render whatever is available rather than branching on the combination.
-- **`type: "url"`** — redirect the customer to `url`. The `code` field duplicates `url` (kept for backwards compatibility); `pin` and the barcode fields are always `null`.
+  See [Examples](#examples) for representative payloads.
 
-See [Examples](#examples) for representative payloads.
+  <Expandable title="child attributes">
+    <ResponseField name="type" type="string">
+      `code` or `url`.
+    </ResponseField>
 
-<ResponseField name="type" type="string">
-  `code` or `url`.
-</ResponseField>
+    <ResponseField name="amount" type="string">
+      Amount in major units, as a decimal string (e.g. `"50.00"`).
+    </ResponseField>
 
-<ResponseField name="amount" type="string">
-  Amount in major units, as a decimal string (e.g. `"50.00"`).
-</ResponseField>
+    <ResponseField name="expiry_date" type="string">
+      Expiry date of the gift card. The sentinel value `3000-01-01` indicates
+      the gift card does not expire. This reflects the product's own expiry
+      policy and is separate from the payout link expiry returned by the order
+      endpoints.
+    </ResponseField>
 
-<ResponseField name="expiry_date" type="string">
-  Expiry date of the gift card. The sentinel value `3000-01-01` indicates the
-  gift card does not expire. This reflects the product's own expiry policy and
-  is separate from the payout link expiry returned by the order endpoints.
-</ResponseField>
+    <ResponseField name="url" type="string">
+      A URL where the customer can access their gift card. Always present.
+    </ResponseField>
 
-<ResponseField name="url" type="string">
-  A URL where the customer can access their gift card. Always present.
-</ResponseField>
+    <ResponseField name="code" type="string">
+      Alphanumeric gift card code, or `null`. For `type: "url"`, duplicates
+      `url`.
+    </ResponseField>
 
-<ResponseField name="code" type="string">
-  Alphanumeric gift card code, or `null`. For `type: "url"`, duplicates `url`.
-</ResponseField>
+    <ResponseField name="pin" type="string">
+      PIN, or `null`.
+    </ResponseField>
 
-<ResponseField name="pin" type="string">
-  PIN, or `null`.
-</ResponseField>
+    <ResponseField name="barcode_format" type="string">
+      One of `code-128`, `code-39`, `ean-13`, `QR`, `pdf417`, or `null`. Use
+      this to choose the right barcode renderer. Also returned by the [get
+      product endpoint](/reference/2024-02-05/endpoint/products/get).
+    </ResponseField>
 
-<ResponseField name="barcode_format" type="string">
-  One of `code-128`, `code-39`, `ean-13`, `QR`, `pdf417`, or `null`. Use this
-  to choose the right barcode renderer. Also returned by the [get product
-  endpoint](/reference/2024-02-05/endpoint/products/get).
-</ResponseField>
+    <ResponseField name="barcode_string" type="string">
+      The value to encode in the barcode, or `null`. Always set together with
+      `barcode_format` — you need the format to decode the string.
+    </ResponseField>
 
-<ResponseField name="barcode_string" type="string">
-  The value to encode in the barcode, or `null`. Always set together with
-  `barcode_format` — you need the format to decode the string.
-</ResponseField>
+    <ResponseField name="status" type="string">
+      Mirrors the top-level `status`. Provided for backwards compatibility.
+    </ResponseField>
 
-<ResponseField name="status" type="string">
-  Mirrors the top-level `status`. Provided for backwards compatibility.
-</ResponseField>
+    <ResponseField name="error_code" type="string">
+      Per-`e_code` error code, or `null`. See [Error codes](#error-codes).
+    </ResponseField>
 
-<ResponseField name="error_code" type="string">
-  Per-`e_code` error code, or `null`. See [Error codes](#error-codes).
-</ResponseField>
-
-<ResponseField name="error_string" type="string">
-  Per-`e_code` error description, or `null`.
+    <ResponseField name="error_string" type="string">
+      Per-`e_code` error description, or `null`.
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
 ## Examples
