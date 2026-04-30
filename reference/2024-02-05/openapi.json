@@ -1671,7 +1671,7 @@
       },
       "PayoutStatus": {
         "title": "Payout status",
-        "description": "Current status of the payout link. An `ACTIVE` link is live but has not been claimed yet, it will change to `CLAIMED` once that has happened. If you request a cancellation the status will reflect this as `CANCELLED`. Finally if your account is configured with expiry, when a link expires it will be marked as `EXPIRED`.",
+        "description": "Current status of the payout link. An `ACTIVE` link is live but has not been claimed yet, it will change to `CLAIMED` once that has happened. If you request a cancellation the status will reflect this as `CANCELLED`. Finally, if your account is configured with link expiry, when the link itself expires it will be marked as `EXPIRED` — this is independent of the underlying product's own expiry policy.",
         "enum": ["ACTIVE", "CLAIMED", "CANCELLED", "EXPIRED"]
       },
       "PayoutDetails": {
@@ -1694,7 +1694,7 @@
           },
           "expiry_date": {
             "title": "Expiry Date",
-            "description": "The date that the payout link expires.",
+            "description": "When the payout link expires. This is the expiry of the payout link itself, not the underlying gift card or product.\n\nIf your account does not have expiry of links enabled this field will be set to `null`, the link does not expire.",
             "type": "string",
             "format": "date-time"
           }
