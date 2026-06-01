@@ -747,16 +747,14 @@
       "OrderDescription": {
         "title": "Description",
         "description": "Free format text reference for the order. The order description will not be visible to the end user. You will see this description in the Runa web portal.\n\nThis field is optional and can be omitted if not needed.\nIf not provided, the field will be set to `null` in the response.",
-        "type": "string",
-        "nullable": true,
+        "type": ["string", "null"],
         "maxLength": 128,
         "example": "Your own reference text"
       },
       "OrderMetadata": {
         "title": "Metadata",
         "description": "A flexible field for you to attach additional, customer-specific data to the order. This is for your internal use, the information stored here will not be exposed to the end user.\n- All keys and their corresponding values must be strings\n- Each order supports up to 20 key-value pairs\n- Keys have a maximum length of 40 characters\n- Values can be up to 200 characters long.\n\nThis field is optional and can be omitted if not needed.\nIf not provided, the field will be set to `null` in the response.",
-        "type": "object",
-        "nullable": true,
+        "type": ["object", "null"],
         "maxProperties": 20,
         "propertyNames": {
           "type": "string",
@@ -913,7 +911,7 @@
         ]
       },
       "CompletedOrderWithBasicDetails": {
-        "title": "Completed order",
+        "title": "Completed order (basic details)",
         "description": "Used for orders that have completed. This class is typically used when returning a *list* of orders to the client.",
         "required": [
           "id",
@@ -981,7 +979,7 @@
         }
       },
       "SyncCompletedOrder": {
-        "title": "CompletedOrderWithFullDetails",
+        "title": "Sync completed order",
         "allOf": [
           {
             "$ref": "#/components/schemas/CompletedOrderWithFullDetails"
@@ -996,7 +994,7 @@
         ]
       },
       "CompletedOrderWebhook": {
-        "title": "Completed order",
+        "title": "Completed order webhook",
         "type": "object",
         "description": "Webhook message sent when an order has completed processing.",
         "allOf": [
@@ -1039,7 +1037,7 @@
         "description": "API rate limited error response."
       },
       "CompletedOrderWithFullDetails": {
-        "title": "Completed order",
+        "title": "Completed order (full details)",
         "description": "Used for an order that has completed. This class is typically used when returning a *single order* to the client.",
         "type": "object",
         "allOf": [
@@ -1127,7 +1125,6 @@
       "RecipientDistribution": {
         "title": "Recipient",
         "description": "Recipient distribution. Currently this method is only supported for distributing payment type products. For subsequent orders to known recipients we will attempt to make a repeat payout.",
-        "summary": "Send the payout link to a known recipient",
         "required": ["type", "recipient_reference", "email_address"],
         "type": "object",
         "properties": {
@@ -1588,7 +1585,7 @@
         "description": "Single product. When only one product code is provided."
       },
       "SingleProductWithUsageConfig": {
-        "title": "Single",
+        "title": "Single (with usage configuration)",
         "required": ["type", "value"],
         "type": "object",
         "example": {
@@ -1702,6 +1699,7 @@
       "ProductUpdateState": {
         "title": "Product update state",
         "description": "The state of the product either before or after the update.",
+        "type": "object",
         "required": ["price_multiplier", "is_orderable"],
         "properties": {
           "price_multiplier": {
@@ -1794,8 +1792,7 @@
           "help": {
             "title": "Help",
             "description": "Additional information that pertains to the error.",
-            "type": "string",
-            "example": null
+            "type": "string"
           },
           "details": {
             "title": "Details",
@@ -1838,7 +1835,7 @@
           "payout_type": {
             "type": "string",
             "enum": ["gift_card", "subscription", "payment"],
-            "description": "The type of payout - this field will tell you the key of the additional object details that correspond to each payout type. The types currently supported are `gift_card`, `subscription`, or `payment`. Your implementation should account for additional payout types being addedin the future."
+            "description": "The type of payout - this field will tell you the key of the additional object details that correspond to each payout type. The types currently supported are `gift_card`, `subscription`, or `payment`. Your implementation should account for additional payout types being added in the future."
           },
           "categories": {
             "type": "array",
@@ -1935,8 +1932,7 @@
             "$ref": "#/components/schemas/ProductAssets"
           },
           "balance_check_url": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "format": "uri",
             "description": "URL to check the gift card balance. This will be a provider specific URL that a consumer can use to check the balance of the gift card.",
             "example": "https://merchant.example.com/balance-check"
@@ -1955,13 +1951,12 @@
           },
           "website_url": {
             "description": "The URL of the website for the product. This is the URL that a consumer can use to either redeem the payout or view details about where they can redeem the payout.",
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "example": "https://merchant.example.com"
           },
           "barcode_format": {
-            "type": "string",
+            "type": ["string", "null"],
             "enum": [
               "code-128",
               "code-39",
@@ -1972,7 +1967,6 @@
               "DATA_MATRIX",
               "other"
             ],
-            "nullable": true,
             "description": "The barcode format of the product.",
             "example": "code-128"
           },
@@ -2054,14 +2048,12 @@
         "description": "Contact information for customer service related to the product. Suitable for displaying to the customer.",
         "properties": {
           "phone_number": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "The customer service phone number.",
             "example": "+1234567890"
           },
           "website_url": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "format": "uri",
             "description": "The customer service website URL.",
             "example": "https://merchant.example.com/customer-service"
@@ -2085,12 +2077,11 @@
             "$ref": "#/components/schemas/ProductMaximumValue"
           },
           "available_list": {
-            "type": "array",
+            "type": ["array", "null"],
             "items": {
               "type": "string",
               "format": "decimal"
             },
-            "nullable": true,
             "description": "A list of available denominations for the product. Will be `null` if the `type` is `OPEN`.",
             "example": ["10.00", "20.00", "50.00", "100.00"]
           }
@@ -2100,8 +2091,7 @@
         "type": "object",
         "properties": {
           "date_policy": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Text description of the policy, suitable for displaying to the customer.",
             "example": "Expires 2 years from issue date"
           },
@@ -2164,23 +2154,20 @@
         "type": "object",
         "properties": {
           "card_image_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "The URL of the card image for the product. Includes a `v` query parameter that changes whenever the underlying image content changes - treat the full URL, including the query string, as the cache key and re-fetch when it changes.",
             "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-card.png?v=1690000000"
           },
           "icon_image_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "The URL of the icon image for the product. Includes a `v` query parameter that changes whenever the underlying image content changes - treat the full URL, including the query string, as the cache key and re-fetch when it changes.",
             "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-icon.png?v=1690000000"
           },
           "primary_color": {
-            "type": "string",
+            "type": ["string", "null"],
             "pattern": "^#[0-9A-Fa-f]{6}$",
-            "nullable": true,
             "example": "#000000"
           }
         }
@@ -2218,49 +2205,42 @@
           "description_markdown_url": {
             "type": "string",
             "format": "uri",
-            "nullable": false,
             "description": "A URL pointing to a markdown file that contains the description of the resource.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/description.md"
           },
           "disclaimer_markdown_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "A URL pointing to a markdown file that contains the disclaimer information.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/disclaimer_markdown.md"
           },
           "refund_policy_markdown_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "A URL pointing to a markdown file that outlines the refund policy, if applicable.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/refund_policy_markdown.md"
           },
           "reissuance_policy_markdown_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "A URL pointing to a markdown file that details the reissuance policy for the resource.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/reissuance_policy_markdown.md"
           },
           "terms_buyer_markdown_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "A URL pointing to a markdown file that contains the terms and conditions applicable to buyers.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/terms_buyer.md"
           },
           "terms_consumer_markdown_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "A URL pointing to a markdown file that contains the terms and conditions applicable to consumers.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/terms_consumer.md"
           },
           "redemption_instructions_markdown_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "A URL pointing to a markdown file that provides instructions for redeeming the resource.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/redeem_markdown.md"
           },
@@ -2284,37 +2264,30 @@
         "properties": {
           "description_md": {
             "type": "string",
-            "description": "Markdown content for the resource description.",
-            "nullable": false
+            "description": "Markdown content for the resource description."
           },
           "disclaimer_md": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Markdown content for the disclaimer information."
           },
           "refund_policy_md": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Markdown content outlining the refund policy, if applicable."
           },
           "reissuance_policy_md": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Markdown content detailing the reissuance policy for the resource."
           },
           "terms_buyer_md": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Markdown content containing terms and conditions applicable to buyers."
           },
           "terms_consumer_md": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Markdown content containing terms and conditions applicable to consumers."
           },
           "redemption_instructions_md": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Markdown instructions for redeeming the resource."
           },
           "locale": { "$ref": "#/components/schemas/ContentResourcesLocale" }
@@ -2338,43 +2311,36 @@
           "description_html": {
             "type": "string",
             "format": "html",
-            "nullable": false,
             "description": "HTML content for the resource description."
           },
           "disclaimer_html": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "html",
-            "nullable": true,
             "description": "HTML content for the disclaimer information."
           },
           "refund_policy_html": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "html",
-            "nullable": true,
             "description": "HTML content outlining the refund policy, if applicable."
           },
           "reissuance_policy_html": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "html",
-            "nullable": true,
             "description": "HTML content detailing the reissuance policy for the resource."
           },
           "terms_buyer_html": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "html",
-            "nullable": true,
             "description": "HTML content containing terms and conditions applicable to buyers."
           },
           "terms_consumer_html": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "html",
-            "nullable": true,
             "description": "HTML content containing terms and conditions applicable to consumers."
           },
           "redemption_instructions_html": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "html",
-            "nullable": true,
             "description": "HTML instructions for redeeming the resource."
           },
           "locale": { "$ref": "#/components/schemas/ContentResourcesLocale" }
