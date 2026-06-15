@@ -864,7 +864,7 @@
                 "$ref": "#/components/schemas/MultipleProduct"
               },
               {
-                "$ref": "#/components/schemas/SingleProduct"
+                "$ref": "#/components/schemas/SingleProductWithUsageConfig"
               },
               {
                 "$ref": "#/components/schemas/PayoutSelectionTemplateDetailed"
@@ -1268,7 +1268,7 @@
             "description": "Choose `SINGLE` if you want the end user to redeem the face value on a single specific product. Choose `MULTIPLE` if the end user can choose to spend the face value across multiple products.",
             "oneOf": [
               {
-                "$ref": "#/components/schemas/SingleProduct"
+                "$ref": "#/components/schemas/SingleProductWithUsageConfig"
               },
               {
                 "$ref": "#/components/schemas/MultipleProduct"
@@ -1586,6 +1586,50 @@
         "type": "string",
         "enum": ["SINGLE"],
         "description": "Single product. When only one product code is provided."
+      },
+      "SingleProductWithUsageConfig": {
+        "title": "Single",
+        "required": ["type", "value"],
+        "type": "object",
+        "example": {
+          "type": "SINGLE",
+          "value": "AMZ-US"
+        },
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/SingleProductType"
+          },
+          "value": {
+            "title": "Value",
+            "description": "The code for the product the end user will get when redeeming their payout link.",
+            "minLength": 1,
+            "example": "AMZ-US",
+            "type": "string"
+          },
+          "product_usage_config": {
+            "description": "Optional. **Only applicable to prepaid Visa cards.** Attaches an MCC-rules template to the issued card. Ignored for all other products. See [Using Prepaid Visa Cards](/features/prepaid-visa/introduction#attaching-an-mcc-rules-template) for a worked example. When it was set on a prepaid Visa card order, it is returned in the order details.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProductUsageConfig"
+              }
+            ]
+          }
+        },
+        "description": "Single product. The end user will be able to redeem the payout link for this specific product."
+      },
+      "ProductUsageConfig": {
+        "title": "ProductUsageConfig",
+        "type": "object",
+        "description": "Additional configuration applied to the issued product. Only applicable to prepaid Visa cards.",
+        "properties": {
+          "spend_rules_template_id": {
+            "title": "MCC rules template ID",
+            "description": "Identifier of a Runa-authored MCC-rules template applied to the issued card.\n\nOnly applicable to prepaid Visa cards. A single template is applied per card, with multiple restrictions bundled inside that one template. Template identifiers are immutable — changes ship as a new template with a new ID.",
+            "type": "string",
+            "pattern": "^PSR-[0-9A-HJKMNP-TV-Z]{26}$",
+            "example": "PSR-01HW3CXZJD5K9PMNRTV0Y4QF7B"
+          }
+        }
       },
       "MultipleProduct": {
         "title": "Multiple",
