@@ -73,54 +73,9 @@ In the example above we used the `EMAIL` distribution method to send the card to
 
 - You can also use the `PAYOUT_LINK` distribution method to receive a link in the API response and handle distribution yourself.
 
-## Attaching an MCC-rules template
+## Controlling where a card can be spent
 
-You can control where a prepaid Visa card can be spent by attaching a **Runa-authored MCC-rules template** to the card. A template bundles a set of restrictions — such as Merchant Category Code (MCC) allow/deny lists — that are applied to the issued card.
-
-To attach a template, add a `product_usage_config` object to the `SINGLE` product and set its `spend_rules_template_id` to the identifier of the template you want to apply.
-
-```http title="Example Prepaid Visa Card order with an MCC-rules template" icon="globe" expandable
-POST https://api.runa.io/v2/order
-Content-Type: application/json
-X-Api-Key: <your API key>
-
-{
-    "payment_method": {
-        "type": "ACCOUNT_BALANCE",
-        "currency": "USD"
-    },
-    "items": [
-        {
-            "face_value": 10,
-            "distribution_method": {
-                "type": "EMAIL",
-                "email_address": "<your recipient's email address>"
-            },
-            "products": {
-                "type": "SINGLE",
-                "value": "VISASL-3M-USD",
-                "product_usage_config": {
-                    "spend_rules_template_id": "PSR-01HW3CXZJD5K9PMNRTV0Y4QF7B"
-                }
-            }
-        }
-    ]
-}
-```
-
-When you set `product_usage_config` on an order, it is returned in the [order details](/reference/2024-02-05/endpoint/orders/get) so you can confirm which template was applied.
-
-<Info>
-  Spend rule templates are authored by Runa. A single template is applied per
-  card, with multiple restrictions bundled inside it. Template identifiers are
-  immutable — any change ships as a new template with a new ID. To request a
-  template, reach out to your Account Manager or email support@runa.io.
-</Info>
-
-<Note>
-  `product_usage_config` only applies to prepaid Visa cards. If you set it on
-  any other product it is ignored.
-</Note>
+You can restrict where a prepaid Visa card can be spent by attaching a Runa-authored spend rule template to the card. See [Card spend controls](/features/prepaid-visa/spend-controls) for details and a worked example.
 
 ## Reloading a Prepaid Visa Card
 

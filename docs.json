@@ -79,6 +79,7 @@
                 "icon": "credit-card",
                 "pages": [
                   "features/prepaid-visa/introduction",
+                  "features/prepaid-visa/spend-controls",
                   "features/prepaid-visa/support"
                 ]
               }
