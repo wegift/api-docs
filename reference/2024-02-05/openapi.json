@@ -1607,7 +1607,7 @@
             "type": "string"
           },
           "product_usage_config": {
-            "description": "Optional. **Only applicable to prepaid Visa cards.** Attaches an MCC-rules template to the issued card. Ignored for all other products. See [Using Prepaid Visa Cards](/features/prepaid-visa/introduction#attaching-an-mcc-rules-template) for a worked example. When it was set on a prepaid Visa card order, it is returned in the order details.",
+            "description": "Optional. **Only applicable to prepaid Visa cards.** Attaches an MCC-rules template to the issued card. Ignored for all other products. See [Using Prepaid Visa Cards](/features/prepaid-visa/introduction#attaching-an-mcc-rules-template) for a worked example. When set on a prepaid Visa card order, it is returned in the order details.",
             "allOf": [
               {
                 "$ref": "#/components/schemas/ProductUsageConfig"
