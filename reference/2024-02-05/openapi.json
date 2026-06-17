@@ -1606,7 +1606,7 @@
             "example": "AMZ-US",
             "type": "string"
           },
-          "product_usage_config": {
+          "usage_config": {
             "description": "Optional. **Only applicable to prepaid Visa cards.** Attaches an MCC-rules template to the issued card. Ignored for all other products. See [Card spend controls](/features/prepaid-visa/spend-controls) for a worked example. When set on a prepaid Visa card order, it is returned in the order details.",
             "allOf": [
               {

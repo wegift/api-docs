@@ -8,7 +8,7 @@ You can control where a prepaid Visa card can be spent by attaching a **Runa-aut
 
 ## Attaching a template
 
-To attach a template, add a `product_usage_config` object to the `SINGLE` product and set its `spend_rules_template_id` to the identifier of the template you want to apply.
+To attach a template, add a `usage_config` object to the `SINGLE` product and set its `spend_rules_template_id` to the identifier of the template you want to apply.
 
 ```http title="Example Prepaid Visa Card order with a spend rule template" icon="globe" expandable
 POST https://api.runa.io/v2/order
@@ -30,7 +30,7 @@ X-Api-Key: <your API key>
             "products": {
                 "type": "SINGLE",
                 "value": "VISASL-3M-USD",
-                "product_usage_config": {
+                "usage_config": {
                     "spend_rules_template_id": "PSR-01HW3CXZJD5K9PMNRTV0Y4QF7B"
                 }
             }
@@ -39,7 +39,7 @@ X-Api-Key: <your API key>
 }
 ```
 
-When you set `product_usage_config` on an order, it is returned in the [order details](/reference/2024-02-05/endpoint/orders/get) so you can confirm which template was applied.
+When you set `usage_config` on an order, it is returned in the [order details](/reference/2024-02-05/endpoint/orders/get) so you can confirm which template was applied.
 
 <Info>
   Spend rule templates are authored by Runa. A single template is applied per
@@ -49,6 +49,6 @@ When you set `product_usage_config` on an order, it is returned in the [order de
 </Info>
 
 <Note>
-  `product_usage_config` only applies to prepaid Visa cards. If you set it on
-  any other product it is ignored.
+  `usage_config` only applies to prepaid Visa cards. If you set it on any other
+  product it is ignored.
 </Note>
