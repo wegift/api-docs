@@ -1610,15 +1610,15 @@
             "description": "Optional. **Only applicable to prepaid Visa cards.** Attaches an MCC-rules template to the issued card. Ignored for all other products. See [Card spend controls](/features/prepaid-visa/spend-controls) for a worked example. When set on a prepaid Visa card order, it is returned in the order details.",
             "allOf": [
               {
-                "$ref": "#/components/schemas/ProductUsageConfig"
+                "$ref": "#/components/schemas/UsageConfig"
               }
             ]
           }
         },
         "description": "Single product. The end user will be able to redeem the payout link for this specific product."
       },
-      "ProductUsageConfig": {
-        "title": "ProductUsageConfig",
+      "UsageConfig": {
+        "title": "UsageConfig",
         "type": "object",
         "description": "Additional configuration applied to the issued product. Only applicable to prepaid Visa cards.",
         "properties": {
