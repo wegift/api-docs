@@ -42,10 +42,12 @@ X-Api-Key: <your API key>
 When you set `usage_config` on an order, it is returned in the [order details](/reference/2024-02-05/endpoint/orders/get) so you can confirm which template was applied.
 
 <Info>
-  Spend rule templates are authored by Runa. A single template is applied per
-  card, with multiple restrictions bundled inside it. Template identifiers are
-  immutable — any change ships as a new template with a new ID. To request a
-  template, reach out to your Account Manager or email support@runa.io.
+  A spend rule template defines the spending pattern enforced on a card, based
+  on MCC rules — each rule either allows or blocks transactions for a given
+  merchant category. Multiple rules can be bundled into a single template, and
+  one template is applied per card. Templates are authored by Runa. If you have
+  a business case that needs one, reach out to your Account Manager or email
+  support@runa.io — we'll create the template for you.
 </Info>
 
 <Note>
