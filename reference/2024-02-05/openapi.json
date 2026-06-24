@@ -1627,7 +1627,7 @@
             "description": "Identifier of a Runa-authored MCC-rules template applied to the issued card.\n\nOnly applicable to prepaid Visa cards. A single template is applied per card, with multiple rules that either allows or blocks transactions for a given merchant category bundled inside that one template.",
             "type": "string",
             "pattern": "^PSR-[0-9A-HJKMNP-TV-Z]{26}$",
-            "example": "PSR-01HW3CXZJD5K9PMNRTV0Y4QF7B"
+            "example": "PSR-XXXXXXXXXXXXXXXXXXXXXXXXXX"
           }
         }
       },
