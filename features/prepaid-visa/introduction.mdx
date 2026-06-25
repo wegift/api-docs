@@ -11,20 +11,21 @@ Runa Prepaid Cards are instantly delivered, digital Visa prepaid cards that reci
 - **Two prepaid options**: Enable both the Runa Reward Card and the Runa Reload Card for your business needs
 
 <Info>
-  To get access to Prepaid Visa Cards, please reach out to your Account Manager or
-  email support@runa.io.
+  To get access to Prepaid Visa Cards, please reach out to your Account Manager
+  or email support@runa.io.
 </Info>
 
 ## Card types
 
-| | Runa Reload Card | Runa Reward Card |
-|---|---|---|
-| **Type** | Reloadable | Single-load |
-| **Expiry** | 47 months from first activation | 3, 6, or 12 months from first activation |
-| **Product code** | `VISARL-USD` | `VISASL-3M-USD`, `VISASL-6M-USD`, `VISASL-12M-USD` |
+|                  | Runa Reload Card                | Runa Reward Card                                   |
+| ---------------- | ------------------------------- | -------------------------------------------------- |
+| **Type**         | Reloadable                      | Single-load                                        |
+| **Expiry**       | 47 months from first activation | 3, 6, or 12 months from first activation           |
+| **Product code** | `VISARL-USD`                    | `VISASL-3M-USD`, `VISASL-6M-USD`, `VISASL-12M-USD` |
 
 <Warning>
-  For Reload Cards, recipients must use the same email address the card was originally sent to. Future top-ups will fail if a different email is used.
+  For Reload Cards, recipients must use the same email address the card was
+  originally sent to. Future top-ups will fail if a different email is used.
 </Warning>
 
 ## Getting started
@@ -71,6 +72,10 @@ X-Api-Key: <your API key>
 In the example above we used the `EMAIL` distribution method to send the card to the recipient's email address.
 
 - You can also use the `PAYOUT_LINK` distribution method to receive a link in the API response and handle distribution yourself.
+
+## Controlling where a card can be spent
+
+You can restrict where a prepaid Visa card can be spent by attaching a Runa-authored spend rule template to the card. See [Card spend controls](/features/prepaid-visa/spend-controls) for details and a worked example.
 
 ## Reloading a Prepaid Visa Card
 
