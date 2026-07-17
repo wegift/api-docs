@@ -2130,7 +2130,7 @@
       },
       "ProductDiscountMultiplier": {
         "type": "string",
-        "pattern": "^[0-9]+\\.[0-9]{2}$",
+        "pattern": "^[0-9]+\\.[0-9]{1,4}$",
         "description": "The discount multiplier used when ordering. `0` means no discount and `0.1` means 10% discount. The discount is applied on the price of the order item before any fees are applied.",
         "example": "0.05"
       },
