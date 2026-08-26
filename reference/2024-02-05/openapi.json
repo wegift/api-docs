@@ -654,11 +654,31 @@
     },
     "product.update": {
       "post": {
+        "deprecated": true,
         "requestBody": {
-          "description": "Update on product status",
+          "description": "Update on product status. Deprecated: this event reports `price_multiplier` as your discount rather than the price multiplier. Subscribe to `product.update.v2` instead, which carries the same payload with the corrected value.",
           "content": {
             "application/json": {
               "schema": { "$ref": "#/components/schemas/ProductUpdateWebhook" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "product.update.v2": {
+      "post": {
+        "requestBody": {
+          "description": "Update on product status. Supersedes `product.update` with a corrected `price_multiplier` value.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductUpdateV2Webhook"
+              }
             }
           }
         },
@@ -1676,6 +1696,7 @@
       },
       "ProductUpdateWebhook": {
         "title": "Product update webhook",
+        "description": "**Deprecated.** This event reports `price_multiplier` as your discount — for example `\"0.1\"` for a 10% discount — rather than the price multiplier (`\"0.9\"`). It continues to be emitted so existing subscriptions keep working, but subscribers should move to `product.update.v2`, which carries the same payload with the corrected value.",
         "type": "object",
         "required": ["product_code", "old_state", "new_state", "timestamp"],
         "properties": {
@@ -1706,6 +1727,47 @@
         "properties": {
           "price_multiplier": {
             "$ref": "#/components/schemas/ProductDiscountMultiplier"
+          },
+          "is_orderable": { "$ref": "#/components/schemas/ProductIsOrderable" },
+          "denominations": {
+            "$ref": "#/components/schemas/ProductDenominations"
+          }
+        }
+      },
+      "ProductUpdateV2Webhook": {
+        "title": "Product update v2 webhook",
+        "description": "Emitted when a product's price, orderability or denominations change for your account. Supersedes `product.update`, which reports `price_multiplier` as your discount rather than the price multiplier.",
+        "type": "object",
+        "required": ["product_code", "new_state", "timestamp"],
+        "properties": {
+          "product_code": {
+            "type": "string",
+            "description": "The code of the product that was updated.",
+            "example": "XYZ-US"
+          },
+          "old_state": {
+            "description": "The state of the product before the update.",
+            "$ref": "#/components/schemas/ProductUpdateV2State"
+          },
+          "new_state": {
+            "description": "The state of the product after the update.",
+            "$ref": "#/components/schemas/ProductUpdateV2State"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp, in ISO 8601 format, when the product was updated."
+          }
+        }
+      },
+      "ProductUpdateV2State": {
+        "title": "Product update v2 state",
+        "description": "The state of the product either before or after the update.",
+        "type": "object",
+        "required": ["price_multiplier"],
+        "properties": {
+          "price_multiplier": {
+            "$ref": "#/components/schemas/ProductPriceMultiplier"
           },
           "is_orderable": { "$ref": "#/components/schemas/ProductIsOrderable" },
           "denominations": {
@@ -2133,6 +2195,12 @@
         "pattern": "^[0-9]+\\.[0-9]{1,4}$",
         "description": "The discount multiplier used when ordering. `0` means no discount and `0.1` means 10% discount. The discount is applied on the price of the order item before any fees are applied.",
         "example": "0.05"
+      },
+      "ProductPriceMultiplier": {
+        "type": "string",
+        "pattern": "^[0-9]+\\.[0-9]{1,4}$",
+        "description": "The price multiplier used when ordering. Multiply the face value by this to get the price you pay, before any fees. Equal to 1 minus your discount — a 10% discount gives `\"0.9\"`. Note: the deprecated `product.update` event reports the discount (`\"0.1\"`) in this field instead.",
+        "example": "0.95"
       },
       "ProductMinimumValue": {
         "type": "string",

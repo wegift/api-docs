@@ -1,15 +1,8 @@
 ---
 title: "Product update"
 description: "Product update events are triggered when there is an update to the catalog."
-openapi: "/reference/2024-02-05/openapi.json WEBHOOK product.update"
+openapi: "/reference/2024-02-05/openapi.json WEBHOOK product.update.v2"
 ---
-
-<Warning>
-  This event is deprecated because `price_multiplier` reports your discount
-  rather than the price multiplier. Subscribe to
-  [product.update.v2](/reference/2024-02-05/webhook/product.update.v2) instead,
-  which carries the same payload with the corrected value.
-</Warning>
 
 <Card
   title="How to implement real-time product updates"
@@ -31,3 +24,9 @@ Use the `product_code` to identify the product that was updated, then refer to t
   You should store the `timestamp` and discard any events that are older than
   the last event you received.
 </Info>
+
+<Warning>
+  `product.update.v2` superseded the `product.update` webhook in August 2026. The original webhook reported `price_multiplier` incorrectly. Users of `product.update` should migrate to the new version ensuring implementations handle the corrected `price_multiplier` value.
+
+  We will continue to honour the original `product.update` contract for existing implementations.
+</Warning>

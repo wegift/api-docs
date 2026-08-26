@@ -4,9 +4,13 @@ description: "Using webhooks to get real-time updates on product catalog changes
 icon: "webhook"
 ---
 
-Instead of polling the product catalog for changes, you can use the `product.update` webhook to get real-time update pushed to your system when a product is added, updated or removed from your catalog.
+Instead of polling the product catalog for changes, you can use the `product.update.v2` webhook to get real-time update pushed to your system when a product is added, updated or removed from your catalog.
 
-## How to use the `product.update` webhook
+<Warning>
+  The original `product.update` event is deprecated. This guide covers `product.update.v2`.
+</Warning>
+
+## How to use the `product.update.v2` webhook
 
 An event is triggered when there is an update to a product in the catalog. If multiple products are updated at once, an event is triggered for each product. This can be a product being added, updated or removed from the catalog.
 
@@ -28,11 +32,11 @@ We won't cover the generic details of how to set up a webhook subscription, but 
   <Card
     title="Product update webhook reference"
     icon="money-check-pen"
-    href="/reference/2024-02-05/webhook/product.update"
+    href="/reference/2024-02-05/webhook/product.update.v2"
     horizontal
     arrow
   >
-    The specific details of the `product.update` webhook event
+    The specific details of the `product.update.v2` webhook event
   </Card>
 </CardGroup>
 
@@ -61,7 +65,7 @@ Each event has a `timestamp` attached. You should store the `timestamp` and disc
 {
   "product_code": "XYZ-US",
   "old_state": {
-    "price_multiplier": "0.0098",
+    "price_multiplier": "0.9902",
     "is_orderable": true,
     "denominations": {
       "type": "fixed",
@@ -71,7 +75,7 @@ Each event has a `timestamp` attached. You should store the `timestamp` and disc
     }
   },
   "new_state": {
-    "price_multiplier": "0.0098",
+    "price_multiplier": "0.9902",
     "is_orderable": false,
     "denominations": {
       "type": "fixed",
@@ -93,7 +97,7 @@ Each event has a `timestamp` attached. You should store the `timestamp` and disc
 {
   "product_code": "XYZ-US",
   "old_state": {
-    "price_multiplier": "0.0098",
+    "price_multiplier": "0.9902",
     "is_orderable": false,
     "denominations": {
       "type": "fixed",
@@ -103,7 +107,7 @@ Each event has a `timestamp` attached. You should store the `timestamp` and disc
     }
   },
   "new_state": {
-    "price_multiplier": "0.0098",
+    "price_multiplier": "0.9902",
     "is_orderable": true,
     "denominations": {
       "type": "fixed",
@@ -123,11 +127,15 @@ Each event has a `timestamp` attached. You should store the `timestamp` and disc
 - _Action:_ Update the product pricing and discounts in your catalog
 - _Reason:_ The product's discount has changed
 
+The price you pay is the face value multiplied by the `price_multiplier`, before any fees. The multiplier is equal to 1 minus your discount, so a 10% discount gives `"0.9"` and a \$50 gift card costs you \$45.
+
+In the example below the discount deepens from 5% to 10%: the multiplier moves from `"0.95"` to `"0.90"`.
+
 ```json Example payload where the price multiplier changes {4,14} [expandable]
 {
   "product_code": "STARBUCKS-US",
   "old_state": {
-    "price_multiplier": "0.0095",
+    "price_multiplier": "0.95",
     "is_orderable": true,
     "denominations": {
       "type": "fixed",
@@ -137,7 +145,7 @@ Each event has a `timestamp` attached. You should store the `timestamp` and disc
     }
   },
   "new_state": {
-    "price_multiplier": "0.0090",
+    "price_multiplier": "0.90",
     "is_orderable": true,
     "denominations": {
       "type": "fixed",
@@ -166,7 +174,7 @@ The `denominations` object represents available values you can order for a produ
 {
   "product_code": "XYZ-US",
   "old_state": {
-    "price_multiplier": "0.0104",
+    "price_multiplier": "0.9896",
     "is_orderable": true,
     "denominations": {
       "type": "fixed",
@@ -176,7 +184,7 @@ The `denominations` object represents available values you can order for a produ
     }
   },
   "new_state": {
-    "price_multiplier": "0.0104",
+    "price_multiplier": "0.9896",
     "is_orderable": true,
     "denominations": {
       "type": "fixed",

@@ -3,6 +3,23 @@ title: "API Updates"
 icon: newspaper
 description: "Changelog of all major API updates, new features, removals, and improvements."
 ---
+
+<Update label="August 2026" tags={["Feature", "Webhooks", "Deprecation"]}>
+
+## New product.update.v2 webhook event
+
+We've released `product.update.v2`, which supersedes the `product.update` webhook event.
+
+The original event reported `price_multiplier` as your discount — for example `"0.1"` for a 10% discount — instead of the price multiplier (`"0.9"`). `product.update.v2` carries the same payload with the corrected value.
+
+`product.update` is now deprecated. It continues to be emitted, so existing subscriptions keep working and no action is required immediately.
+
+To migrate, subscribe to `product.update.v2` and treat `price_multiplier` as the value to multiply the face value by to get the price you pay.
+
+See the [product.update.v2 reference](/reference/2024-02-05/webhook/product.update.v2) and the [real-time catalog updates guide](/features/realtime-product-updates) for details.
+
+</Update>
+
 <Update label="January 2026" tags={["Removal", "FX"]}>
 
 ## Removed support for Bulgarian Lev (BGN)
