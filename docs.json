@@ -147,7 +147,7 @@
                 "group": "Webhooks",
                 "pages": [
                   "reference/2024-02-05/webhook/order.completion",
-                  "reference/2024-02-05/webhook/product.update"
+                  "reference/2024-02-05/webhook/product.update.v2"
                 ]
               }
             ]
