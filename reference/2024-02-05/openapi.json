@@ -2149,8 +2149,8 @@
       "ProductIconImageUrl": {
         "type": "string",
         "format": "uri",
-        "description": "The URL of the icon image for the product.",
-        "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-icon.png"
+        "description": "The URL of the icon image for the product. Includes a `v` query parameter that changes whenever the underlying image content changes - treat the full URL, including the query string, as the cache key and re-fetch when it changes.",
+        "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-icon.png?v=1690000000"
       },
       "ProductPrimaryColor": {
         "type": "string",
@@ -2167,13 +2167,15 @@
             "type": "string",
             "format": "uri",
             "nullable": true,
-            "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-card.png"
+            "description": "The URL of the card image for the product. Includes a `v` query parameter that changes whenever the underlying image content changes - treat the full URL, including the query string, as the cache key and re-fetch when it changes.",
+            "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-card.png?v=1690000000"
           },
           "icon_image_url": {
             "type": "string",
             "format": "uri",
             "nullable": true,
-            "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-icon.png"
+            "description": "The URL of the icon image for the product. Includes a `v` query parameter that changes whenever the underlying image content changes - treat the full URL, including the query string, as the cache key and re-fetch when it changes.",
+            "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-icon.png?v=1690000000"
           },
           "primary_color": {
             "type": "string",
