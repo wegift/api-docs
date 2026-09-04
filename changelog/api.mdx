@@ -3,6 +3,16 @@ title: "API Updates"
 icon: newspaper
 description: "Changelog of all major API updates, new features, removals, and improvements."
 ---
+<Update label="August 2026" tags={["Feature", "Catalog"]}>
+
+## Product asset URLs now include a version parameter
+
+The `card_image_url` and `icon_image_url` fields in catalog responses now carry a `v` query parameter that changes whenever the underlying image is updated, e.g. `.../XYZ-US-card.png?v=1690000000`. This lets you detect image changes and guarantees you never receive a stale cached image - previously a replaced image kept a byte-identical URL.
+
+No action is required: the URLs remain valid as-is. If you store and compare asset URLs, expect a one-time change for every product. Going forward, a changed URL means the image content changed.
+
+</Update>
+
 <Update label="January 2026" tags={["Removal", "FX"]}>
 
 ## Removed support for Bulgarian Lev (BGN)
