@@ -190,6 +190,10 @@
                 "pages": ["reference/2026-09-08/endpoint/balance/get"]
               },
               {
+                "group": "Transactions",
+                "pages": ["reference/2026-09-08/endpoint/transactions/list"]
+              },
+              {
                 "group": "Utility",
                 "pages": ["reference/2026-09-08/endpoint/utility/ping"]
               },
