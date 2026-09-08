@@ -44,6 +44,10 @@
     {
       "name": "orders",
       "description": "Operations related to ordering and orders."
+    },
+    {
+      "name": "transactions",
+      "description": "Operations related to transactions."
     }
   ],
   "paths": {
@@ -104,7 +108,7 @@
                           "$ref": "#/components/schemas/BalanceForAccount"
                         },
                         "currency": {
-                          "$ref": "#/components/schemas/CurrencyForAccount"
+                          "$ref": "#/components/schemas/Currency"
                         }
                       }
                     },
@@ -119,7 +123,7 @@
                             "$ref": "#/components/schemas/BalanceForAccount"
                           },
                           "currency": {
-                            "$ref": "#/components/schemas/CurrencyForAccount"
+                            "$ref": "#/components/schemas/Currency"
                           }
                         }
                       }
@@ -160,20 +164,9 @@
         "description": "Get a list of all of your orders",
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
-          {
-            "required": false,
-            "name": "limit",
-            "schema": {
-              "type": "integer",
-              "minimum": 1,
-              "maximum": 500,
-              "default": 100
-            },
-            "in": "query",
-            "description": "The number (1&ndash;500) of orders to include in each page of orders. Default: 100."
-          },
           { "$ref": "#/components/parameters/BeforeCursor" },
-          { "$ref": "#/components/parameters/AfterCursor" }
+          { "$ref": "#/components/parameters/AfterCursor" },
+          { "$ref": "#/components/parameters/Limit" }
         ],
         "responses": {
           "200": {
@@ -627,6 +620,139 @@
           "500": { "$ref": "#/components/responses/InternalServerError" }
         }
       }
+    },
+    "/transaction": {
+      "get": {
+        "operationId": "getTransactions",
+        "tags": ["transactions"],
+        "summary": "List transactions",
+        "description": "Get a paginated list of your organisation's financial transactions, including order activity, top-ups, currency exchanges, fees, and adjustments. You can apply a range of filters to narrow the results by date range, currency, and transaction type.",
+        "parameters": [
+          { "$ref": "#/components/parameters/X-Api-Version" },
+          { "$ref": "#/components/parameters/BeforeCursor" },
+          { "$ref": "#/components/parameters/AfterCursor" },
+          { "$ref": "#/components/parameters/Limit" },
+          {
+            "in": "query",
+            "name": "currencies",
+            "description": "List of 3 letter ISO 4217 currency codes to filter transactions by.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Currency"
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "description": "The start date for filtering transactions (inclusive), in ISO format. UTC is assumed, meaning 2026-08-01 is interpreted as 2026-08-01T00:00:00+00:00.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2026-08-01"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "description": "The end date for filtering transactions (exclusive), in ISO format. UTC is assumed, meaning 2026-09-01 is interpreted as 2026-09-01T00:00:00+00:00. The end date is exclusive to make it easier to fetch transactions for a full month. For example, for February 2026 use `date_from=2026-02-01&date_to=2026-03-01`, so you don't have to calculate the last day of the month. Maximum date range (difference between `date_from` and `date_to` is 93 days.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "example": "2026-09-01"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "description": "Filter transactions by type.",
+            "required": false,
+            "schema": { "$ref": "#/components/schemas/TransactionType" }
+          },
+          {
+            "in": "query",
+            "name": "subtypes",
+            "description": "List of transaction subtypes used to filter transactions.",
+            "required": false,
+            "schema": { "$ref": "#/components/schemas/TransactionSubtype" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["items", "pagination"],
+                  "properties": {
+                    "items": {
+                      "title": "Items",
+                      "description": "The list of transactions in the page.",
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Transaction" }
+                    },
+                    "pagination": {
+                      "title": "Pagination",
+                      "description": "Metadata of the result page.",
+                      "allOf": [{ "$ref": "#/components/schemas/PageableMeta" }]
+                    }
+                  }
+                },
+                "examples": {
+                  "listTransactions": {
+                    "summary": "List transactions",
+                    "value": {
+                      "items": [
+                        {
+                          "timestamp": "2026-08-14T09:32:10.000Z",
+                          "order_id": "O-KAM22EYK",
+                          "type": "ORDER_ITEM",
+                          "subtype": "COMPLETED",
+                          "description": "Employee: 43127 (Birthday gift)",
+                          "billing_direction": "DEBIT",
+                          "billing_currency": "USD",
+                          "billing_amount": "40.50",
+                          "transaction_currency": "USD",
+                          "transaction_amount": "40.50",
+                          "face_value": "40.50",
+                          "product_code": "AMZ-GB"
+                        },
+                        {
+                          "timestamp": "2026-08-15T11:05:42.000Z",
+                          "type": "TOP_UP",
+                          "subtype": "BANK_TRANSFER",
+                          "description": "Account top-up",
+                          "billing_direction": "CREDIT",
+                          "billing_currency": "GBP",
+                          "billing_amount": "500.00",
+                          "transaction_currency": "GBP",
+                          "transaction_amount": "500.00"
+                        }
+                      ],
+                      "pagination": {
+                        "cursors": {
+                          "after": "A-789",
+                          "before": "A-123"
+                        },
+                        "page": { "limit": 100 }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
+        }
+      }
     }
   },
   "webhooks": {
@@ -709,6 +835,17 @@
           "type": "string",
           "example": "A-789"
         }
+      },
+      "Limit": {
+        "name": "limit",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 500,
+          "default": 100
+        },
+        "in": "query",
+        "description": "The number of items to include in each page."
       }
     },
     "schemas": {
@@ -779,10 +916,11 @@
         "example": "10.00",
         "pattern": "^[0-9]+\\.[0-9]{2}$"
       },
-      "CurrencyForAccount": {
+      "Currency": {
+        "title": "Currency",
         "type": "string",
         "pattern": "^[A-Z]{3}$",
-        "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currencies) for a listing of supported currencies.",
+        "description": "A 3-letter ISO 4217 currency code. Check the [currencies](/reference/currencies) for a listing of supported currencies.",
         "example": "USD"
       },
       "OrderStatus": {
@@ -827,7 +965,7 @@
               }
             ]
           },
-          "currency": { "$ref": "#/components/schemas/CurrencyForAccount" }
+          "currency": { "$ref": "#/components/schemas/Currency" }
         },
         "description": "Account balance payment."
       },
@@ -1210,7 +1348,7 @@
               }
             ]
           },
-          "currency": { "$ref": "#/components/schemas/CurrencyForAccount" }
+          "currency": { "$ref": "#/components/schemas/Currency" }
         },
         "description": "Pay using your account balance."
       },
@@ -2379,6 +2517,168 @@
           },
           "locale": { "$ref": "#/components/schemas/ContentResourcesLocale" }
         }
+      },
+      "Transaction": {
+        "title": "Transaction",
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "title": "Transaction Timestamp",
+            "description": "UTC timestamp, in ISO 8601 format, when the transaction occurred.",
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-02-01T00:00:00.000Z"
+          },
+          "order_id": {
+            "$ref": "#/components/schemas/OrderId",
+            "description": "The ID of the order the transaction relates to, if applicable."
+          },
+          "type": {
+            "title": "Transaction Type",
+            "description": "The transaction type.",
+            "type": "string",
+            "example": "TOP_UP",
+            "enum": [
+              "ADJUSTMENT",
+              "CURRENCY_EXCHANGE",
+              "FEES",
+              "ORDER_ITEM",
+              "TOP_UP"
+            ]
+          },
+          "subtype": {
+            "title": "Transaction Subtype",
+            "description": "The transaction subtype.",
+            "type": "string",
+            "example": "BANK_TRANSFER",
+            "enum": [
+              "BANK_TRANSFER",
+              "CANCELLATION",
+              "CARD_PAYMENT",
+              "CARD_PAYMENT_FEE",
+              "COMPLETED",
+              "CREDIT",
+              "DELAYED_DISCOUNT",
+              "DISCOUNT_ADJUSTMENT",
+              "FX_FEES",
+              "FX_TRANSFERS_IN",
+              "FX_TRANSFERS_OUT",
+              "OTHER",
+              "POS_CARD_PAYMENT",
+              "POS_CARD_PAYMENT_FEE",
+              "REACTIVATION",
+              "REBATE_BY_RUNA",
+              "RUNA_FUNDS_ADVANCE",
+              "RUNA_FUNDS_RECALL",
+              "UNSPENT_VALUE"
+            ]
+          },
+          "description": {
+            "title": "Description",
+            "description": "The description of the transaction supplied by the client.",
+            "type": "string",
+            "example": "Employee: 43127 (Birthday gift)"
+          },
+          "billing_direction": {
+            "title": "Transaction Direction",
+            "description": "Whether the transaction is a credit or a debit. Applies to billing amount.",
+            "type": "string",
+            "example": "DEBIT",
+            "enum": ["CREDIT", "DEBIT"]
+          },
+          "billing_currency": {
+            "$ref": "#/components/schemas/Currency",
+            "title": "Billing Currency",
+            "description": "The currency in which the transaction was billed in. For example, in the context of FX, this is the source currency. It is represented by an ISO 4217 currency code."
+          },
+          "billing_amount": {
+            "title": "Billing Amount",
+            "description": "The amount of the transaction.",
+            "type": "string",
+            "format": "decimal",
+            "example": "40.50"
+          },
+          "transaction_currency": {
+            "$ref": "#/components/schemas/Currency",
+            "title": "Transaction Currency",
+            "description": "The target currency of the transaction. It is represented by an ISO 4217 currency code. If no currency exchange is involved, it will be the same as the billing currency."
+          },
+          "transaction_amount": {
+            "title": "Transaction Amount",
+            "description": "The amount of the transaction in `transaction_currency`. This can differ from `amount` for FX transactions.",
+            "type": "string",
+            "format": "decimal",
+            "example": "40.50"
+          },
+          "exchange_rate": {
+            "title": "Exchange Rate",
+            "description": "The exchange rate received for the transaction between the transaction (payout) currency and billing (payment) currency.",
+            "type": "string",
+            "example": "1.234"
+          },
+          "face_value": {
+            "title": "Face Value",
+            "description": "The face value of the payout link, present when `transaction_type` is `ORDER_ITEM`.",
+            "type": "string",
+            "format": "decimal",
+            "example": "10.50"
+          },
+          "product_code": {
+            "title": "Product Code",
+            "description": "The product code of the order item, present when `transaction_type` is `ORDER_ITEM`.",
+            "type": "string",
+            "example": "AMZ-GB"
+          }
+        },
+        "required": [
+          "timestamp",
+          "type",
+          "subtype",
+          "billing_direction",
+          "billing_currency",
+          "billing_amount",
+          "transaction_currency",
+          "transaction_amount"
+        ]
+      },
+      "TransactionType": {
+        "title": "Transaction type",
+        "type": "string",
+        "description": "The type of the transaction.",
+        "example": "ORDER_ITEM",
+        "enum": [
+          "ADJUSTMENT",
+          "CURRENCY_EXCHANGE",
+          "FEES",
+          "ORDER_ITEM",
+          "TOP_UP"
+        ]
+      },
+      "TransactionSubtype": {
+        "title": "Transaction subtypes",
+        "type": "string",
+        "description": "The subtype of the transaction.",
+        "example": "BANK_TRANSFER",
+        "enum": [
+          "BANK_TRANSFER",
+          "CANCELLATION",
+          "CARD_PAYMENT",
+          "CARD_PAYMENT_FEE",
+          "CREDIT",
+          "DELAYED_DISCOUNT",
+          "DISCOUNT_ADJUSTMENT",
+          "FX_FEES",
+          "FX_TRANSFERS_IN",
+          "FX_TRANSFERS_OUT",
+          "OTHER",
+          "POS_CARD_PAYMENT",
+          "POS_CARD_PAYMENT_FEE",
+          "REACTIVATION",
+          "REBATE_BY_RUNA",
+          "RUNA_FUNDS_ADVANCE",
+          "RUNA_FUNDS_RECALL",
+          "UNSPENT_VALUE"
+        ]
       }
     },
     "responses": {
