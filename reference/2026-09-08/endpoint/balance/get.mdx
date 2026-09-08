@@ -1,0 +1,21 @@
+---
+title: "Get account balance"
+openapi: "/reference/2026-09-08/openapi.json GET /balance"
+description: "Fetch the current balances for your account"
+---
+
+Retrieves the account balance.
+
+- If the `currency` parameter is provided, the response will be a single balance object for the currency requested.
+- If the `currency` parameter is omitted, the response will be an array of balance objects for all currencies with a balance greater than 0.
+
+<Card
+  title="Need a hand with balances?"
+  href="/features/balances"
+  icon="graduation-cap"
+  horizontal
+  arrow
+>
+  Take a read of our guide to help manage your balances, including setting up
+  alerts.
+</Card>
