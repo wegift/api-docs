@@ -830,21 +830,12 @@
         "type": "object",
         "properties": {
           "type": {
-            "description": "Account balance payment.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPaymentType"
-              }
-            ]
+            "type": "string",
+            "const": "ACCOUNT_BALANCE",
+            "description": "Account balance payment."
           },
           "currency": { "$ref": "#/components/schemas/Currency" }
         },
-        "description": "Account balance payment."
-      },
-      "AccountPaymentType": {
-        "title": "AccountPaymentType",
-        "type": "string",
-        "enum": ["ACCOUNT_BALANCE"],
         "description": "Account balance payment."
       },
       "CompletedOrderItem": {
@@ -1104,7 +1095,7 @@
         "required": ["type", "email_address"],
         "type": "object",
         "properties": {
-          "type": { "$ref": "#/components/schemas/EmailDistributionType" },
+          "type": { "type": "string", "const": "EMAIL" },
           "email_address": {
             "$ref": "#/components/schemas/DistributionEmailAddress"
           },
@@ -1112,27 +1103,15 @@
         },
         "description": "Email distribution. Send the payout link to the end user directly via email."
       },
-      "EmailDistributionType": {
-        "title": "EmailDistributionType",
-        "type": "string",
-        "enum": ["EMAIL"],
-        "description": "Supported email distribution types."
-      },
       "LinkDistribution": {
         "title": "Link",
         "required": ["type"],
         "type": "object",
         "properties": {
-          "type": { "$ref": "#/components/schemas/LinkDistributionType" },
+          "type": { "type": "string", "const": "PAYOUT_LINK" },
           "template_id": { "$ref": "#/components/schemas/RedemptionTemplateId" }
         },
         "description": "Link distribution. Send the payout link to the end user yourself."
-      },
-      "LinkDistributionType": {
-        "title": "LinkDistributionType",
-        "type": "string",
-        "enum": ["PAYOUT_LINK"],
-        "description": "Supported link distribution types."
       },
       "RecipientDistribution": {
         "title": "Recipient",
@@ -1140,7 +1119,7 @@
         "required": ["type", "recipient_reference", "email_address"],
         "type": "object",
         "properties": {
-          "type": { "$ref": "#/components/schemas/RecipientDistributionType" },
+          "type": { "type": "string", "const": "RECIPIENT" },
           "recipient_reference": {
             "title": "Recipient Reference",
             "description": "A customer provided reference to identify an individual recipient. It must be unique per recipient. When the same reference is used for a second order this will trigger a repeat payout. This is a free-form string limited to 255 characters. It can only contain alphanumeric characters, dashes, underscores, dots, and at-signs.",
@@ -1155,19 +1134,14 @@
           "template_id": { "$ref": "#/components/schemas/RedemptionTemplateId" }
         }
       },
-      "RecipientDistributionType": {
-        "title": "RecipientDistributionType",
-        "type": "string",
-        "enum": ["RECIPIENT"],
-        "description": "Supported recipient distribution types."
-      },
       "PayoutSelectionTemplate": {
         "title": "Template",
         "required": ["type", "template_id"],
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/PayoutSelectionTemplateType"
+            "type": "string",
+            "const": "TEMPLATE"
           },
           "template_id": {
             "$ref": "#/components/schemas/PayoutSelectionTemplateId"
@@ -1181,7 +1155,8 @@
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/PayoutSelectionTemplateType"
+            "type": "string",
+            "const": "TEMPLATE"
           },
           "template_id": {
             "$ref": "#/components/schemas/PayoutSelectionTemplateId"
@@ -1200,24 +1175,15 @@
         },
         "description": "Payout selection template. Template having predefined set of products."
       },
-      "PayoutSelectionTemplateType": {
-        "title": "PayoutSelectionTemplateType",
-        "type": "string",
-        "enum": ["TEMPLATE"],
-        "description": "Payout Selection Template"
-      },
       "AccountPaymentRequest": {
         "title": "Account balance payment",
         "required": ["type", "currency"],
         "type": "object",
         "properties": {
           "type": {
-            "description": "Account balance payment method.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPaymentType"
-              }
-            ]
+            "type": "string",
+            "const": "ACCOUNT_BALANCE",
+            "description": "Account balance payment method."
           },
           "currency": { "$ref": "#/components/schemas/Currency" }
         },
@@ -1582,7 +1548,8 @@
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/SingleProductType"
+            "type": "string",
+            "const": "SINGLE"
           },
           "value": {
             "title": "Value",
@@ -1594,12 +1561,6 @@
         },
         "description": "Single product. The end user will be able to redeem the payout link for this specific product."
       },
-      "SingleProductType": {
-        "title": "SingleProductType",
-        "type": "string",
-        "enum": ["SINGLE"],
-        "description": "Single product. When only one product code is provided."
-      },
       "SingleProductWithUsageConfig": {
         "title": "Single (with usage configuration)",
         "required": ["type", "value"],
@@ -1610,7 +1571,8 @@
         },
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/SingleProductType"
+            "type": "string",
+            "const": "SINGLE"
           },
           "value": {
             "title": "Value",
@@ -1650,7 +1612,8 @@
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/MultipleProductType"
+            "type": "string",
+            "const": "MULTIPLE"
           },
           "values": {
             "title": "Values",
@@ -1665,12 +1628,6 @@
           }
         },
         "description": "Multiple products. The end user will be able to split the payout link's value between these products."
-      },
-      "MultipleProductType": {
-        "title": "MultipleProductType",
-        "type": "string",
-        "enum": ["MULTIPLE"],
-        "description": "Multiple products. When more than one product code is provided."
       },
       "UnknownProduct": {
         "title": "Unknown",
