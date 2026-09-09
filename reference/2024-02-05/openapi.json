@@ -102,10 +102,10 @@
                       "type": "object",
                       "properties": {
                         "balance": {
-                          "$ref": "#/components/schemas/BalanceForAccount"
+                          "$ref": "#/components/schemas/Balance"
                         },
                         "currency": {
-                          "$ref": "#/components/schemas/CurrencyForAccount"
+                          "$ref": "#/components/schemas/Currency"
                         }
                       }
                     },
@@ -117,10 +117,10 @@
                         "type": "object",
                         "properties": {
                           "balance": {
-                            "$ref": "#/components/schemas/BalanceForAccount"
+                            "$ref": "#/components/schemas/Balance"
                           },
                           "currency": {
-                            "$ref": "#/components/schemas/CurrencyForAccount"
+                            "$ref": "#/components/schemas/Currency"
                           }
                         }
                       }
@@ -192,10 +192,10 @@
                       "items": {
                         "oneOf": [
                           {
-                            "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
+                            "$ref": "#/components/schemas/OrderSummary"
                           },
                           {
-                            "$ref": "#/components/schemas/IncompleteOrder"
+                            "$ref": "#/components/schemas/ProcessingOrder"
                           }
                         ]
                       }
@@ -205,7 +205,7 @@
                       "description": "Metadata of the result page.",
                       "allOf": [
                         {
-                          "$ref": "#/components/schemas/PageableMeta"
+                          "$ref": "#/components/schemas/Pagination"
                         }
                       ]
                     }
@@ -254,7 +254,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SyncCompletedOrder"
+                  "$ref": "#/components/schemas/CompletedOrder"
                 }
               }
             }
@@ -282,7 +282,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewOrderDetails"
+                "$ref": "#/components/schemas/CreateOrderRequest"
               }
             }
           }
@@ -316,10 +316,10 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/CompletedOrderWithFullDetails"
+                      "$ref": "#/components/schemas/Order"
                     },
                     {
-                      "$ref": "#/components/schemas/IncompleteOrder"
+                      "$ref": "#/components/schemas/ProcessingOrder"
                     }
                   ]
                 }
@@ -347,7 +347,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderPriceResponse"
+                  "$ref": "#/components/schemas/OrderEstimateResponse"
                 }
               }
             }
@@ -364,7 +364,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/OrderPriceRequest"
+                "$ref": "#/components/schemas/OrderEstimateRequest"
               }
             }
           }
@@ -441,7 +441,7 @@
                       }
                     },
                     "pagination": {
-                      "$ref": "#/components/schemas/PageableMeta"
+                      "$ref": "#/components/schemas/Pagination"
                     }
                   }
                 }
@@ -786,13 +786,13 @@
         "pattern": "^[0-9]+(\\.[0-9]{1,2})?$",
         "example": "10.00"
       },
-      "BalanceForAccount": {
+      "Balance": {
         "title": "Balance",
         "description": "The balance of the account.",
         "example": "10.00",
         "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
       },
-      "CurrencyForAccount": {
+      "Currency": {
         "type": "string",
         "pattern": "^[A-Z]{3}$",
         "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currencies) for a listing of supported currencies.",
@@ -840,7 +840,7 @@
               }
             ]
           },
-          "currency": { "$ref": "#/components/schemas/CurrencyForAccount" }
+          "currency": { "$ref": "#/components/schemas/Currency" }
         },
         "description": "Account balance payment."
       },
@@ -925,8 +925,8 @@
           "payout"
         ]
       },
-      "CompletedOrderWithBasicDetails": {
-        "title": "Completed order (basic details)",
+      "OrderSummary": {
+        "title": "Order summary",
         "description": "Used for orders that have completed. This class is typically used when returning a *list* of orders to the client.",
         "required": [
           "id",
@@ -993,11 +993,11 @@
           "status": { "$ref": "#/components/schemas/OrderStatus" }
         }
       },
-      "SyncCompletedOrder": {
-        "title": "Sync completed order",
+      "CompletedOrder": {
+        "title": "Completed order",
         "allOf": [
           {
-            "$ref": "#/components/schemas/CompletedOrderWithFullDetails"
+            "$ref": "#/components/schemas/Order"
           },
           {
             "properties": {
@@ -1014,7 +1014,7 @@
         "description": "Webhook message sent when an order has completed processing.",
         "allOf": [
           {
-            "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
+            "$ref": "#/components/schemas/OrderSummary"
           },
           {
             "properties": {
@@ -1051,13 +1051,13 @@
         },
         "description": "API rate limited error response."
       },
-      "CompletedOrderWithFullDetails": {
-        "title": "Completed order (full details)",
+      "Order": {
+        "title": "Order",
         "description": "Used for an order that has completed. This class is typically used when returning a *single order* to the client.",
         "type": "object",
         "allOf": [
           {
-            "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
+            "$ref": "#/components/schemas/OrderSummary"
           },
           {
             "required": [
@@ -1087,8 +1087,8 @@
           }
         ]
       },
-      "IncompleteOrder": {
-        "title": "Incomplete order",
+      "ProcessingOrder": {
+        "title": "Processing order",
         "required": ["id", "status", "message"],
         "type": "object",
         "properties": {
@@ -1209,8 +1209,8 @@
         "enum": ["TEMPLATE"],
         "description": "Payout Selection Template"
       },
-      "NewAccountPayment": {
-        "title": "NewAccountPayment",
+      "AccountPaymentRequest": {
+        "title": "Account balance payment",
         "required": ["type", "currency"],
         "type": "object",
         "properties": {
@@ -1222,12 +1222,12 @@
               }
             ]
           },
-          "currency": { "$ref": "#/components/schemas/CurrencyForAccount" }
+          "currency": { "$ref": "#/components/schemas/Currency" }
         },
         "description": "Pay using your account balance."
       },
-      "NewOrderDetails": {
-        "title": "NewOrderDetails",
+      "CreateOrderRequest": {
+        "title": "New order",
         "required": ["payment_method", "items"],
         "type": "object",
         "properties": {
@@ -1236,7 +1236,7 @@
             "description": "Payment method for the order. Select the `ACCOUNT_BALANCE` you want to pay for the order from",
             "allOf": [
               {
-                "$ref": "#/components/schemas/NewAccountPayment"
+                "$ref": "#/components/schemas/AccountPaymentRequest"
               }
             ]
           },
@@ -1247,15 +1247,15 @@
             "maxItems": 200,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/NewOrderItemDetails"
+              "$ref": "#/components/schemas/CreateOrderItem"
             }
           },
           "description": { "$ref": "#/components/schemas/OrderDescription" },
           "metadata": { "$ref": "#/components/schemas/OrderMetadata" }
         }
       },
-      "NewOrderItemDetails": {
-        "title": "NewOrderItemDetails",
+      "CreateOrderItem": {
+        "title": "Order item",
         "required": ["face_value", "distribution_method", "products"],
         "type": "object",
         "properties": {
@@ -1291,8 +1291,8 @@
           }
         }
       },
-      "OrderItemDiscount": {
-        "title": "OrderItemDiscount",
+      "OrderEstimateItem": {
+        "title": "Order item estimate",
         "required": [
           "products",
           "face_value",
@@ -1339,8 +1339,8 @@
         },
         "description": "The computed discount for an order item."
       },
-      "OrderItemPriceRequest": {
-        "title": "OrderItemPriceRequest",
+      "OrderEstimateRequestItem": {
+        "title": "Estimate item",
         "required": ["products", "face_value"],
         "type": "object",
         "properties": {
@@ -1365,8 +1365,8 @@
         },
         "description": "A proposed order item within an order price request."
       },
-      "OrderPriceRequest": {
-        "title": "OrderPriceRequest",
+      "OrderEstimateRequest": {
+        "title": "Order estimate request",
         "required": ["payment_method", "items"],
         "type": "object",
         "properties": {
@@ -1375,7 +1375,7 @@
             "description": "Payment method for the order. Select the `ACCOUNT_BALANCE` you want to pay for the order from.",
             "allOf": [
               {
-                "$ref": "#/components/schemas/NewAccountPayment"
+                "$ref": "#/components/schemas/AccountPaymentRequest"
               }
             ]
           },
@@ -1386,14 +1386,14 @@
             "maxItems": 500,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/OrderItemPriceRequest"
+              "$ref": "#/components/schemas/OrderEstimateRequestItem"
             }
           }
         },
         "description": "Request for a price estimate for an order."
       },
-      "OrderPriceResponse": {
-        "title": "OrderPriceResponse",
+      "OrderEstimateResponse": {
+        "title": "Order estimate response",
         "required": [
           "payment_method",
           "items",
@@ -1416,7 +1416,7 @@
             "description": "List of order items with price and discount.",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/OrderItemDiscount"
+              "$ref": "#/components/schemas/OrderEstimateItem"
             }
           },
           "currency": {
@@ -1482,16 +1482,16 @@
             "title": "FX",
             "description": "Present only when the payment method currency differs from the transaction detail currency. `null` otherwise.",
             "oneOf": [
-              { "$ref": "#/components/schemas/TransactionDetailFXDetails" },
+              { "$ref": "#/components/schemas/TransactionDetailFx" },
               { "type": "null" }
             ]
           }
         },
         "required": ["value"]
       },
-      "TransactionDetailFXDetails": {
+      "TransactionDetailFx": {
         "type": "object",
-        "title": "TransactionDetailFxDetails",
+        "title": "FX details",
         "description": "Provides details on fx conversion for an order transaction detail. Present when the payment method currency is different from the transaction detail currency.",
         "properties": {
           "rate": {
@@ -1559,8 +1559,8 @@
           }
         }
       },
-      "PageableMeta": {
-        "title": "PageableMeta",
+      "Pagination": {
+        "title": "Pagination",
         "required": ["cursors", "page"],
         "type": "object",
         "description": "Information about the page of results returned. See [pagination](/reference/pagination) for more information on how to page through results.",
@@ -1897,7 +1897,7 @@
             "description": "Specific details about the gift card product, only populated when the `payout_type` is `gift_card`.",
             "allOf": [
               {
-                "$ref": "#/components/schemas/PayoutTypeDetailsBase"
+                "$ref": "#/components/schemas/GiftCardOrSubscriptionDetails"
               },
               {
                 "type": "object",
@@ -1913,7 +1913,7 @@
             "description": "Details about the subscription product, only populated when the `payout_type` is `subscription`.",
             "allOf": [
               {
-                "$ref": "#/components/schemas/PayoutTypeDetailsBase"
+                "$ref": "#/components/schemas/GiftCardOrSubscriptionDetails"
               },
               {
                 "type": "object",
@@ -1951,7 +1951,7 @@
           "payout_type"
         ]
       },
-      "PayoutTypeDetailsBase": {
+      "GiftCardOrSubscriptionDetails": {
         "type": "object",
         "properties": {
           "assets": {
