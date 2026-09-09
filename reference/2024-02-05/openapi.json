@@ -203,11 +203,7 @@
                     "pagination": {
                       "title": "Pagination",
                       "description": "Metadata of the result page.",
-                      "allOf": [
-                        {
-                          "$ref": "#/components/schemas/Pagination"
-                        }
-                      ]
+                      "$ref": "#/components/schemas/Pagination"
                     }
                   }
                 }
@@ -790,7 +786,7 @@
         "title": "Balance",
         "description": "The balance of the account.",
         "example": "10.00",
-        "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+        "$ref": "#/components/schemas/MonetaryAmount"
       },
       "Currency": {
         "type": "string",
@@ -879,22 +875,18 @@
             "title": "Face Value",
             "description": "The face value of the payout link.",
             "example": "10.00",
-            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "price": {
             "title": "Price",
             "description": "The price paid for the payout link.",
             "example": "10.00",
-            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "payout": {
             "title": "Payout",
             "description": "Payout link details",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PayoutDetails"
-              }
-            ]
+            "$ref": "#/components/schemas/PayoutDetails"
           },
           "currency": {
             "title": "Currency",
@@ -945,11 +937,7 @@
           "payment_method": {
             "title": "Payment Method",
             "description": "The payment method used for the order.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPayment"
-              }
-            ]
+            "$ref": "#/components/schemas/AccountPayment"
           },
           "currency": {
             "title": "Currency",
@@ -962,13 +950,13 @@
             "title": "Total Price",
             "description": "The total price of the order. This _includes_ any applicable fees.",
             "example": "10.00",
-            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "total_discount": {
             "title": "Total Discount",
             "description": "The total discount of the order.",
             "example": "1.00",
-            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+            "$ref": "#/components/schemas/MonetaryAmount"
           }
         }
       },
@@ -1197,11 +1185,7 @@
           "payment_method": {
             "title": "Payment Method",
             "description": "Payment method for the order. Select the `ACCOUNT_BALANCE` you want to pay for the order from",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPaymentRequest"
-              }
-            ]
+            "$ref": "#/components/schemas/AccountPaymentRequest"
           },
           "items": {
             "title": "Items",
@@ -1226,7 +1210,7 @@
             "title": "Face Value",
             "description": "Face value of the payout link. The currency of the face value is inferred from the product selection.\n\nWhat value is allowed depends on the product mode:\n- When ordering a `SINGLE` product this field follows the allowed values from the selected product.\n- If using `MULTIPLE` or `TEMPLATE` this value must be: equal or greater than the minimum face value of the products selected and be a whole number.",
             "example": "10.00",
-            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "distribution_method": {
             "title": "Distribution Method",
@@ -1281,13 +1265,13 @@
             "title": "Face Value",
             "description": "Face value of the payout link.",
             "example": "10.00",
-            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "price": {
             "title": "Price",
             "description": "The price of the order item. This is before `discount_multiplier` is applied.",
             "example": "10.00",
-            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "discount_multiplier": {
             "$ref": "#/components/schemas/ProductDiscountMultiplier"
@@ -1323,7 +1307,7 @@
             "title": "Face Value",
             "description": "Face value of the payout link.",
             "example": "10.00",
-            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+            "$ref": "#/components/schemas/MonetaryAmount"
           }
         },
         "description": "A proposed order item within an order price request."
@@ -1336,11 +1320,7 @@
           "payment_method": {
             "title": "Payment Method",
             "description": "Payment method for the order. Select the `ACCOUNT_BALANCE` you want to pay for the order from.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPaymentRequest"
-              }
-            ]
+            "$ref": "#/components/schemas/AccountPaymentRequest"
           },
           "items": {
             "title": "Items",
@@ -1368,11 +1348,7 @@
         "properties": {
           "payment_method": {
             "title": "Payment Method",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPayment"
-              }
-            ]
+            "$ref": "#/components/schemas/AccountPayment"
           },
           "items": {
             "title": "Items",
@@ -1393,13 +1369,13 @@
             "title": "Total Discount",
             "description": "Total discount on the entire order.",
             "example": "0.50",
-            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "total_price": {
             "title": "Total Price",
             "description": "Total price of the entire order.",
             "example": "9.50",
-            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "transaction_detail": {
             "$ref": "#/components/schemas/TransactionDetail"
@@ -1433,7 +1409,7 @@
             "title": "Value",
             "description": "The total value purchased of a payout link currency.",
             "example": "10.00",
-            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "fx": {
             "title": "FX",
@@ -1472,7 +1448,7 @@
                 "title": "Value",
                 "description": "The value of the fee.",
                 "example": "0.00",
-                "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+                "$ref": "#/components/schemas/MonetaryAmount"
               },
               "currency": {
                 "title": "Currency",
@@ -1525,20 +1501,12 @@
           "cursors": {
             "title": "Cursors",
             "description": "Pagination cursors, use the `after` cursor to page forward and the `before` cursor to page backward.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PageCursors"
-              }
-            ]
+            "$ref": "#/components/schemas/PageCursors"
           },
           "page": {
             "title": "Page",
             "description": "Extra information about the current page.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Page"
-              }
-            ]
+            "$ref": "#/components/schemas/Page"
           }
         }
       },
@@ -1583,11 +1551,7 @@
           },
           "usage_config": {
             "description": "Optional. **Only applicable to prepaid Visa cards.** Attaches an MCC-rules template to the issued card. Ignored for all other products. See [Card spend controls](/features/prepaid-visa/spend-controls) for a worked example. When set on a prepaid Visa card order, it is returned in the order details.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/UsageConfig"
-              }
-            ]
+            "$ref": "#/components/schemas/UsageConfig"
           }
         },
         "description": "Single product. The end user will be able to redeem the payout link for this specific product."
@@ -1879,11 +1843,7 @@
           },
           "payment": {
             "description": "Details about the payment product, only populated when the `payout_type` is `payment`.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ProductPayment"
-              }
-            ]
+            "$ref": "#/components/schemas/ProductPayment"
           }
         },
         "required": [
@@ -1974,7 +1934,7 @@
           "price": {
             "description": "The price of the subscription plan.",
             "example": "10.00",
-            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "subscription_plan_code": {
             "description": "Use this code during order creation, rather than the top level `code`.",
@@ -2097,12 +2057,12 @@
       "ProductMinimumValue": {
         "description": "The minimum denomination value available for the product.",
         "example": "10.00",
-        "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+        "$ref": "#/components/schemas/MonetaryAmount"
       },
       "ProductMaximumValue": {
         "description": "The maximum denomination value available for the product.",
         "example": "100.00",
-        "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
+        "$ref": "#/components/schemas/MonetaryAmount"
       },
       "ProductIconImageUrl": {
         "type": "string",
