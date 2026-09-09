@@ -851,7 +851,15 @@
               { "$ref": "#/components/schemas/EmailDistribution" },
               { "$ref": "#/components/schemas/LinkDistribution" },
               { "$ref": "#/components/schemas/RecipientDistribution" }
-            ]
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "EMAIL": "#/components/schemas/EmailDistribution",
+                "PAYOUT_LINK": "#/components/schemas/LinkDistribution",
+                "RECIPIENT": "#/components/schemas/RecipientDistribution"
+              }
+            }
           },
           "products": {
             "title": "Products",
@@ -869,7 +877,16 @@
               {
                 "$ref": "#/components/schemas/UnknownProduct"
               }
-            ]
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "SINGLE": "#/components/schemas/SingleProductWithUsageConfig",
+                "MULTIPLE": "#/components/schemas/MultipleProduct",
+                "TEMPLATE": "#/components/schemas/PayoutSelectionTemplateDetailed",
+                "UNKNOWN": "#/components/schemas/UnknownProduct"
+              }
+            }
           },
           "face_value": {
             "title": "Face Value",
@@ -978,7 +995,7 @@
           {
             "properties": {
               "status": {
-                "enum": ["COMPLETED"]
+                "const": "COMPLETED"
               }
             }
           }
@@ -995,7 +1012,7 @@
           {
             "properties": {
               "status": {
-                "enum": ["COMPLETED"]
+                "const": "COMPLETED"
               }
             }
           }
@@ -1009,7 +1026,8 @@
         "properties": {
           "id": { "$ref": "#/components/schemas/OrderId" },
           "status": {
-            "enum": ["FAILED"]
+            "type": "string",
+            "const": "FAILED"
           }
         }
       },
@@ -1219,7 +1237,15 @@
               { "$ref": "#/components/schemas/EmailDistribution" },
               { "$ref": "#/components/schemas/LinkDistribution" },
               { "$ref": "#/components/schemas/RecipientDistribution" }
-            ]
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "EMAIL": "#/components/schemas/EmailDistribution",
+                "PAYOUT_LINK": "#/components/schemas/LinkDistribution",
+                "RECIPIENT": "#/components/schemas/RecipientDistribution"
+              }
+            }
           },
           "products": {
             "title": "Products",
@@ -1234,7 +1260,15 @@
               {
                 "$ref": "#/components/schemas/PayoutSelectionTemplate"
               }
-            ]
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "SINGLE": "#/components/schemas/SingleProductWithUsageConfig",
+                "MULTIPLE": "#/components/schemas/MultipleProduct",
+                "TEMPLATE": "#/components/schemas/PayoutSelectionTemplate"
+              }
+            }
           }
         }
       },
@@ -1259,7 +1293,14 @@
               {
                 "$ref": "#/components/schemas/SingleProduct"
               }
-            ]
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "SINGLE": "#/components/schemas/SingleProduct",
+                "MULTIPLE": "#/components/schemas/MultipleProduct"
+              }
+            }
           },
           "face_value": {
             "title": "Face Value",
@@ -1301,7 +1342,14 @@
               {
                 "$ref": "#/components/schemas/SingleProduct"
               }
-            ]
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "SINGLE": "#/components/schemas/SingleProduct",
+                "MULTIPLE": "#/components/schemas/MultipleProduct"
+              }
+            }
           },
           "face_value": {
             "title": "Face Value",
@@ -1603,7 +1651,7 @@
             "title": "Type",
             "description": "It is not currently possible to determine which products were selected when this item was ordered.",
             "type": "string",
-            "enum": ["UNKNOWN"]
+            "const": "UNKNOWN"
           }
         }
       },
