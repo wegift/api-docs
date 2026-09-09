@@ -780,7 +780,7 @@
       },
       "MonetaryAmount": {
         "title": "Monetary amount",
-        "description": "A monetary amount in the major unit of its currency, given as a decimal string. Amounts are strings so that they survive a round trip without floating point precision loss — parse them with a decimal type, not a float.",
+        "description": "A monetary amount in the major unit of its currency, given as a decimal string, for example `\"10.00\"`. Amounts are strings so that they survive a round trip without floating point precision loss. Send them as strings and parse them with a decimal type, not a float.",
         "type": "string",
         "format": "decimal",
         "pattern": "^[0-9]+(\\.[0-9]{1,2})?$",
@@ -1262,9 +1262,8 @@
           "face_value": {
             "title": "Face Value",
             "description": "Face value of the payout link. The currency of the face value is inferred from the product selection.\n\nWhat value is allowed depends on the product mode:\n- When ordering a `SINGLE` product this field follows the allowed values from the selected product.\n- If using `MULTIPLE` or `TEMPLATE` this value must be: equal or greater than the minimum face value of the products selected and be a whole number.",
-            "minimum": 0.01,
-            "example": 10,
-            "type": "number"
+            "example": "10.00",
+            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
           },
           "distribution_method": {
             "title": "Distribution Method",
@@ -1359,9 +1358,9 @@
           },
           "face_value": {
             "title": "Face Value",
-            "description": "Face value of the reward link.",
-            "example": 10,
-            "type": "number"
+            "description": "Face value of the payout link.",
+            "example": "10.00",
+            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
           }
         },
         "description": "A proposed order item within an order price request."
