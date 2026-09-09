@@ -775,12 +775,19 @@
           "campaign": "summer_2024"
         }
       },
+      "MonetaryAmount": {
+        "title": "Monetary amount",
+        "description": "A monetary amount in the major unit of its currency, given as a decimal string. Amounts are strings so that they survive a round trip without floating point precision loss — parse them with a decimal type, not a float.",
+        "type": "string",
+        "format": "decimal",
+        "pattern": "^[0-9]+(\\.[0-9]{1,2})?$",
+        "example": "10.00"
+      },
       "BalanceForAccount": {
         "title": "Balance",
         "description": "The balance of the account.",
-        "type": "string",
         "example": "10.00",
-        "pattern": "^[0-9]+\\.[0-9]{2}$"
+        "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
       },
       "CurrencyForAccount": {
         "type": "string",
@@ -880,14 +887,14 @@
           "face_value": {
             "title": "Face Value",
             "description": "The face value of the payout link.",
-            "example": "10",
-            "type": "string"
+            "example": "10.00",
+            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
           },
           "price": {
             "title": "Price",
             "description": "The price paid for the payout link.",
-            "example": "10",
-            "type": "string"
+            "example": "10.00",
+            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
           },
           "payout": {
             "title": "Payout",
@@ -963,14 +970,14 @@
           "total_price": {
             "title": "Total Price",
             "description": "The total price of the order. This _includes_ any applicable fees.",
-            "example": "10",
-            "type": "string"
+            "example": "10.00",
+            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
           },
           "total_discount": {
             "title": "Total Discount",
             "description": "The total discount of the order.",
-            "type": "string",
-            "example": "1"
+            "example": "1.00",
+            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
           }
         }
       },
@@ -1307,14 +1314,15 @@
           },
           "face_value": {
             "title": "Face Value",
-            "description": "Face value of the reward link.",
-            "example": 10,
-            "type": "number"
+            "description": "Face value of the payout link.",
+            "example": "10.00",
+            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
           },
           "price": {
             "title": "Price",
-            "description": "The price of the order item.",
-            "type": "number"
+            "description": "The price of the order item. This is before `discount_multiplier` is applied.",
+            "example": "10.00",
+            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
           },
           "discount_multiplier": {
             "$ref": "#/components/schemas/ProductDiscountMultiplier"
@@ -1419,12 +1427,14 @@
           "total_discount": {
             "title": "Total Discount",
             "description": "Total discount on the entire order.",
-            "type": "number"
+            "example": "0.50",
+            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
           },
           "total_price": {
             "title": "Total Price",
             "description": "Total price of the entire order.",
-            "type": "number"
+            "example": "9.50",
+            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
           },
           "transaction_detail": {
             "$ref": "#/components/schemas/TransactionDetail"
@@ -1463,8 +1473,8 @@
           "value": {
             "title": "Value",
             "description": "The total value purchased of a payout link currency.",
-            "type": "string",
-            "example": "10.00"
+            "example": "10.00",
+            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
           },
           "fx": {
             "title": "FX",
@@ -1502,8 +1512,8 @@
               "value": {
                 "title": "Value",
                 "description": "The value of the fee.",
-                "type": "string",
-                "example": "0.00"
+                "example": "0.00",
+                "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
               },
               "currency": {
                 "title": "Currency",
@@ -2012,10 +2022,9 @@
             "example": "3 month subscription"
           },
           "price": {
-            "type": "string",
-            "format": "decimal",
             "description": "The price of the subscription plan.",
-            "example": "10.00"
+            "example": "10.00",
+            "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
           },
           "subscription_plan_code": {
             "description": "Use this code during order creation, rather than the top level `code`.",
@@ -2092,10 +2101,7 @@
           },
           "available_list": {
             "type": ["array", "null"],
-            "items": {
-              "type": "string",
-              "format": "decimal"
-            },
+            "items": { "$ref": "#/components/schemas/MonetaryAmount" },
             "description": "A list of available denominations for the product. Will be `null` if the `type` is `OPEN`.",
             "example": ["10.00", "20.00", "50.00", "100.00"]
           }
@@ -2139,16 +2145,14 @@
         "example": "0.05"
       },
       "ProductMinimumValue": {
-        "type": "string",
-        "format": "decimal",
         "description": "The minimum denomination value available for the product.",
-        "example": "10.00"
+        "example": "10.00",
+        "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
       },
       "ProductMaximumValue": {
-        "type": "string",
-        "format": "decimal",
         "description": "The maximum denomination value available for the product.",
-        "example": "100.00"
+        "example": "100.00",
+        "allOf": [{ "$ref": "#/components/schemas/MonetaryAmount" }]
       },
       "ProductIconImageUrl": {
         "type": "string",
