@@ -171,7 +171,7 @@
               "default": 100
             },
             "in": "query",
-            "description": "The number (1&ndash;500) of orders to include in each page of orders. Default: 100."
+            "description": "Number of orders per page, 1 to 500."
           },
           { "$ref": "#/components/parameters/BeforeCursor" },
           { "$ref": "#/components/parameters/AfterCursor" }
@@ -382,7 +382,7 @@
           {
             "in": "query",
             "name": "is_orderable",
-            "description": "Filter by products which can be ordered. If `true`, returns only those which can be ordered, if `false`, returns all products.",
+            "description": "Filter by whether a product can be ordered. If `true`, only orderable products are returned. If `false` or omitted, both orderable and non-orderable products are returned.",
             "schema": {
               "type": "boolean"
             }
@@ -729,7 +729,7 @@
             "title": "Type",
             "description": "An error code or type.",
             "type": "string",
-            "example": "not-found"
+            "example": "not_found"
           },
           "message": {
             "title": "Message",
@@ -1268,7 +1268,7 @@
           },
           "distribution_method": {
             "title": "Distribution Method",
-            "description": "Distribution method to send end users the payout link. Choose `EMAIL` if you want Runa to send the payout link to the end user directly. Choose `PAYOUT_LINK` if you want to send the payout link to the end user yourself.",
+            "description": "How the payout link reaches the end user. Choose `EMAIL` for Runa to email the link directly, `PAYOUT_LINK` to receive the link in the response and distribute it yourself, or `RECIPIENT` to send it to a known recipient identified by your own reference, which also enables repeat payouts.",
             "oneOf": [
               { "$ref": "#/components/schemas/EmailDistribution" },
               { "$ref": "#/components/schemas/LinkDistribution" },
@@ -1277,7 +1277,7 @@
           },
           "products": {
             "title": "Products",
-            "description": "Choose `SINGLE` if you want the end user to redeem the face value on a single specific product. Choose `MULTIPLE` if the end user can choose to spend the face value across multiple products.",
+            "description": "What the end user can redeem the face value on. Choose `SINGLE` for one specific product, `MULTIPLE` for a choice of several products, or `TEMPLATE` to use a saved payout selection template.",
             "oneOf": [
               {
                 "$ref": "#/components/schemas/SingleProductWithUsageConfig"
@@ -2093,7 +2093,7 @@
           "type": {
             "type": "string",
             "enum": ["open", "fixed"],
-            "description": "The type of denomination. Can be `open` or `fixed`. `open` is any amount between minimum and maximum value. Fixed is limited to those returned in the `available_list`.",
+            "description": "The type of denomination. Can be `open` or `fixed`. `open` is any amount between the minimum and maximum value. `fixed` is limited to those returned in the `available_list`.",
             "example": "fixed"
           },
           "minimum_value": {
@@ -2105,7 +2105,7 @@
           "available_list": {
             "type": ["array", "null"],
             "items": { "$ref": "#/components/schemas/MonetaryAmount" },
-            "description": "A list of available denominations for the product. Will be `null` if the `type` is `OPEN`.",
+            "description": "A list of available denominations for the product. Will be `null` if the `type` is `open`.",
             "example": ["10.00", "20.00", "50.00", "100.00"]
           }
         }
