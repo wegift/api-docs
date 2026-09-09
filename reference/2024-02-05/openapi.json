@@ -721,7 +721,7 @@
     },
     "schemas": {
       "APIErrorResponse": {
-        "title": "APIErrorResponse",
+        "title": "Error",
         "required": ["type", "message"],
         "type": "object",
         "properties": {
@@ -799,13 +799,10 @@
         "example": "USD"
       },
       "OrderStatus": {
-        "title": "Order Status",
-        "description": "Status of the order.",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/OrderStatusEnum"
-          }
-        ],
+        "title": "Order status",
+        "description": "The status of the order.",
+        "type": "string",
+        "enum": ["COMPLETED", "FAILED", "PROCESSING"],
         "example": "PROCESSING"
       },
       "DistributionEmailAddress": {
@@ -816,19 +813,19 @@
         "format": "email"
       },
       "PayoutSelectionTemplateId": {
-        "title": "Template ID",
+        "title": "Payout selection template ID",
         "description": "The template ID for a Payout Selection Template.",
         "example": "PT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
         "type": "string"
       },
       "RedemptionTemplateId": {
-        "title": "Template ID",
+        "title": "User redemption template ID",
         "description": "The template ID for a User Redemption Template.",
         "example": "DT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
         "type": "string"
       },
       "AccountPayment": {
-        "title": "AccountPayment",
+        "title": "Account balance payment",
         "required": ["type"],
         "type": "object",
         "properties": {
@@ -851,7 +848,7 @@
         "description": "Account balance payment."
       },
       "CompletedOrderItem": {
-        "title": "CompletedOrderItem",
+        "title": "Order item",
         "type": "object",
         "properties": {
           "id": {
@@ -985,7 +982,7 @@
         }
       },
       "AsyncAcceptedOrder": {
-        "title": "Async Order Accepted",
+        "title": "Accepted order",
         "required": ["id", "status"],
         "type": "object",
         "properties": {
@@ -1038,7 +1035,7 @@
         }
       },
       "RateExceededResponse": {
-        "title": "RateExceededResponse",
+        "title": "Rate limit exceeded",
         "required": ["error"],
         "type": "object",
         "properties": {
@@ -1179,7 +1176,7 @@
         "description": "Payout selection template. Template having predefined set of products."
       },
       "PayoutSelectionTemplateDetailed": {
-        "title": "Template",
+        "title": "Template (with selected products)",
         "required": ["type", "template_id"],
         "type": "object",
         "properties": {
@@ -1444,14 +1441,8 @@
         },
         "description": "Response object for a order price estimate."
       },
-      "OrderStatusEnum": {
-        "title": "OrderStatusEnum",
-        "type": "string",
-        "enum": ["COMPLETED", "FAILED", "PROCESSING"],
-        "description": "The status of the order."
-      },
       "TransactionDetail": {
-        "title": "TransactionDetail",
+        "title": "Transaction detail",
         "description": "A mapping of the subtotal of the order using the payout currency as a key.",
         "type": "object",
         "example": {
@@ -1469,7 +1460,7 @@
       },
       "TransactionDetailEntry": {
         "type": "object",
-        "title": "TransactionDetailEntry",
+        "title": "Transaction detail entry",
         "description": "A subtotal of the value purchased and associated fees and data about the transaction.",
         "properties": {
           "value": {
@@ -1542,7 +1533,7 @@
         }
       },
       "PageCursors": {
-        "title": "PageCursors",
+        "title": "Cursors",
         "type": "object",
         "properties": {
           "after": {
@@ -1640,7 +1631,7 @@
         "description": "Single product. The end user will be able to redeem the payout link for this specific product."
       },
       "UsageConfig": {
-        "title": "UsageConfig",
+        "title": "Usage configuration",
         "type": "object",
         "description": "Additional configuration applied to the issued product. Only applicable to prepaid Visa cards.",
         "properties": {
@@ -1742,7 +1733,7 @@
         "enum": ["ACTIVE", "CLAIMED", "CANCELLED", "EXPIRED"]
       },
       "PayoutDetails": {
-        "title": "PayoutDetails",
+        "title": "Payout details",
         "type": "object",
         "properties": {
           "status": {
@@ -1769,7 +1760,7 @@
         "required": ["status", "status_updated_at", "url"]
       },
       "ValidationErrorItem": {
-        "title": "ValidationErrorItem",
+        "title": "Validation error item",
         "required": ["type", "message", "location"],
         "type": "object",
         "properties": {
@@ -1798,7 +1789,7 @@
         "description": "A single validation error. The type indicates the error type and the message provides a human readable summary of the error. The location provides a path to the key in the request body."
       },
       "ValidationErrorResponse": {
-        "title": "ValidationErrorResponse",
+        "title": "Validation error",
         "required": ["type", "message", "details"],
         "type": "object",
         "properties": {
