@@ -27,19 +27,19 @@
   ],
   "tags": [
     {
-      "name": "utility",
+      "name": "Utility",
       "description": "Utility endpoints."
     },
     {
-      "name": "balance",
+      "name": "Balance",
       "description": "Operations related to account balance."
     },
     {
-      "name": "products",
+      "name": "Products",
       "description": "Operations related to products."
     },
     {
-      "name": "orders",
+      "name": "Orders",
       "description": "Operations related to ordering and orders."
     }
   ],
@@ -47,7 +47,7 @@
     "/ping": {
       "get": {
         "operationId": "ping",
-        "tags": ["utility"],
+        "tags": ["Utility"],
         "summary": "Ping endpoint",
         "description": "Check your integration can connect to the Runa API",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
@@ -82,7 +82,7 @@
     "/balance": {
       "get": {
         "operationId": "getBalance",
-        "tags": ["balance"],
+        "tags": ["Balance"],
         "summary": "Get account balance",
         "description": "Retrieves the account balance. Returns the balance in a specified currency if the currency parameter is provided. If not, returns all balances greater than 0.",
         "parameters": [
@@ -155,8 +155,8 @@
     },
     "/order": {
       "get": {
-        "operationId": "getListOfOrders",
-        "tags": ["orders"],
+        "operationId": "listOrders",
+        "tags": ["Orders"],
         "summary": "List orders",
         "description": "Get a list of all of your orders",
         "parameters": [
@@ -222,7 +222,7 @@
       },
       "post": {
         "operationId": "createOrder",
-        "tags": ["orders"],
+        "tags": ["Orders"],
         "summary": "Create a new order.",
         "description": "Creates a new order.",
         "parameters": [
@@ -291,8 +291,8 @@
     },
     "/order/{id}": {
       "get": {
-        "operationId": "getSingleOrder",
-        "tags": ["orders"],
+        "operationId": "getOrder",
+        "tags": ["Orders"],
         "summary": "Get order details",
         "description": "Get the details and status of a specific order. Can be used for checking the status of an async order after it's been accepted.",
         "parameters": [
@@ -336,8 +336,8 @@
     },
     "/order/estimate": {
       "post": {
-        "operationId": "estimateOrderPrice",
-        "tags": ["orders"],
+        "operationId": "estimateOrder",
+        "tags": ["Orders"],
         "summary": "Estimate order",
         "description": "Estimate price for the order.",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
@@ -373,10 +373,10 @@
     },
     "/product": {
       "get": {
-        "operationId": "getProducts",
+        "operationId": "listProducts",
         "summary": "List products",
         "description": "List all products in your catalog",
-        "tags": ["products"],
+        "tags": ["Products"],
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           {
@@ -457,8 +457,8 @@
     },
     "/product/{product_code}": {
       "get": {
-        "operationId": "getSingleProduct",
-        "tags": ["products"],
+        "operationId": "getProduct",
+        "tags": ["Products"],
         "summary": "Get product details",
         "description": "Retrieve a single product's details",
         "parameters": [
@@ -505,8 +505,8 @@
     },
     "/product/countries": {
       "get": {
-        "operationId": "listProductsCountries",
-        "tags": ["products"],
+        "operationId": "listProductCountries",
+        "tags": ["Products"],
         "summary": "List countries",
         "description": "Get a list of countries where products are available",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
@@ -572,8 +572,8 @@
     },
     "/product/categories": {
       "get": {
-        "operationId": "listProductsCategories",
-        "tags": ["products"],
+        "operationId": "listProductCategories",
+        "tags": ["Products"],
         "summary": "List categories",
         "description": "Get a list of all possible product categories",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
