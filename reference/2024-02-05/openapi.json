@@ -736,8 +736,8 @@
           },
           "help": {
             "title": "Help",
-            "description": "Additional information that pertains to the error.",
-            "type": "string",
+            "description": "Additional information that pertains to the error. `null` when there is nothing further to add.",
+            "type": ["string", "null"],
             "example": "Please check the resource ID and try again."
           }
         },
@@ -1448,6 +1448,9 @@
             "fx": null
           }
         },
+        "propertyNames": {
+          "pattern": "^[A-Z]{3}$"
+        },
         "additionalProperties": {
           "$ref": "#/components/schemas/TransactionDetailEntry"
         }
@@ -1464,7 +1467,12 @@
             "example": "10.00"
           },
           "fx": {
-            "$ref": "#/components/schemas/TransactionDetailFXDetails"
+            "title": "FX",
+            "description": "Present only when the payment method currency differs from the transaction detail currency. `null` otherwise.",
+            "oneOf": [
+              { "$ref": "#/components/schemas/TransactionDetailFXDetails" },
+              { "type": "null" }
+            ]
           }
         },
         "required": ["value"]
@@ -1670,7 +1678,6 @@
           "type": {
             "title": "Type",
             "description": "It is not currently possible to determine which products were selected when this item was ordered.",
-            "default": "UNKNOWN",
             "type": "string",
             "enum": ["UNKNOWN"]
           }
@@ -1718,6 +1725,7 @@
       },
       "PayoutStatus": {
         "title": "Payout status",
+        "type": "string",
         "description": "Current status of the payout link. An `ACTIVE` link is live but has not been claimed yet, it will change to `CLAIMED` once that has happened. If you request a cancellation the status will reflect this as `CANCELLED`. Finally, if your account is configured with link expiry, when the link itself expires it will be marked as `EXPIRED` — this is independent of the underlying product's own expiry policy.",
         "enum": ["ACTIVE", "CLAIMED", "CANCELLED", "EXPIRED"]
       },
@@ -1742,7 +1750,7 @@
           "expiry_date": {
             "title": "Expiry Date",
             "description": "When the payout link expires. This is the expiry of the payout link itself, not the underlying gift card or product.\n\nIf your account does not have expiry of links enabled this field will be set to `null`, the link does not expire.",
-            "type": "string",
+            "type": ["string", "null"],
             "format": "date-time"
           }
         },
@@ -1796,8 +1804,9 @@
           },
           "help": {
             "title": "Help",
-            "description": "Additional information that pertains to the error.",
-            "type": "string"
+            "description": "Additional information that pertains to the error. `null` when there is nothing further to add.",
+            "type": ["string", "null"],
+            "example": null
           },
           "details": {
             "title": "Details",
