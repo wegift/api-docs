@@ -1054,16 +1054,7 @@
             "$ref": "#/components/schemas/OrderSummary"
           },
           {
-            "required": [
-              "id",
-              "status",
-              "created_at",
-              "payment_method",
-              "currency",
-              "total_price",
-              "total_discount",
-              "items"
-            ],
+            "required": ["items"],
             "properties": {
               "items": {
                 "title": "Items",
