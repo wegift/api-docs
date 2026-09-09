@@ -1,13 +1,10 @@
 {
   "openapi": "3.1.1",
   "info": {
-    "title": "Runa",
+    "title": "Runa API",
     "version": "2.0",
-    "description": "The public Runa API",
-    "license": {
-      "name": "Ⓒ Runa",
-      "url": "https://runa.io/terms-of-use"
-    },
+    "description": "Runa is the infrastructure and network for global payouts – gift cards, prepaid cards, and push-to-card – all managed from a single, unified platform.\n\nUse this API to browse the product catalog, place and track payout orders, manage your account balances, and receive webhooks when orders complete or product availability changes.\n\nGuides, tutorials and the changelog are on the [Runa developer hub](https://developer.runa.io).",
+    "termsOfService": "https://runa.io/terms-of-use",
     "contact": {
       "name": "Runa",
       "url": "https://runa.io",
@@ -15,7 +12,7 @@
     }
   },
   "externalDocs": {
-    "url": "https://developer.runa.com/reference",
+    "url": "https://developer.runa.io/reference",
     "description": "Runa API Reference"
   },
   "servers": [
@@ -632,6 +629,10 @@
   "webhooks": {
     "order.completion": {
       "post": {
+        "summary": "Order completion",
+        "operationId": "orderCompletionWebhook",
+        "description": "Sent to your configured endpoint when an order finishes processing, whether it completed or failed. See [webhooks](/reference/webhooks) for how to configure and verify them.",
+        "security": [],
         "requestBody": {
           "description": "Sent when an order finishes processing, the body object will be one of the following schemas depending on the order status.",
           "content": {
@@ -654,6 +655,10 @@
     },
     "product.update": {
       "post": {
+        "summary": "Product update",
+        "operationId": "productUpdateWebhook",
+        "description": "Sent to your configured endpoint when a product's orderability or discount changes. See [webhooks](/reference/webhooks) for how to configure and verify them.",
+        "security": [],
         "requestBody": {
           "description": "Update on product status",
           "content": {
