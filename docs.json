@@ -151,6 +151,60 @@
                 ]
               }
             ]
+          },
+          {
+            "version": "2026-09-08",
+            "groups": [
+              {
+                "group": "Reference",
+                "pages": [
+                  "reference/2026-09-08/introduction",
+                  "reference/2026-09-08/errors",
+                  "reference/2026-09-08/playground",
+                  "reference/webhooks",
+                  "reference/countries",
+                  "reference/currencies",
+                  "reference/pagination"
+                ]
+              },
+              {
+                "group": "Orders",
+                "pages": [
+                  "reference/2026-09-08/endpoint/orders/create",
+                  "reference/2026-09-08/endpoint/orders/get",
+                  "reference/2026-09-08/endpoint/orders/list",
+                  "reference/2026-09-08/endpoint/orders/estimate"
+                ]
+              },
+              {
+                "group": "Products",
+                "pages": [
+                  "reference/2026-09-08/endpoint/products/list",
+                  "reference/2026-09-08/endpoint/products/get",
+                  "reference/2026-09-08/endpoint/products/countries",
+                  "reference/2026-09-08/endpoint/products/categories"
+                ]
+              },
+              {
+                "group": "Balance",
+                "pages": ["reference/2026-09-08/endpoint/balance/get"]
+              },
+              {
+                "group": "Transactions",
+                "pages": ["reference/2026-09-08/endpoint/transactions/list"]
+              },
+              {
+                "group": "Utility",
+                "pages": ["reference/2026-09-08/endpoint/utility/ping"]
+              },
+              {
+                "group": "Webhooks",
+                "pages": [
+                  "reference/2026-09-08/webhook/order.completion",
+                  "reference/2026-09-08/webhook/product.update"
+                ]
+              }
+            ]
           }
         ]
       },
