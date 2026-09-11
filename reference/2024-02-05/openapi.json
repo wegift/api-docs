@@ -1031,20 +1031,6 @@
           }
         }
       },
-      "RateExceededResponse": {
-        "title": "Rate limit exceeded",
-        "required": ["error"],
-        "type": "object",
-        "properties": {
-          "error": {
-            "title": "Error",
-            "description": "A human readable error message describing the error.",
-            "type": "string",
-            "example": "rate exceeded"
-          }
-        },
-        "description": "API rate limited error response."
-      },
       "Order": {
         "title": "Order",
         "description": "Used for an order that has completed. This class is typically used when returning a *single order* to the client.",
@@ -2340,7 +2326,12 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/RateExceededResponse"
+              "$ref": "#/components/schemas/APIErrorResponse"
+            },
+            "example": {
+              "type": "rate_limit",
+              "message": "You've exceeded the rate limit, please wait a short period and try again.",
+              "help": "See https://developer.runa.io/rate-limits for details."
             }
           }
         }
