@@ -61,7 +61,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "pong"
+                      "const": "pong"
                     }
                   },
                   "required": ["message"]
