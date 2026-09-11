@@ -1,13 +1,10 @@
 {
   "openapi": "3.1.1",
   "info": {
-    "title": "Runa",
+    "title": "Runa API",
     "version": "2.0",
-    "description": "The public Runa API",
-    "license": {
-      "name": "Ⓒ Runa",
-      "url": "https://runa.io/terms-of-use"
-    },
+    "description": "Runa is the infrastructure and network for global payouts – gift cards, prepaid cards, and push-to-card – all managed from a single, unified platform.\n\nUse this API to browse the product catalog, place and track payout orders, manage your account balances, and receive webhooks when orders complete or product availability changes.\n\nGuides, tutorials and the changelog are on the [Runa developer hub](https://developer.runa.io).",
+    "termsOfService": "https://runa.io/terms-of-use",
     "contact": {
       "name": "Runa",
       "url": "https://runa.io",
@@ -15,7 +12,7 @@
     }
   },
   "externalDocs": {
-    "url": "https://developer.runa.com/reference",
+    "url": "https://developer.runa.io/reference",
     "description": "Runa API Reference"
   },
   "servers": [
@@ -30,19 +27,19 @@
   ],
   "tags": [
     {
-      "name": "utility",
+      "name": "Utility",
       "description": "Utility endpoints."
     },
     {
-      "name": "balance",
+      "name": "Balance",
       "description": "Operations related to account balance."
     },
     {
-      "name": "products",
+      "name": "Products",
       "description": "Operations related to products."
     },
     {
-      "name": "orders",
+      "name": "Orders",
       "description": "Operations related to ordering and orders."
     }
   ],
@@ -50,7 +47,7 @@
     "/ping": {
       "get": {
         "operationId": "ping",
-        "tags": ["utility"],
+        "tags": ["Utility"],
         "summary": "Ping endpoint",
         "description": "Check your integration can connect to the Runa API",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
@@ -64,7 +61,7 @@
                   "properties": {
                     "message": {
                       "type": "string",
-                      "example": "pong"
+                      "const": "pong"
                     }
                   },
                   "required": ["message"]
@@ -74,14 +71,18 @@
                 }
               }
             }
-          }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": { "$ref": "#/components/responses/Forbidden" },
+          "500": { "$ref": "#/components/responses/InternalServerError" }
         }
       }
     },
     "/balance": {
       "get": {
         "operationId": "getBalance",
-        "tags": ["balance"],
+        "tags": ["Balance"],
         "summary": "Get account balance",
         "description": "Retrieves the account balance. Returns the balance in a specified currency if the currency parameter is provided. If not, returns all balances greater than 0.",
         "parameters": [
@@ -101,10 +102,10 @@
                       "type": "object",
                       "properties": {
                         "balance": {
-                          "$ref": "#/components/schemas/BalanceForAccount"
+                          "$ref": "#/components/schemas/Balance"
                         },
                         "currency": {
-                          "$ref": "#/components/schemas/CurrencyForAccount"
+                          "$ref": "#/components/schemas/Currency"
                         }
                       }
                     },
@@ -116,10 +117,10 @@
                         "type": "object",
                         "properties": {
                           "balance": {
-                            "$ref": "#/components/schemas/BalanceForAccount"
+                            "$ref": "#/components/schemas/Balance"
                           },
                           "currency": {
-                            "$ref": "#/components/schemas/CurrencyForAccount"
+                            "$ref": "#/components/schemas/Currency"
                           }
                         }
                       }
@@ -154,8 +155,8 @@
     },
     "/order": {
       "get": {
-        "operationId": "getListOfOrders",
-        "tags": ["orders"],
+        "operationId": "listOrders",
+        "tags": ["Orders"],
         "summary": "List orders",
         "description": "Get a list of all of your orders",
         "parameters": [
@@ -170,7 +171,7 @@
               "default": 100
             },
             "in": "query",
-            "description": "The number (1&ndash;500) of orders to include in each page of orders. Default: 100."
+            "description": "Number of orders per page, 1 to 500."
           },
           { "$ref": "#/components/parameters/BeforeCursor" },
           { "$ref": "#/components/parameters/AfterCursor" }
@@ -191,10 +192,10 @@
                       "items": {
                         "oneOf": [
                           {
-                            "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
+                            "$ref": "#/components/schemas/OrderSummary"
                           },
                           {
-                            "$ref": "#/components/schemas/IncompleteOrder"
+                            "$ref": "#/components/schemas/ProcessingOrder"
                           }
                         ]
                       }
@@ -202,11 +203,7 @@
                     "pagination": {
                       "title": "Pagination",
                       "description": "Metadata of the result page.",
-                      "allOf": [
-                        {
-                          "$ref": "#/components/schemas/PageableMeta"
-                        }
-                      ]
+                      "$ref": "#/components/schemas/Pagination"
                     }
                   }
                 }
@@ -221,7 +218,7 @@
       },
       "post": {
         "operationId": "createOrder",
-        "tags": ["orders"],
+        "tags": ["Orders"],
         "summary": "Create a new order.",
         "description": "Creates a new order.",
         "parameters": [
@@ -253,7 +250,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SyncCompletedOrder"
+                  "$ref": "#/components/schemas/CompletedOrder"
                 }
               }
             }
@@ -281,7 +278,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewOrderDetails"
+                "$ref": "#/components/schemas/CreateOrderRequest"
               }
             }
           }
@@ -290,8 +287,8 @@
     },
     "/order/{id}": {
       "get": {
-        "operationId": "getSingleOrder",
-        "tags": ["orders"],
+        "operationId": "getOrder",
+        "tags": ["Orders"],
         "summary": "Get order details",
         "description": "Get the details and status of a specific order. Can be used for checking the status of an async order after it's been accepted.",
         "parameters": [
@@ -315,16 +312,17 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "$ref": "#/components/schemas/CompletedOrderWithFullDetails"
+                      "$ref": "#/components/schemas/Order"
                     },
                     {
-                      "$ref": "#/components/schemas/IncompleteOrder"
+                      "$ref": "#/components/schemas/ProcessingOrder"
                     }
                   ]
                 }
               }
             }
           },
+          "400": { "$ref": "#/components/responses/BadRequest" },
           "401": { "$ref": "#/components/responses/Unauthorized" },
           "403": { "$ref": "#/components/responses/Forbidden" },
           "404": { "$ref": "#/components/responses/NotFound" },
@@ -334,8 +332,8 @@
     },
     "/order/estimate": {
       "post": {
-        "operationId": "estimateOrderPrice",
-        "tags": ["orders"],
+        "operationId": "estimateOrder",
+        "tags": ["Orders"],
         "summary": "Estimate order",
         "description": "Estimate price for the order.",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
@@ -345,11 +343,12 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OrderPriceResponse"
+                  "$ref": "#/components/schemas/OrderEstimateResponse"
                 }
               }
             }
           },
+          "400": { "$ref": "#/components/responses/BadRequest" },
           "401": { "$ref": "#/components/responses/Unauthorized" },
           "403": { "$ref": "#/components/responses/Forbidden" },
           "422": { "$ref": "#/components/responses/ValidationError" },
@@ -361,7 +360,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/OrderPriceRequest"
+                "$ref": "#/components/schemas/OrderEstimateRequest"
               }
             }
           }
@@ -370,16 +369,16 @@
     },
     "/product": {
       "get": {
-        "operationId": "getProducts",
+        "operationId": "listProducts",
         "summary": "List products",
         "description": "List all products in your catalog",
-        "tags": ["products"],
+        "tags": ["Products"],
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           {
             "in": "query",
             "name": "is_orderable",
-            "description": "Filter by products which can be ordered. If `true`, returns only those which can be ordered, if `false`, returns all products.",
+            "description": "Filter by whether a product can be ordered. If `true`, only orderable products are returned. If `false` or omitted, both orderable and non-orderable products are returned.",
             "schema": {
               "type": "boolean"
             }
@@ -438,7 +437,7 @@
                       }
                     },
                     "pagination": {
-                      "$ref": "#/components/schemas/PageableMeta"
+                      "$ref": "#/components/schemas/Pagination"
                     }
                   }
                 }
@@ -448,15 +447,14 @@
           "400": { "$ref": "#/components/responses/BadRequest" },
           "401": { "$ref": "#/components/responses/Unauthorized" },
           "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" },
           "500": { "$ref": "#/components/responses/InternalServerError" }
         }
       }
     },
     "/product/{product_code}": {
       "get": {
-        "operationId": "getSingleProduct",
-        "tags": ["products"],
+        "operationId": "getProduct",
+        "tags": ["Products"],
         "summary": "Get product details",
         "description": "Retrieve a single product's details",
         "parameters": [
@@ -503,8 +501,8 @@
     },
     "/product/countries": {
       "get": {
-        "operationId": "listProductsCountries",
-        "tags": ["products"],
+        "operationId": "listProductCountries",
+        "tags": ["Products"],
         "summary": "List countries",
         "description": "Get a list of countries where products are available",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
@@ -564,15 +562,14 @@
           "400": { "$ref": "#/components/responses/BadRequest" },
           "401": { "$ref": "#/components/responses/Unauthorized" },
           "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" },
           "500": { "$ref": "#/components/responses/InternalServerError" }
         }
       }
     },
     "/product/categories": {
       "get": {
-        "operationId": "listProductsCategories",
-        "tags": ["products"],
+        "operationId": "listProductCategories",
+        "tags": ["Products"],
         "summary": "List categories",
         "description": "Get a list of all possible product categories",
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
@@ -623,7 +620,6 @@
           "400": { "$ref": "#/components/responses/BadRequest" },
           "401": { "$ref": "#/components/responses/Unauthorized" },
           "403": { "$ref": "#/components/responses/Forbidden" },
-          "404": { "$ref": "#/components/responses/NotFound" },
           "500": { "$ref": "#/components/responses/InternalServerError" }
         }
       }
@@ -632,6 +628,10 @@
   "webhooks": {
     "order.completion": {
       "post": {
+        "summary": "Order completion",
+        "operationId": "orderCompletionWebhook",
+        "description": "Sent to your configured endpoint when an order finishes processing, whether it completed or failed. See [webhooks](/reference/webhooks) for how to configure and verify them.",
+        "security": [],
         "requestBody": {
           "description": "Sent when an order finishes processing, the body object will be one of the following schemas depending on the order status.",
           "content": {
@@ -654,6 +654,10 @@
     },
     "product.update": {
       "post": {
+        "summary": "Product update",
+        "operationId": "productUpdateWebhook",
+        "description": "Sent to your configured endpoint when a product's orderability or discount changes. See [webhooks](/reference/webhooks) for how to configure and verify them.",
+        "security": [],
         "requestBody": {
           "description": "Update on product status",
           "content": {
@@ -685,8 +689,7 @@
         "name": "currency",
         "required": false,
         "schema": {
-          "type": "string",
-          "pattern": "^[A-Z]{3}$"
+          "$ref": "#/components/schemas/Currency"
         },
         "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currencies) for a listing of supported currencies.",
         "in": "query",
@@ -713,7 +716,7 @@
     },
     "schemas": {
       "APIErrorResponse": {
-        "title": "APIErrorResponse",
+        "title": "Error",
         "required": ["type", "message"],
         "type": "object",
         "properties": {
@@ -721,7 +724,7 @@
             "title": "Type",
             "description": "An error code or type.",
             "type": "string",
-            "example": "not-found"
+            "example": "not_found"
           },
           "message": {
             "title": "Message",
@@ -731,8 +734,8 @@
           },
           "help": {
             "title": "Help",
-            "description": "Additional information that pertains to the error.",
-            "type": "string",
+            "description": "Additional information that pertains to the error. `null` when there is nothing further to add.",
+            "type": ["string", "null"],
             "example": "Please check the resource ID and try again."
           }
         },
@@ -747,16 +750,14 @@
       "OrderDescription": {
         "title": "Description",
         "description": "Free format text reference for the order. The order description will not be visible to the end user. You will see this description in the Runa web portal.\n\nThis field is optional and can be omitted if not needed.\nIf not provided, the field will be set to `null` in the response.",
-        "type": "string",
-        "nullable": true,
+        "type": ["string", "null"],
         "maxLength": 128,
         "example": "Your own reference text"
       },
       "OrderMetadata": {
         "title": "Metadata",
         "description": "A flexible field for you to attach additional, customer-specific data to the order. This is for your internal use, the information stored here will not be exposed to the end user.\n- All keys and their corresponding values must be strings\n- Each order supports up to 20 key-value pairs\n- Keys have a maximum length of 40 characters\n- Values can be up to 200 characters long.\n\nThis field is optional and can be omitted if not needed.\nIf not provided, the field will be set to `null` in the response.",
-        "type": "object",
-        "nullable": true,
+        "type": ["object", "null"],
         "maxProperties": 20,
         "propertyNames": {
           "type": "string",
@@ -772,27 +773,32 @@
           "campaign": "summer_2024"
         }
       },
-      "BalanceForAccount": {
+      "MonetaryAmount": {
+        "title": "Monetary amount",
+        "description": "A monetary amount in the major unit of its currency, given as a decimal string, for example `\"10.00\"`. Amounts are strings so that they survive a round trip without floating point precision loss. Send them as strings and parse them with a decimal type, not a float.",
+        "type": "string",
+        "format": "decimal",
+        "pattern": "^[0-9]+(\\.[0-9]{1,2})?$",
+        "example": "10.00"
+      },
+      "Balance": {
         "title": "Balance",
         "description": "The balance of the account.",
-        "type": "string",
         "example": "10.00",
-        "pattern": "^[0-9]+\\.[0-9]{2}$"
+        "$ref": "#/components/schemas/MonetaryAmount"
       },
-      "CurrencyForAccount": {
+      "Currency": {
         "type": "string",
+        "format": "iso-4217",
         "pattern": "^[A-Z]{3}$",
         "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currencies) for a listing of supported currencies.",
         "example": "USD"
       },
       "OrderStatus": {
-        "title": "Order Status",
-        "description": "Status of the order.",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/OrderStatusEnum"
-          }
-        ],
+        "title": "Order status",
+        "description": "The status of the order.",
+        "type": "string",
+        "enum": ["COMPLETED", "FAILED", "PROCESSING"],
         "example": "PROCESSING"
       },
       "DistributionEmailAddress": {
@@ -803,42 +809,33 @@
         "format": "email"
       },
       "PayoutSelectionTemplateId": {
-        "title": "Template ID",
+        "title": "Payout selection template ID",
         "description": "The template ID for a Payout Selection Template.",
         "example": "PT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
         "type": "string"
       },
       "RedemptionTemplateId": {
-        "title": "Template ID",
+        "title": "User redemption template ID",
         "description": "The template ID for a User Redemption Template.",
         "example": "DT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
         "type": "string"
       },
       "AccountPayment": {
-        "title": "AccountPayment",
+        "title": "Account balance payment",
         "required": ["type"],
         "type": "object",
         "properties": {
           "type": {
-            "description": "Account balance payment.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPaymentType"
-              }
-            ]
+            "type": "string",
+            "const": "ACCOUNT_BALANCE",
+            "description": "Account balance payment."
           },
-          "currency": { "$ref": "#/components/schemas/CurrencyForAccount" }
+          "currency": { "$ref": "#/components/schemas/Currency" }
         },
         "description": "Account balance payment."
       },
-      "AccountPaymentType": {
-        "title": "AccountPaymentType",
-        "type": "string",
-        "enum": ["ACCOUNT_BALANCE"],
-        "description": "Account balance payment."
-      },
       "CompletedOrderItem": {
-        "title": "CompletedOrderItem",
+        "title": "Order item",
         "type": "object",
         "properties": {
           "id": {
@@ -854,7 +851,15 @@
               { "$ref": "#/components/schemas/EmailDistribution" },
               { "$ref": "#/components/schemas/LinkDistribution" },
               { "$ref": "#/components/schemas/RecipientDistribution" }
-            ]
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "EMAIL": "#/components/schemas/EmailDistribution",
+                "PAYOUT_LINK": "#/components/schemas/LinkDistribution",
+                "RECIPIENT": "#/components/schemas/RecipientDistribution"
+              }
+            }
           },
           "products": {
             "title": "Products",
@@ -872,35 +877,37 @@
               {
                 "$ref": "#/components/schemas/UnknownProduct"
               }
-            ]
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "SINGLE": "#/components/schemas/SingleProductWithUsageConfig",
+                "MULTIPLE": "#/components/schemas/MultipleProduct",
+                "TEMPLATE": "#/components/schemas/PayoutSelectionTemplateDetailed",
+                "UNKNOWN": "#/components/schemas/UnknownProduct"
+              }
+            }
           },
           "face_value": {
             "title": "Face Value",
             "description": "The face value of the payout link.",
-            "example": "10",
-            "type": "string"
+            "example": "10.00",
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "price": {
             "title": "Price",
             "description": "The price paid for the payout link.",
-            "example": "10",
-            "type": "string"
+            "example": "10.00",
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "payout": {
             "title": "Payout",
             "description": "Payout link details",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PayoutDetails"
-              }
-            ]
+            "$ref": "#/components/schemas/PayoutDetails"
           },
           "currency": {
-            "title": "Currency",
             "description": "The currency of the payout link, represented by ISO 4217 currency codes.",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "example": "USD"
+            "$ref": "#/components/schemas/Currency"
           }
         },
         "required": [
@@ -912,8 +919,8 @@
           "payout"
         ]
       },
-      "CompletedOrderWithBasicDetails": {
-        "title": "Completed order",
+      "OrderSummary": {
+        "title": "Order summary",
         "description": "Used for orders that have completed. This class is typically used when returning a *list* of orders to the client.",
         "required": [
           "id",
@@ -944,35 +951,28 @@
           "payment_method": {
             "title": "Payment Method",
             "description": "The payment method used for the order.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPayment"
-              }
-            ]
+            "$ref": "#/components/schemas/AccountPayment"
           },
           "currency": {
-            "title": "Currency",
-            "example": "USD",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "description": "The currency of the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+            "description": "The currency of the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field.",
+            "$ref": "#/components/schemas/Currency"
           },
           "total_price": {
             "title": "Total Price",
             "description": "The total price of the order. This _includes_ any applicable fees.",
-            "example": "10",
-            "type": "string"
+            "example": "10.00",
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "total_discount": {
             "title": "Total Discount",
             "description": "The total discount of the order.",
-            "type": "string",
-            "example": "1"
+            "example": "1.00",
+            "$ref": "#/components/schemas/MonetaryAmount"
           }
         }
       },
       "AsyncAcceptedOrder": {
-        "title": "Async Order Accepted",
+        "title": "Accepted order",
         "required": ["id", "status"],
         "type": "object",
         "properties": {
@@ -980,33 +980,33 @@
           "status": { "$ref": "#/components/schemas/OrderStatus" }
         }
       },
-      "SyncCompletedOrder": {
-        "title": "CompletedOrderWithFullDetails",
+      "CompletedOrder": {
+        "title": "Completed order",
         "allOf": [
           {
-            "$ref": "#/components/schemas/CompletedOrderWithFullDetails"
+            "$ref": "#/components/schemas/Order"
           },
           {
             "properties": {
               "status": {
-                "enum": ["COMPLETED"]
+                "const": "COMPLETED"
               }
             }
           }
         ]
       },
       "CompletedOrderWebhook": {
-        "title": "Completed order",
+        "title": "Completed order webhook",
         "type": "object",
         "description": "Webhook message sent when an order has completed processing.",
         "allOf": [
           {
-            "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
+            "$ref": "#/components/schemas/OrderSummary"
           },
           {
             "properties": {
               "status": {
-                "enum": ["COMPLETED"]
+                "const": "COMPLETED"
               }
             }
           }
@@ -1020,43 +1020,21 @@
         "properties": {
           "id": { "$ref": "#/components/schemas/OrderId" },
           "status": {
-            "enum": ["FAILED"]
+            "type": "string",
+            "const": "FAILED"
           }
         }
       },
-      "RateExceededResponse": {
-        "title": "RateExceededResponse",
-        "required": ["error"],
-        "type": "object",
-        "properties": {
-          "error": {
-            "title": "Error",
-            "description": "A human readable error message describing the error.",
-            "type": "string",
-            "example": "rate exceeded"
-          }
-        },
-        "description": "API rate limited error response."
-      },
-      "CompletedOrderWithFullDetails": {
-        "title": "Completed order",
+      "Order": {
+        "title": "Order",
         "description": "Used for an order that has completed. This class is typically used when returning a *single order* to the client.",
         "type": "object",
         "allOf": [
           {
-            "$ref": "#/components/schemas/CompletedOrderWithBasicDetails"
+            "$ref": "#/components/schemas/OrderSummary"
           },
           {
-            "required": [
-              "id",
-              "status",
-              "created_at",
-              "payment_method",
-              "currency",
-              "total_price",
-              "total_discount",
-              "items"
-            ],
+            "required": ["items"],
             "properties": {
               "items": {
                 "title": "Items",
@@ -1074,8 +1052,8 @@
           }
         ]
       },
-      "IncompleteOrder": {
-        "title": "Incomplete order",
+      "ProcessingOrder": {
+        "title": "Processing order",
         "required": ["id", "status", "message"],
         "type": "object",
         "properties": {
@@ -1094,7 +1072,7 @@
         "required": ["type", "email_address"],
         "type": "object",
         "properties": {
-          "type": { "$ref": "#/components/schemas/EmailDistributionType" },
+          "type": { "type": "string", "const": "EMAIL" },
           "email_address": {
             "$ref": "#/components/schemas/DistributionEmailAddress"
           },
@@ -1102,36 +1080,23 @@
         },
         "description": "Email distribution. Send the payout link to the end user directly via email."
       },
-      "EmailDistributionType": {
-        "title": "EmailDistributionType",
-        "type": "string",
-        "enum": ["EMAIL"],
-        "description": "Supported email distribution types."
-      },
       "LinkDistribution": {
         "title": "Link",
         "required": ["type"],
         "type": "object",
         "properties": {
-          "type": { "$ref": "#/components/schemas/LinkDistributionType" },
+          "type": { "type": "string", "const": "PAYOUT_LINK" },
           "template_id": { "$ref": "#/components/schemas/RedemptionTemplateId" }
         },
         "description": "Link distribution. Send the payout link to the end user yourself."
       },
-      "LinkDistributionType": {
-        "title": "LinkDistributionType",
-        "type": "string",
-        "enum": ["PAYOUT_LINK"],
-        "description": "Supported link distribution types."
-      },
       "RecipientDistribution": {
         "title": "Recipient",
         "description": "Recipient distribution. Currently this method is only supported for distributing payment type products. For subsequent orders to known recipients we will attempt to make a repeat payout.",
-        "summary": "Send the payout link to a known recipient",
         "required": ["type", "recipient_reference", "email_address"],
         "type": "object",
         "properties": {
-          "type": { "$ref": "#/components/schemas/RecipientDistributionType" },
+          "type": { "type": "string", "const": "RECIPIENT" },
           "recipient_reference": {
             "title": "Recipient Reference",
             "description": "A customer provided reference to identify an individual recipient. It must be unique per recipient. When the same reference is used for a second order this will trigger a repeat payout. This is a free-form string limited to 255 characters. It can only contain alphanumeric characters, dashes, underscores, dots, and at-signs.",
@@ -1146,19 +1111,14 @@
           "template_id": { "$ref": "#/components/schemas/RedemptionTemplateId" }
         }
       },
-      "RecipientDistributionType": {
-        "title": "RecipientDistributionType",
-        "type": "string",
-        "enum": ["RECIPIENT"],
-        "description": "Supported recipient distribution types."
-      },
       "PayoutSelectionTemplate": {
         "title": "Template",
         "required": ["type", "template_id"],
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/PayoutSelectionTemplateType"
+            "type": "string",
+            "const": "TEMPLATE"
           },
           "template_id": {
             "$ref": "#/components/schemas/PayoutSelectionTemplateId"
@@ -1172,7 +1132,8 @@
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/PayoutSelectionTemplateType"
+            "type": "string",
+            "const": "TEMPLATE"
           },
           "template_id": {
             "$ref": "#/components/schemas/PayoutSelectionTemplateId"
@@ -1191,42 +1152,29 @@
         },
         "description": "Payout selection template. Template having predefined set of products."
       },
-      "PayoutSelectionTemplateType": {
-        "title": "PayoutSelectionTemplateType",
-        "type": "string",
-        "enum": ["TEMPLATE"],
-        "description": "Payout Selection Template"
-      },
-      "NewAccountPayment": {
-        "title": "NewAccountPayment",
+      "AccountPaymentRequest": {
+        "title": "Account balance payment",
         "required": ["type", "currency"],
         "type": "object",
         "properties": {
           "type": {
-            "description": "Account balance payment method.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPaymentType"
-              }
-            ]
+            "type": "string",
+            "const": "ACCOUNT_BALANCE",
+            "description": "Account balance payment method."
           },
-          "currency": { "$ref": "#/components/schemas/CurrencyForAccount" }
+          "currency": { "$ref": "#/components/schemas/Currency" }
         },
         "description": "Pay using your account balance."
       },
-      "NewOrderDetails": {
-        "title": "NewOrderDetails",
+      "CreateOrderRequest": {
+        "title": "New order",
         "required": ["payment_method", "items"],
         "type": "object",
         "properties": {
           "payment_method": {
             "title": "Payment Method",
             "description": "Payment method for the order. Select the `ACCOUNT_BALANCE` you want to pay for the order from",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/NewAccountPayment"
-              }
-            ]
+            "$ref": "#/components/schemas/AccountPaymentRequest"
           },
           "items": {
             "title": "Items",
@@ -1235,37 +1183,44 @@
             "maxItems": 200,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/NewOrderItemDetails"
+              "$ref": "#/components/schemas/CreateOrderItem"
             }
           },
           "description": { "$ref": "#/components/schemas/OrderDescription" },
           "metadata": { "$ref": "#/components/schemas/OrderMetadata" }
         }
       },
-      "NewOrderItemDetails": {
-        "title": "NewOrderItemDetails",
+      "CreateOrderItem": {
+        "title": "Order item",
         "required": ["face_value", "distribution_method", "products"],
         "type": "object",
         "properties": {
           "face_value": {
             "title": "Face Value",
             "description": "Face value of the payout link. The currency of the face value is inferred from the product selection.\n\nWhat value is allowed depends on the product mode:\n- When ordering a `SINGLE` product this field follows the allowed values from the selected product.\n- If using `MULTIPLE` or `TEMPLATE` this value must be: equal or greater than the minimum face value of the products selected and be a whole number.",
-            "minimum": 0.01,
-            "example": 10,
-            "type": "number"
+            "example": "10.00",
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "distribution_method": {
             "title": "Distribution Method",
-            "description": "Distribution method to send end users the payout link. Choose `EMAIL` if you want Runa to send the payout link to the end user directly. Choose `PAYOUT_LINK` if you want to send the payout link to the end user yourself.",
+            "description": "How the payout link reaches the end user. Choose `EMAIL` for Runa to email the link directly, `PAYOUT_LINK` to receive the link in the response and distribute it yourself, or `RECIPIENT` to send it to a known recipient identified by your own reference, which also enables repeat payouts.",
             "oneOf": [
               { "$ref": "#/components/schemas/EmailDistribution" },
               { "$ref": "#/components/schemas/LinkDistribution" },
               { "$ref": "#/components/schemas/RecipientDistribution" }
-            ]
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "EMAIL": "#/components/schemas/EmailDistribution",
+                "PAYOUT_LINK": "#/components/schemas/LinkDistribution",
+                "RECIPIENT": "#/components/schemas/RecipientDistribution"
+              }
+            }
           },
           "products": {
             "title": "Products",
-            "description": "Choose `SINGLE` if you want the end user to redeem the face value on a single specific product. Choose `MULTIPLE` if the end user can choose to spend the face value across multiple products.",
+            "description": "What the end user can redeem the face value on. Choose `SINGLE` for one specific product, `MULTIPLE` for a choice of several products, or `TEMPLATE` to use a saved payout selection template.",
             "oneOf": [
               {
                 "$ref": "#/components/schemas/SingleProductWithUsageConfig"
@@ -1276,12 +1231,20 @@
               {
                 "$ref": "#/components/schemas/PayoutSelectionTemplate"
               }
-            ]
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "SINGLE": "#/components/schemas/SingleProductWithUsageConfig",
+                "MULTIPLE": "#/components/schemas/MultipleProduct",
+                "TEMPLATE": "#/components/schemas/PayoutSelectionTemplate"
+              }
+            }
           }
         }
       },
-      "OrderItemDiscount": {
-        "title": "OrderItemDiscount",
+      "OrderEstimateItem": {
+        "title": "Order item estimate",
         "required": [
           "products",
           "face_value",
@@ -1301,34 +1264,39 @@
               {
                 "$ref": "#/components/schemas/SingleProduct"
               }
-            ]
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "SINGLE": "#/components/schemas/SingleProduct",
+                "MULTIPLE": "#/components/schemas/MultipleProduct"
+              }
+            }
           },
           "face_value": {
             "title": "Face Value",
-            "description": "Face value of the reward link.",
-            "example": 10,
-            "type": "number"
+            "description": "Face value of the payout link.",
+            "example": "10.00",
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "price": {
             "title": "Price",
-            "description": "The price of the order item.",
-            "type": "number"
+            "description": "The price of the order item. This is before `discount_multiplier` is applied.",
+            "example": "10.00",
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "discount_multiplier": {
             "$ref": "#/components/schemas/ProductDiscountMultiplier"
           },
           "currency": {
-            "title": "Currency",
-            "example": "USD",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "description": "The currency of the product, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+            "description": "The currency of the product, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field.",
+            "$ref": "#/components/schemas/Currency"
           }
         },
         "description": "The computed discount for an order item."
       },
-      "OrderItemPriceRequest": {
-        "title": "OrderItemPriceRequest",
+      "OrderEstimateRequestItem": {
+        "title": "Estimate item",
         "required": ["products", "face_value"],
         "type": "object",
         "properties": {
@@ -1342,30 +1310,33 @@
               {
                 "$ref": "#/components/schemas/SingleProduct"
               }
-            ]
+            ],
+            "discriminator": {
+              "propertyName": "type",
+              "mapping": {
+                "SINGLE": "#/components/schemas/SingleProduct",
+                "MULTIPLE": "#/components/schemas/MultipleProduct"
+              }
+            }
           },
           "face_value": {
             "title": "Face Value",
-            "description": "Face value of the reward link.",
-            "example": 10,
-            "type": "number"
+            "description": "Face value of the payout link.",
+            "example": "10.00",
+            "$ref": "#/components/schemas/MonetaryAmount"
           }
         },
         "description": "A proposed order item within an order price request."
       },
-      "OrderPriceRequest": {
-        "title": "OrderPriceRequest",
+      "OrderEstimateRequest": {
+        "title": "Order estimate request",
         "required": ["payment_method", "items"],
         "type": "object",
         "properties": {
           "payment_method": {
             "title": "Payment Method",
             "description": "Payment method for the order. Select the `ACCOUNT_BALANCE` you want to pay for the order from.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/NewAccountPayment"
-              }
-            ]
+            "$ref": "#/components/schemas/AccountPaymentRequest"
           },
           "items": {
             "title": "Items",
@@ -1374,14 +1345,14 @@
             "maxItems": 500,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/OrderItemPriceRequest"
+              "$ref": "#/components/schemas/OrderEstimateRequestItem"
             }
           }
         },
         "description": "Request for a price estimate for an order."
       },
-      "OrderPriceResponse": {
-        "title": "OrderPriceResponse",
+      "OrderEstimateResponse": {
+        "title": "Order estimate response",
         "required": [
           "payment_method",
           "items",
@@ -1393,36 +1364,31 @@
         "properties": {
           "payment_method": {
             "title": "Payment Method",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/AccountPayment"
-              }
-            ]
+            "$ref": "#/components/schemas/AccountPayment"
           },
           "items": {
             "title": "Items",
             "description": "List of order items with price and discount.",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/OrderItemDiscount"
+              "$ref": "#/components/schemas/OrderEstimateItem"
             }
           },
           "currency": {
-            "title": "Currency",
-            "example": "USD",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "description": "The currency of the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+            "description": "The currency of the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field.",
+            "$ref": "#/components/schemas/Currency"
           },
           "total_discount": {
             "title": "Total Discount",
             "description": "Total discount on the entire order.",
-            "type": "number"
+            "example": "0.50",
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "total_price": {
             "title": "Total Price",
             "description": "Total price of the entire order.",
-            "type": "number"
+            "example": "9.50",
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "transaction_detail": {
             "$ref": "#/components/schemas/TransactionDetail"
@@ -1430,14 +1396,8 @@
         },
         "description": "Response object for a order price estimate."
       },
-      "OrderStatusEnum": {
-        "title": "OrderStatusEnum",
-        "type": "string",
-        "enum": ["COMPLETED", "FAILED", "PROCESSING"],
-        "description": "The status of the order."
-      },
       "TransactionDetail": {
-        "title": "TransactionDetail",
+        "title": "Transaction detail",
         "description": "A mapping of the subtotal of the order using the payout currency as a key.",
         "type": "object",
         "example": {
@@ -1446,30 +1406,38 @@
             "fx": null
           }
         },
+        "propertyNames": {
+          "$ref": "#/components/schemas/Currency"
+        },
         "additionalProperties": {
           "$ref": "#/components/schemas/TransactionDetailEntry"
         }
       },
       "TransactionDetailEntry": {
         "type": "object",
-        "title": "TransactionDetailEntry",
+        "title": "Transaction detail entry",
         "description": "A subtotal of the value purchased and associated fees and data about the transaction.",
         "properties": {
           "value": {
             "title": "Value",
             "description": "The total value purchased of a payout link currency.",
-            "type": "string",
-            "example": "10.00"
+            "example": "10.00",
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "fx": {
-            "$ref": "#/components/schemas/TransactionDetailFXDetails"
+            "title": "FX",
+            "description": "Present only when the payment method currency differs from the transaction detail currency. `null` otherwise.",
+            "oneOf": [
+              { "$ref": "#/components/schemas/TransactionDetailFx" },
+              { "type": "null" }
+            ]
           }
         },
         "required": ["value"]
       },
-      "TransactionDetailFXDetails": {
+      "TransactionDetailFx": {
         "type": "object",
-        "title": "TransactionDetailFxDetails",
+        "title": "FX details",
         "description": "Provides details on fx conversion for an order transaction detail. Present when the payment method currency is different from the transaction detail currency.",
         "properties": {
           "rate": {
@@ -1492,8 +1460,8 @@
               "value": {
                 "title": "Value",
                 "description": "The value of the fee.",
-                "type": "string",
-                "example": "0.00"
+                "example": "0.00",
+                "$ref": "#/components/schemas/MonetaryAmount"
               },
               "currency": {
                 "title": "Currency",
@@ -1520,7 +1488,7 @@
         }
       },
       "PageCursors": {
-        "title": "PageCursors",
+        "title": "Cursors",
         "type": "object",
         "properties": {
           "after": {
@@ -1537,8 +1505,8 @@
           }
         }
       },
-      "PageableMeta": {
-        "title": "PageableMeta",
+      "Pagination": {
+        "title": "Pagination",
         "required": ["cursors", "page"],
         "type": "object",
         "description": "Information about the page of results returned. See [pagination](/reference/pagination) for more information on how to page through results.",
@@ -1546,20 +1514,12 @@
           "cursors": {
             "title": "Cursors",
             "description": "Pagination cursors, use the `after` cursor to page forward and the `before` cursor to page backward.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PageCursors"
-              }
-            ]
+            "$ref": "#/components/schemas/PageCursors"
           },
           "page": {
             "title": "Page",
             "description": "Extra information about the current page.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Page"
-              }
-            ]
+            "$ref": "#/components/schemas/Page"
           }
         }
       },
@@ -1569,7 +1529,8 @@
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/SingleProductType"
+            "type": "string",
+            "const": "SINGLE"
           },
           "value": {
             "title": "Value",
@@ -1580,12 +1541,6 @@
           }
         },
         "description": "Single product. The end user will be able to redeem the payout link for this specific product."
-      },
-      "SingleProductType": {
-        "title": "SingleProductType",
-        "type": "string",
-        "enum": ["SINGLE"],
-        "description": "Single product. When only one product code is provided."
       },
       "SingleProductWithUsageConfig": {
         "title": "Single",
@@ -1597,7 +1552,8 @@
         },
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/SingleProductType"
+            "type": "string",
+            "const": "SINGLE"
           },
           "value": {
             "title": "Value",
@@ -1608,17 +1564,13 @@
           },
           "usage_config": {
             "description": "Optional. **Only applicable to prepaid Visa cards.** Attaches an MCC-rules template to the issued card. Ignored for all other products. See [Card spend controls](/features/prepaid-visa/spend-controls) for a worked example. When set on a prepaid Visa card order, it is returned in the order details.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/UsageConfig"
-              }
-            ]
+            "$ref": "#/components/schemas/UsageConfig"
           }
         },
         "description": "Single product. The end user will be able to redeem the payout link for this specific product."
       },
       "UsageConfig": {
-        "title": "UsageConfig",
+        "title": "Usage configuration",
         "type": "object",
         "description": "Additional configuration applied to the issued product. Only applicable to prepaid Visa cards.",
         "properties": {
@@ -1637,7 +1589,8 @@
         "type": "object",
         "properties": {
           "type": {
-            "$ref": "#/components/schemas/MultipleProductType"
+            "type": "string",
+            "const": "MULTIPLE"
           },
           "values": {
             "title": "Values",
@@ -1653,12 +1606,6 @@
         },
         "description": "Multiple products. The end user will be able to split the payout link's value between these products."
       },
-      "MultipleProductType": {
-        "title": "MultipleProductType",
-        "type": "string",
-        "enum": ["MULTIPLE"],
-        "description": "Multiple products. When more than one product code is provided."
-      },
       "UnknownProduct": {
         "title": "Unknown",
         "type": "object",
@@ -1668,9 +1615,8 @@
           "type": {
             "title": "Type",
             "description": "It is not currently possible to determine which products were selected when this item was ordered.",
-            "default": "UNKNOWN",
             "type": "string",
-            "enum": ["UNKNOWN"]
+            "const": "UNKNOWN"
           }
         }
       },
@@ -1702,6 +1648,7 @@
       "ProductUpdateState": {
         "title": "Product update state",
         "description": "The state of the product either before or after the update.",
+        "type": "object",
         "required": ["price_multiplier", "is_orderable"],
         "properties": {
           "price_multiplier": {
@@ -1715,11 +1662,12 @@
       },
       "PayoutStatus": {
         "title": "Payout status",
+        "type": "string",
         "description": "Current status of the payout link. An `ACTIVE` link is live but has not been claimed yet, it will change to `CLAIMED` once that has happened. If you request a cancellation the status will reflect this as `CANCELLED`. Finally, if your account is configured with link expiry, when the link itself expires it will be marked as `EXPIRED` — this is independent of the underlying product's own expiry policy.",
         "enum": ["ACTIVE", "CLAIMED", "CANCELLED", "EXPIRED"]
       },
       "PayoutDetails": {
-        "title": "PayoutDetails",
+        "title": "Payout details",
         "type": "object",
         "properties": {
           "status": {
@@ -1739,14 +1687,14 @@
           "expiry_date": {
             "title": "Expiry Date",
             "description": "When the payout link expires. This is the expiry of the payout link itself, not the underlying gift card or product.\n\nIf your account does not have expiry of links enabled this field will be set to `null`, the link does not expire.",
-            "type": "string",
+            "type": ["string", "null"],
             "format": "date-time"
           }
         },
         "required": ["status", "status_updated_at", "url"]
       },
       "ValidationErrorItem": {
-        "title": "ValidationErrorItem",
+        "title": "Validation error item",
         "required": ["type", "message", "location"],
         "type": "object",
         "properties": {
@@ -1775,7 +1723,7 @@
         "description": "A single validation error. The type indicates the error type and the message provides a human readable summary of the error. The location provides a path to the key in the request body."
       },
       "ValidationErrorResponse": {
-        "title": "ValidationErrorResponse",
+        "title": "Validation error",
         "required": ["type", "message", "details"],
         "type": "object",
         "properties": {
@@ -1793,8 +1741,8 @@
           },
           "help": {
             "title": "Help",
-            "description": "Additional information that pertains to the error.",
-            "type": "string",
+            "description": "Additional information that pertains to the error. `null` when there is nothing further to add.",
+            "type": ["string", "null"],
             "example": null
           },
           "details": {
@@ -1823,10 +1771,8 @@
             "example": "XYZ-US"
           },
           "currency": {
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
             "description": "The currency of the product, represented by an ISO 4217 currency code. See [currencies](/reference/currencies) for a list of supported currencies.",
-            "example": "USD"
+            "$ref": "#/components/schemas/Currency"
           },
           "state": {
             "type": "string",
@@ -1838,7 +1784,7 @@
           "payout_type": {
             "type": "string",
             "enum": ["gift_card", "subscription", "payment"],
-            "description": "The type of payout - this field will tell you the key of the additional object details that correspond to each payout type. The types currently supported are `gift_card`, `subscription`, or `payment`. Your implementation should account for additional payout types being addedin the future."
+            "description": "The type of payout - this field will tell you the key of the additional object details that correspond to each payout type. The types currently supported are `gift_card`, `subscription`, or `payment`. Your implementation should account for additional payout types being added in the future."
           },
           "categories": {
             "type": "array",
@@ -1874,7 +1820,7 @@
             "description": "Specific details about the gift card product, only populated when the `payout_type` is `gift_card`.",
             "allOf": [
               {
-                "$ref": "#/components/schemas/PayoutTypeDetailsBase"
+                "$ref": "#/components/schemas/GiftCardOrSubscriptionDetails"
               },
               {
                 "type": "object",
@@ -1890,7 +1836,7 @@
             "description": "Details about the subscription product, only populated when the `payout_type` is `subscription`.",
             "allOf": [
               {
-                "$ref": "#/components/schemas/PayoutTypeDetailsBase"
+                "$ref": "#/components/schemas/GiftCardOrSubscriptionDetails"
               },
               {
                 "type": "object",
@@ -1908,11 +1854,7 @@
           },
           "payment": {
             "description": "Details about the payment product, only populated when the `payout_type` is `payment`.",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ProductPayment"
-              }
-            ]
+            "$ref": "#/components/schemas/ProductPayment"
           }
         },
         "required": [
@@ -1928,15 +1870,14 @@
           "payout_type"
         ]
       },
-      "PayoutTypeDetailsBase": {
+      "GiftCardOrSubscriptionDetails": {
         "type": "object",
         "properties": {
           "assets": {
             "$ref": "#/components/schemas/ProductAssets"
           },
           "balance_check_url": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "format": "uri",
             "description": "URL to check the gift card balance. This will be a provider specific URL that a consumer can use to check the balance of the gift card.",
             "example": "https://merchant.example.com/balance-check"
@@ -1955,13 +1896,12 @@
           },
           "website_url": {
             "description": "The URL of the website for the product. This is the URL that a consumer can use to either redeem the payout or view details about where they can redeem the payout.",
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "example": "https://merchant.example.com"
           },
           "barcode_format": {
-            "type": "string",
+            "type": ["string", "null"],
             "enum": [
               "code-128",
               "code-39",
@@ -1972,7 +1912,6 @@
               "DATA_MATRIX",
               "other"
             ],
-            "nullable": true,
             "description": "The barcode format of the product.",
             "example": "code-128"
           },
@@ -2004,10 +1943,9 @@
             "example": "3 month subscription"
           },
           "price": {
-            "type": "string",
-            "format": "decimal",
             "description": "The price of the subscription plan.",
-            "example": "10.00"
+            "example": "10.00",
+            "$ref": "#/components/schemas/MonetaryAmount"
           },
           "subscription_plan_code": {
             "description": "Use this code during order creation, rather than the top level `code`.",
@@ -2054,14 +1992,12 @@
         "description": "Contact information for customer service related to the product. Suitable for displaying to the customer.",
         "properties": {
           "phone_number": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "The customer service phone number.",
             "example": "+1234567890"
           },
           "website_url": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "format": "uri",
             "description": "The customer service website URL.",
             "example": "https://merchant.example.com/customer-service"
@@ -2075,7 +2011,7 @@
           "type": {
             "type": "string",
             "enum": ["open", "fixed"],
-            "description": "The type of denomination. Can be `open` or `fixed`. `open` is any amount between minimum and maximum value. Fixed is limited to those returned in the `available_list`.",
+            "description": "The type of denomination. Can be `open` or `fixed`. `open` is any amount between the minimum and maximum value. `fixed` is limited to those returned in the `available_list`.",
             "example": "fixed"
           },
           "minimum_value": {
@@ -2085,13 +2021,9 @@
             "$ref": "#/components/schemas/ProductMaximumValue"
           },
           "available_list": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "format": "decimal"
-            },
-            "nullable": true,
-            "description": "A list of available denominations for the product. Will be `null` if the `type` is `OPEN`.",
+            "type": ["array", "null"],
+            "items": { "$ref": "#/components/schemas/MonetaryAmount" },
+            "description": "A list of available denominations for the product. Will be `null` if the `type` is `open`.",
             "example": ["10.00", "20.00", "50.00", "100.00"]
           }
         }
@@ -2100,8 +2032,7 @@
         "type": "object",
         "properties": {
           "date_policy": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Text description of the policy, suitable for displaying to the customer.",
             "example": "Expires 2 years from issue date"
           },
@@ -2135,16 +2066,14 @@
         "example": "0.05"
       },
       "ProductMinimumValue": {
-        "type": "string",
-        "format": "decimal",
         "description": "The minimum denomination value available for the product.",
-        "example": "10.00"
+        "example": "10.00",
+        "$ref": "#/components/schemas/MonetaryAmount"
       },
       "ProductMaximumValue": {
-        "type": "string",
-        "format": "decimal",
         "description": "The maximum denomination value available for the product.",
-        "example": "100.00"
+        "example": "100.00",
+        "$ref": "#/components/schemas/MonetaryAmount"
       },
       "ProductIconImageUrl": {
         "type": "string",
@@ -2164,23 +2093,20 @@
         "type": "object",
         "properties": {
           "card_image_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "The URL of the card image for the product. Includes a `v` query parameter that changes whenever the underlying image content changes - treat the full URL, including the query string, as the cache key and re-fetch when it changes.",
             "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-card.png?v=1690000000"
           },
           "icon_image_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "The URL of the icon image for the product. Includes a `v` query parameter that changes whenever the underlying image content changes - treat the full URL, including the query string, as the cache key and re-fetch when it changes.",
             "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-icon.png?v=1690000000"
           },
           "primary_color": {
-            "type": "string",
+            "type": ["string", "null"],
             "pattern": "^#[0-9A-Fa-f]{6}$",
-            "nullable": true,
             "example": "#000000"
           }
         }
@@ -2218,49 +2144,42 @@
           "description_markdown_url": {
             "type": "string",
             "format": "uri",
-            "nullable": false,
             "description": "A URL pointing to a markdown file that contains the description of the resource.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/description.md"
           },
           "disclaimer_markdown_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "A URL pointing to a markdown file that contains the disclaimer information.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/disclaimer_markdown.md"
           },
           "refund_policy_markdown_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "A URL pointing to a markdown file that outlines the refund policy, if applicable.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/refund_policy_markdown.md"
           },
           "reissuance_policy_markdown_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "A URL pointing to a markdown file that details the reissuance policy for the resource.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/reissuance_policy_markdown.md"
           },
           "terms_buyer_markdown_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "A URL pointing to a markdown file that contains the terms and conditions applicable to buyers.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/terms_buyer.md"
           },
           "terms_consumer_markdown_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "A URL pointing to a markdown file that contains the terms and conditions applicable to consumers.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/terms_consumer.md"
           },
           "redemption_instructions_markdown_url": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "uri",
-            "nullable": true,
             "description": "A URL pointing to a markdown file that provides instructions for redeeming the resource.",
             "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/redeem_markdown.md"
           },
@@ -2284,37 +2203,30 @@
         "properties": {
           "description_md": {
             "type": "string",
-            "description": "Markdown content for the resource description.",
-            "nullable": false
+            "description": "Markdown content for the resource description."
           },
           "disclaimer_md": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Markdown content for the disclaimer information."
           },
           "refund_policy_md": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Markdown content outlining the refund policy, if applicable."
           },
           "reissuance_policy_md": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Markdown content detailing the reissuance policy for the resource."
           },
           "terms_buyer_md": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Markdown content containing terms and conditions applicable to buyers."
           },
           "terms_consumer_md": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Markdown content containing terms and conditions applicable to consumers."
           },
           "redemption_instructions_md": {
-            "type": "string",
-            "nullable": true,
+            "type": ["string", "null"],
             "description": "Markdown instructions for redeeming the resource."
           },
           "locale": { "$ref": "#/components/schemas/ContentResourcesLocale" }
@@ -2338,43 +2250,36 @@
           "description_html": {
             "type": "string",
             "format": "html",
-            "nullable": false,
             "description": "HTML content for the resource description."
           },
           "disclaimer_html": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "html",
-            "nullable": true,
             "description": "HTML content for the disclaimer information."
           },
           "refund_policy_html": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "html",
-            "nullable": true,
             "description": "HTML content outlining the refund policy, if applicable."
           },
           "reissuance_policy_html": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "html",
-            "nullable": true,
             "description": "HTML content detailing the reissuance policy for the resource."
           },
           "terms_buyer_html": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "html",
-            "nullable": true,
             "description": "HTML content containing terms and conditions applicable to buyers."
           },
           "terms_consumer_html": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "html",
-            "nullable": true,
             "description": "HTML content containing terms and conditions applicable to consumers."
           },
           "redemption_instructions_html": {
-            "type": "string",
+            "type": ["string", "null"],
             "format": "html",
-            "nullable": true,
             "description": "HTML instructions for redeeming the resource."
           },
           "locale": { "$ref": "#/components/schemas/ContentResourcesLocale" }
@@ -2407,7 +2312,12 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/RateExceededResponse"
+              "$ref": "#/components/schemas/APIErrorResponse"
+            },
+            "example": {
+              "type": "rate_limit",
+              "message": "You've exceeded the rate limit, please wait a short period and try again.",
+              "help": "See https://developer.runa.io/rate-limits for details."
             }
           }
         }
