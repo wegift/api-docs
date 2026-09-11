@@ -1,0 +1,89 @@
+---
+title: "OpenAPI specification"
+description: "Download the machine-readable specification for the Runa API"
+icon: "file-code"
+---
+
+The Runa API is described by an [OpenAPI 3.1](https://spec.openapis.org/oas/v3.1.1) specification. It is the source of truth for every endpoint page in this reference and is published for you to use directly.
+
+<Card
+  title="2024-02-05 specification"
+  icon="download"
+  href="https://api.runa.io/v2/openapi/2024-02-05.json"
+  arrow
+>
+  **`https://api.runa.io/v2/openapi/2024-02-05.json`**
+</Card>
+
+```bash
+curl -O https://api.runa.io/v2/openapi/2024-02-05.json
+```
+
+The URL does not require an API key. The same file is maintained in the public [api-docs repository](https://github.com/wegift/api-docs/blob/main/reference/2024-02-05/openapi.json) on GitHub.
+
+## What the specification contains
+
+- Every endpoint under the `Orders`, `Products`, `Balance` and `Utility` tags, with request and response schemas per HTTP status code.
+- The `order.completion` and `product.update` [webhooks](/reference/webhooks), so you can generate types for the payloads you receive.
+- The `ApiKeyAuth` security scheme for the `X-Api-Key` header.
+- Both servers: `https://playground.runa.io/v2` and `https://api.runa.io/v2`.
+
+## Versioning of the specification
+
+There is one specification file per dated [API version](/best-practices/api-versioning). The version is part of the URL, so the file you pin today continues to describe the contract you integrated against. The `info.version` field inside the file is the API's major version, `2.0`, which generators typically use as the package version. The dated version lives in the URL and the `X-Api-Version` header.
+
+Backwards-compatible changes such as new optional fields, new endpoints and new enum values are added to the existing file. Breaking changes are only ever released as a new dated version with a new URL. The [API changelog](/changelog/api) records both kinds of change.
+
+<Tip>
+  If you generate code from the specification, re-generate periodically to pick
+  up additive changes. Review the diff before committing it.
+</Tip>
+
+## Things to be aware of
+
+<AccordionGroup>
+  <Accordion title="The first server listed is the playground">
+    The `servers` array lists the playground before production. Many code
+    generators use the first server as the default base URL. Set the base URL
+    explicitly in your client configuration, and switch to
+    `https://api.runa.io/v2` when you go live.
+  </Accordion>
+  <Accordion title="Set the X-Api-Version header">
+    The `X-Api-Version` header is declared as an optional parameter on each
+    operation. Always send it, with the value `2024-02-05`, so your integration
+    does not depend on the default version stored against your account.
+  </Accordion>
+  <Accordion title="Responses differ by status code">
+    Some operations return different schemas for different success codes. For
+    example `POST /order` returns the full order for `200 OK` and a minimal
+    object for `202 Accepted` in async mode. Generated clients typically expose
+    these as a union type, so handle each case.
+  </Accordion>
+  <Accordion title="Idempotency key is required for orders">
+    `POST /order` declares `X-Idempotency-Key` as a required header. Generated
+    clients will require you to supply it. See
+    [idempotency](/best-practices/idempotency) for how to choose a key.
+  </Accordion>
+</AccordionGroup>
+
+## Using the specification
+
+<CardGroup cols={2}>
+  <Card
+    title="Generate a client"
+    icon="code"
+    href="/tooling/openapi-codegen"
+    arrow
+  >
+    Produce a typed client or request validators in your language of choice.
+  </Card>
+  <Card
+    title="AI agents and coding assistants"
+    icon="robot"
+    href="/tooling/ai-agents"
+    arrow
+  >
+    Point your assistant at the specification and docs to build your integration
+    faster.
+  </Card>
+</CardGroup>

@@ -1,0 +1,184 @@
+---
+title: "Generate a client"
+description: "Use the Runa OpenAPI specification to generate typed clients"
+icon: "code"
+---
+
+The [OpenAPI specification](/reference/2024-02-05/openapi) for the Runa API lets you generate a typed client, request and response models, or schema validators rather than hand-writing them. This page shows the common approaches. Any tool that supports OpenAPI 3.1 will work.
+
+```
+https://api.runa.io/v2/openapi/2024-02-05.json
+```
+
+## Fetch and pin the specification
+
+Commit a copy of the specification to your repository rather than fetching it at build time. This keeps your builds reproducible and lets you review changes to the contract as part of your normal code review.
+
+```bash
+curl -o openapi/runa-2024-02-05.json https://api.runa.io/v2/openapi/2024-02-05.json
+```
+
+Re-fetch when you want to pick up [backwards-compatible additions](/best-practices/api-versioning#backwards-compatible-changes) and check the diff before regenerating.
+
+## Generate a client
+
+<Tabs>
+  <Tab title="TypeScript">
+    [openapi-typescript](https://openapi-ts.dev) generates types only, and [openapi-fetch](https://openapi-ts.dev/openapi-fetch/) is a small typed wrapper around `fetch` that uses them.
+
+    ```bash
+    npm install --save-dev openapi-typescript
+    npm install openapi-fetch
+    npx openapi-typescript openapi/runa-2024-02-05.json -o src/runa/schema.d.ts
+    ```
+
+    ```typescript
+    import createClient from "openapi-fetch";
+    import type { paths } from "./runa/schema";
+
+    const runa = createClient<paths>({
+      baseUrl: "https://playground.runa.io/v2",
+      headers: {
+        "X-Api-Key": process.env.RUNA_API_KEY,
+        "X-Api-Version": "2024-02-05",
+      },
+    });
+
+    const { data, error } = await runa.GET("/product", {
+      params: { query: { countries_redeemable_in: ["GB"] } },
+    });
+    ```
+
+  </Tab>
+  <Tab title="Python">
+    [openapi-python-client](https://github.com/openapi-generators/openapi-python-client) generates a package with typed models and sync and async clients.
+
+    ```bash
+    pipx install openapi-python-client
+    openapi-python-client generate --path openapi/runa-2024-02-05.json --output-path runa_client
+    ```
+
+    ```python
+    from runa_client import Client
+    from runa_client.api.products import list_products
+
+    client = Client(
+        base_url="https://playground.runa.io/v2",
+        headers={
+            "X-Api-Key": os.environ["RUNA_API_KEY"],
+            "X-Api-Version": "2024-02-05",
+        },
+    )
+
+    products = list_products.sync(client=client, countries_redeemable_in=["GB"])
+    ```
+
+    Function names are derived from the operation IDs and module names from the tags, so check the generated `api` package for the exact names.
+
+  </Tab>
+  <Tab title="Go">
+    [oapi-codegen](https://github.com/oapi-codegen/oapi-codegen) generates models and a client that wraps `net/http`.
+
+    ```bash
+    go install github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@latest
+    oapi-codegen -generate types,client -package runa -o runa/client.gen.go openapi/runa-2024-02-05.json
+    ```
+
+    ```go
+    client, err := runa.NewClient(
+        "https://playground.runa.io/v2",
+        runa.WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
+            req.Header.Set("X-Api-Key", os.Getenv("RUNA_API_KEY"))
+            req.Header.Set("X-Api-Version", "2024-02-05")
+            return nil
+        }),
+    )
+    ```
+
+  </Tab>
+  <Tab title="Other languages">
+    [OpenAPI Generator](https://openapi-generator.tech) supports Java, C#, Kotlin, Ruby, PHP, Rust and many more.
+
+    ```bash
+    npx @openapitools/openapi-generator-cli generate \
+      -i openapi/runa-2024-02-05.json \
+      -g java \
+      -o runa-client
+    ```
+
+    Replace `java` with any [supported generator](https://openapi-generator.tech/docs/generators).
+
+  </Tab>
+</Tabs>
+
+## Configure the generated client
+
+Generators produce a client that mirrors the specification. You still need to wire in the conventions of the Runa API.
+
+<Steps>
+  <Step title="Set the base URL explicitly">
+    The specification lists the playground server first, so generated clients
+    often default to it. Configure `https://playground.runa.io/v2` while
+    developing and `https://api.runa.io/v2` in production. Playground and
+    production use [different API keys](/getting-started/environments).
+  </Step>
+  <Step title="Send the authentication and version headers on every request">
+    Set `X-Api-Key` to your key and `X-Api-Version` to `2024-02-05`. Most
+    generators offer a default-headers or request-interceptor hook so you set
+    these once. See [authentication](/best-practices/authentication) and [API
+    versioning](/best-practices/api-versioning).
+  </Step>
+  <Step title="Supply an idempotency key when ordering">
+    `POST /order` requires the `X-Idempotency-Key` header. Generate a key per
+    logical order and reuse it on retries. See
+    [idempotency](/best-practices/idempotency).
+  </Step>
+  <Step title="Handle each response type">
+    Operations that return different bodies per status code are typically
+    generated as union types. `POST /order` returns the full order on `200 OK`
+    and a minimal object on `202 Accepted`. Error responses share one structure,
+    see [handling errors](/best-practices/handling-errors).
+  </Step>
+  <Step title="Add retries and respect rate limits">
+    Generated clients rarely retry. Wrap calls with a retry policy that honours
+    the [rate limits](/best-practices/rate-limits) and only retries orders with
+    the same idempotency key.
+  </Step>
+</Steps>
+
+## Validate without generating a client
+
+If you prefer to keep your own HTTP layer, use the JSON Schemas under `components.schemas` to validate request bodies before sending them and to check responses in tests. Any JSON Schema validator that supports the 2020-12 draft works, for example [Ajv](https://ajv.js.org) for JavaScript or [jsonschema](https://python-jsonschema.readthedocs.io) for Python.
+
+## Import into an API client
+
+Postman, Insomnia and Bruno can all import the specification URL directly, giving you a ready-made collection for every endpoint. Set `X-Api-Key` and `X-Api-Version` as collection-level headers and use a playground key.
+
+## Related
+
+<CardGroup cols={3}>
+  <Card
+    title="OpenAPI specification"
+    icon="file-code"
+    href="/reference/2024-02-05/openapi"
+    arrow
+  >
+    The reference page for the specification URL and caveats.
+  </Card>
+  <Card
+    title="Use the Runa API with AI agents"
+    icon="robot"
+    href="/tooling/ai-agents"
+    arrow
+  >
+    Coding assistants and runtime agents.
+  </Card>
+  <Card
+    title="Before you go live"
+    icon="star"
+    href="/best-practices/before-you-go-live"
+    arrow
+  >
+    Reliability and security checks for your integration.
+  </Card>
+</CardGroup>
