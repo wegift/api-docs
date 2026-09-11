@@ -23,14 +23,14 @@ The URL does not require an API key. The same file is maintained in the public [
 
 ## What the specification contains
 
-- Every endpoint under the `orders`, `products`, `balance` and `utility` tags, with request and response schemas per HTTP status code.
+- Every endpoint under the `Orders`, `Products`, `Balance` and `Utility` tags, with request and response schemas per HTTP status code.
 - The `order.completion` and `product.update` [webhooks](/reference/webhooks), so you can generate types for the payloads you receive.
 - The `ApiKeyAuth` security scheme for the `X-Api-Key` header.
 - Both servers: `https://playground.runa.io/v2` and `https://api.runa.io/v2`.
 
 ## Versioning of the specification
 
-There is one specification file per dated [API version](/best-practices/api-versioning). The version is part of the URL, so the file you pin today continues to describe the contract you integrated against.
+There is one specification file per dated [API version](/best-practices/api-versioning). The version is part of the URL, so the file you pin today continues to describe the contract you integrated against. The `info.version` field inside the file is the API's major version, `2.0`, which generators typically use as the package version. The dated version lives in the URL and the `X-Api-Version` header.
 
 Backwards-compatible changes such as new optional fields, new endpoints and new enum values are added to the existing file. Breaking changes are only ever released as a new dated version with a new URL. The [API changelog](/changelog/api) records both kinds of change.
 

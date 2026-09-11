@@ -41,6 +41,7 @@ Assistants such as Claude Code, Cursor and GitHub Copilot produce far better res
     - Always send X-Api-Version: 2024-02-05
     - POST /order requires X-Idempotency-Key. Reuse the same key on retries.
     - Orders default to async (202 Accepted). Use X-Execution-Mode: sync only for single-item orders.
+    - Money fields such as face_value are decimal strings, e.g. "10.00", not numbers.
     - Develop against the playground with a playground key (prefix xx). Production keys start wg.
     ```
 
