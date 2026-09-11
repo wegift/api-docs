@@ -1147,7 +1147,7 @@
         "description": "Payout selection template. Template having predefined set of products."
       },
       "PayoutSelectionTemplateDetailed": {
-        "title": "Template (with selected products)",
+        "title": "Template",
         "required": ["type", "template_id"],
         "type": "object",
         "properties": {
@@ -1569,7 +1569,7 @@
         "description": "Single product. The end user will be able to redeem the payout link for this specific product."
       },
       "SingleProductWithUsageConfig": {
-        "title": "Single (with usage configuration)",
+        "title": "Single",
         "required": ["type", "value"],
         "type": "object",
         "example": {
