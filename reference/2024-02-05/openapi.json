@@ -689,8 +689,7 @@
         "name": "currency",
         "required": false,
         "schema": {
-          "type": "string",
-          "pattern": "^[A-Z]{3}$"
+          "$ref": "#/components/schemas/Currency"
         },
         "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currencies) for a listing of supported currencies.",
         "in": "query",
@@ -790,6 +789,7 @@
       },
       "Currency": {
         "type": "string",
+        "format": "iso-4217",
         "pattern": "^[A-Z]{3}$",
         "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currencies) for a listing of supported currencies.",
         "example": "USD"
@@ -906,11 +906,8 @@
             "$ref": "#/components/schemas/PayoutDetails"
           },
           "currency": {
-            "title": "Currency",
             "description": "The currency of the payout link, represented by ISO 4217 currency codes.",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "example": "USD"
+            "$ref": "#/components/schemas/Currency"
           }
         },
         "required": [
@@ -957,11 +954,8 @@
             "$ref": "#/components/schemas/AccountPayment"
           },
           "currency": {
-            "title": "Currency",
-            "example": "USD",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "description": "The currency of the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+            "description": "The currency of the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field.",
+            "$ref": "#/components/schemas/Currency"
           },
           "total_price": {
             "title": "Total Price",
@@ -1295,11 +1289,8 @@
             "$ref": "#/components/schemas/ProductDiscountMultiplier"
           },
           "currency": {
-            "title": "Currency",
-            "example": "USD",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "description": "The currency of the product, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+            "description": "The currency of the product, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field.",
+            "$ref": "#/components/schemas/Currency"
           }
         },
         "description": "The computed discount for an order item."
@@ -1384,11 +1375,8 @@
             }
           },
           "currency": {
-            "title": "Currency",
-            "example": "USD",
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
-            "description": "The currency of the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field."
+            "description": "The currency of the order, represented by ISO 4217 currency codes. Please check the currency section in the guidelines for how to use this field.",
+            "$ref": "#/components/schemas/Currency"
           },
           "total_discount": {
             "title": "Total Discount",
@@ -1419,7 +1407,7 @@
           }
         },
         "propertyNames": {
-          "pattern": "^[A-Z]{3}$"
+          "$ref": "#/components/schemas/Currency"
         },
         "additionalProperties": {
           "$ref": "#/components/schemas/TransactionDetailEntry"
@@ -1783,10 +1771,8 @@
             "example": "XYZ-US"
           },
           "currency": {
-            "type": "string",
-            "pattern": "^[A-Z]{3}$",
             "description": "The currency of the product, represented by an ISO 4217 currency code. See [currencies](/reference/currencies) for a list of supported currencies.",
-            "example": "USD"
+            "$ref": "#/components/schemas/Currency"
           },
           "state": {
             "type": "string",
