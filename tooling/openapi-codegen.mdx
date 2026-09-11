@@ -60,7 +60,7 @@ Re-fetch when you want to pick up [backwards-compatible additions](/best-practic
 
     ```python
     from runa_client import Client
-    from runa_client.api.products import get_products
+    from runa_client.api.products import list_products
 
     client = Client(
         base_url="https://playground.runa.io/v2",
@@ -70,10 +70,10 @@ Re-fetch when you want to pick up [backwards-compatible additions](/best-practic
         },
     )
 
-    products = get_products.sync(client=client, countries_redeemable_in=["GB"])
+    products = list_products.sync(client=client, countries_redeemable_in=["GB"])
     ```
 
-    Module and function names are derived from the operation IDs in the specification, so check the generated `api` package for the exact names.
+    Function names are derived from the operation IDs and module names from the tags, so check the generated `api` package for the exact names.
 
   </Tab>
   <Tab title="Go">
