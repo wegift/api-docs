@@ -206,6 +206,7 @@
                           "propertyName": "status",
                           "mapping": {
                             "COMPLETED": "#/components/schemas/OrderSummary",
+                            "FAILED": "#/components/schemas/OrderSummary",
                             "PROCESSING": "#/components/schemas/ProcessingOrder"
                           }
                         }
@@ -333,6 +334,7 @@
                     "propertyName": "status",
                     "mapping": {
                       "COMPLETED": "#/components/schemas/Order",
+                      "FAILED": "#/components/schemas/Order",
                       "PROCESSING": "#/components/schemas/ProcessingOrder"
                     }
                   }
@@ -1013,7 +1015,11 @@
         "type": "object",
         "properties": {
           "id": { "$ref": "#/components/schemas/OrderId" },
-          "status": { "$ref": "#/components/schemas/OrderStatus" }
+          "status": {
+            "type": "string",
+            "const": "PROCESSING",
+            "description": "Always `PROCESSING` for this schema."
+          }
         }
       },
       "CompletedOrder": {
@@ -1025,7 +1031,9 @@
           {
             "properties": {
               "status": {
-                "const": "COMPLETED"
+                "type": "string",
+                "enum": ["COMPLETED"],
+                "description": "Always `COMPLETED` for this schema."
               }
             }
           }
@@ -1061,7 +1069,9 @@
           {
             "properties": {
               "status": {
-                "const": "COMPLETED"
+                "type": "string",
+                "enum": ["COMPLETED"],
+                "description": "Always `COMPLETED` for this schema."
               }
             }
           }
@@ -1113,7 +1123,11 @@
         "type": "object",
         "properties": {
           "id": { "$ref": "#/components/schemas/OrderId" },
-          "status": { "$ref": "#/components/schemas/OrderStatus" },
+          "status": {
+            "type": "string",
+            "const": "PROCESSING",
+            "description": "Always `PROCESSING` for this schema."
+          },
           "message": {
             "title": "Message",
             "description": "Human readable message describing the status of the order.",
