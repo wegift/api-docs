@@ -686,7 +686,7 @@
         "in": "header",
         "required": false,
         "schema": {
-          "type": "string"
+          "$ref": "#/components/schemas/ApiVersion"
         }
       },
       "CurrencyForAccount": {
@@ -744,6 +744,13 @@
           }
         },
         "description": "Generic Runa API error response."
+      },
+      "ApiVersion": {
+        "title": "API version",
+        "type": "string",
+        "enum": ["2024-02-05"],
+        "default": "2024-02-05",
+        "description": "The dated version of the Runa API. Send it on every request: a client that omits it silently follows whatever the server default happens to be."
       },
       "OrderId": {
         "title": "Order ID",
