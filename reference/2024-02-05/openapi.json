@@ -2,7 +2,7 @@
   "openapi": "3.1.1",
   "info": {
     "title": "Runa API",
-    "version": "2.0",
+    "version": "2024-02-05",
     "description": "Runa is the infrastructure and network for global payouts – gift cards, prepaid cards, and push-to-card – all managed from a single, unified platform.\n\nUse this API to browse the product catalog, place and track payout orders, manage your account balances, and receive webhooks when orders complete or product availability changes.\n\nGuides, tutorials and the changelog are on the [Runa developer hub](https://developer.runa.io).",
     "termsOfService": "https://runa.io/terms-of-use",
     "contact": {
