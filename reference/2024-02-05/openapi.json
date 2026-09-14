@@ -257,7 +257,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CompletedOrder"
+                  "$ref": "#/components/schemas/OrderCreationResult"
                 }
               }
             }
@@ -267,7 +267,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AsyncAcceptedOrder"
+                  "$ref": "#/components/schemas/OrderCreationResult"
                 }
               }
             }
@@ -1026,6 +1026,25 @@
             }
           }
         ]
+      },
+      "OrderCreationResult": {
+        "title": "Order creation result",
+        "description": "The body of `POST /order`. `COMPLETED` (HTTP 200) when the order was executed synchronously, `PROCESSING` (HTTP 202) when it was accepted for asynchronous processing. Asynchronous is the default execution mode; send `X-Execution-Mode: sync` for the synchronous path. Branch on `status`.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/CompletedOrder"
+          },
+          {
+            "$ref": "#/components/schemas/AsyncAcceptedOrder"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "status",
+          "mapping": {
+            "COMPLETED": "#/components/schemas/CompletedOrder",
+            "PROCESSING": "#/components/schemas/AsyncAcceptedOrder"
+          }
+        }
       },
       "CompletedOrderWebhook": {
         "title": "Completed order webhook",
