@@ -386,6 +386,8 @@
           {
             "in": "query",
             "name": "countries_redeemable_in",
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "array",
               "items": {
@@ -399,6 +401,8 @@
           {
             "in": "query",
             "name": "categories",
+            "style": "form",
+            "explode": true,
             "schema": {
               "type": "array",
               "items": {
