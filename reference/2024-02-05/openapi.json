@@ -750,7 +750,7 @@
       }
     },
     "schemas": {
-      "APIErrorResponse": {
+      "ApiErrorResponse": {
         "title": "Error",
         "required": ["type", "message"],
         "type": "object",
@@ -2203,7 +2203,7 @@
         "oneOf": [
           { "$ref": "#/components/schemas/ContentResourcesUrl" },
           { "$ref": "#/components/schemas/ContentResourcesMarkdown" },
-          { "$ref": "#/components/schemas/ContentResourcesHTML" }
+          { "$ref": "#/components/schemas/ContentResourcesHtml" }
         ]
       },
       "ContentResourcesUrl": {
@@ -2326,7 +2326,7 @@
           "locale": { "$ref": "#/components/schemas/ContentResourcesLocale" }
         }
       },
-      "ContentResourcesHTML": {
+      "ContentResourcesHtml": {
         "title": "HTML",
         "description": "Content resources in HTML format.",
         "type": "object",
@@ -2386,7 +2386,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/APIErrorResponse"
+              "$ref": "#/components/schemas/ApiErrorResponse"
             }
           }
         }
@@ -2396,7 +2396,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/APIErrorResponse"
+              "$ref": "#/components/schemas/ApiErrorResponse"
             }
           }
         }
@@ -2406,7 +2406,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/APIErrorResponse"
+              "$ref": "#/components/schemas/ApiErrorResponse"
             },
             "example": {
               "type": "rate_limit",
@@ -2421,7 +2421,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/APIErrorResponse"
+              "$ref": "#/components/schemas/ApiErrorResponse"
             }
           }
         }
@@ -2431,7 +2431,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/APIErrorResponse"
+              "$ref": "#/components/schemas/ApiErrorResponse"
             }
           }
         }
@@ -2441,7 +2441,7 @@
         "content": {
           "application/json": {
             "schema": {
-              "$ref": "#/components/schemas/APIErrorResponse"
+              "$ref": "#/components/schemas/ApiErrorResponse"
             }
           }
         }
