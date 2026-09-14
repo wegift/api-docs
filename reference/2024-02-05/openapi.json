@@ -102,7 +102,9 @@
                       "type": "object",
                       "properties": {
                         "balance": {
-                          "$ref": "#/components/schemas/Balance"
+                          "$ref": "#/components/schemas/MonetaryAmount",
+                          "description": "The balance of the account.",
+                          "examples": ["10.00"]
                         },
                         "currency": {
                           "$ref": "#/components/schemas/Currency"
@@ -117,7 +119,9 @@
                         "type": "object",
                         "properties": {
                           "balance": {
-                            "$ref": "#/components/schemas/Balance"
+                            "$ref": "#/components/schemas/MonetaryAmount",
+                            "description": "The balance of the account.",
+                            "examples": ["10.00"]
                           },
                           "currency": {
                             "$ref": "#/components/schemas/Currency"
@@ -818,12 +822,6 @@
         "format": "decimal",
         "pattern": "^[0-9]+(\\.[0-9]{1,2})?$",
         "examples": ["10.00"]
-      },
-      "Balance": {
-        "title": "Balance",
-        "description": "The balance of the account.",
-        "examples": ["10.00"],
-        "$ref": "#/components/schemas/MonetaryAmount"
       },
       "Currency": {
         "type": "string",
@@ -2038,10 +2036,14 @@
             "required": ["minimum_value", "maximum_value"],
             "properties": {
               "minimum_value": {
-                "$ref": "#/components/schemas/ProductMinimumValue"
+                "$ref": "#/components/schemas/MonetaryAmount",
+                "description": "The minimum denomination value available for the product.",
+                "examples": ["10.00"]
               },
               "maximum_value": {
-                "$ref": "#/components/schemas/ProductMaximumValue"
+                "$ref": "#/components/schemas/MonetaryAmount",
+                "description": "The maximum denomination value available for the product.",
+                "examples": ["100.00"]
               }
             }
           },
@@ -2079,10 +2081,14 @@
             "examples": ["fixed"]
           },
           "minimum_value": {
-            "$ref": "#/components/schemas/ProductMinimumValue"
+            "$ref": "#/components/schemas/MonetaryAmount",
+            "description": "The minimum denomination value available for the product.",
+            "examples": ["10.00"]
           },
           "maximum_value": {
-            "$ref": "#/components/schemas/ProductMaximumValue"
+            "$ref": "#/components/schemas/MonetaryAmount",
+            "description": "The maximum denomination value available for the product.",
+            "examples": ["100.00"]
           },
           "available_list": {
             "type": ["array", "null"],
@@ -2128,16 +2134,6 @@
         "pattern": "^[0-9]+\\.[0-9]{1,4}$",
         "description": "The discount multiplier used when ordering. `0` means no discount and `0.1` means 10% discount. The discount is applied on the price of the order item before any fees are applied.",
         "examples": ["0.05"]
-      },
-      "ProductMinimumValue": {
-        "description": "The minimum denomination value available for the product.",
-        "examples": ["10.00"],
-        "$ref": "#/components/schemas/MonetaryAmount"
-      },
-      "ProductMaximumValue": {
-        "description": "The maximum denomination value available for the product.",
-        "examples": ["100.00"],
-        "$ref": "#/components/schemas/MonetaryAmount"
       },
       "ProductIconImageUrl": {
         "type": "string",
