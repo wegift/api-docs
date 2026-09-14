@@ -873,7 +873,7 @@
         "description": "Account balance payment."
       },
       "CompletedOrderItem": {
-        "title": "Order item",
+        "title": "Completed order item",
         "type": "object",
         "properties": {
           "id": {
@@ -1169,7 +1169,7 @@
         }
       },
       "PayoutSelectionTemplate": {
-        "title": "Template",
+        "title": "Template ID",
         "required": ["type", "template_id"],
         "type": "object",
         "properties": {
@@ -1210,7 +1210,7 @@
         "description": "Payout selection template. Template having predefined set of products."
       },
       "AccountPaymentRequest": {
-        "title": "Account balance payment",
+        "title": "Account balance payment request",
         "required": ["type", "currency"],
         "type": "object",
         "properties": {
@@ -1248,7 +1248,7 @@
         }
       },
       "CreateOrderItem": {
-        "title": "Order item",
+        "title": "Create order item",
         "required": ["face_value", "distribution_method", "products"],
         "type": "object",
         "properties": {
@@ -1583,7 +1583,7 @@
         }
       },
       "SingleProduct": {
-        "title": "Single",
+        "title": "Single product",
         "required": ["type", "value"],
         "type": "object",
         "properties": {
