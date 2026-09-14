@@ -822,7 +822,7 @@
         "title": "User redemption template ID",
         "description": "The template ID for a User Redemption Template.",
         "example": "DT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
-        "type": "string"
+        "type": ["string", "null"]
       },
       "AccountPayment": {
         "title": "Account balance payment",
@@ -1914,14 +1914,15 @@
               "pdf417",
               "ITF",
               "DATA_MATRIX",
-              "other"
+              "other",
+              null
             ],
             "description": "The barcode format of the product.",
             "example": "code-128"
           },
           "e_code_usage_type": {
             "type": "string",
-            "enum": ["undefined", "url-recommended", "url-only"],
+            "enum": ["undefined", "url-recommended", "url-only", "code"],
             "description": "The e-code usage type of the product.",
             "example": "url-only"
           }
