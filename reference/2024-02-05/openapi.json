@@ -539,37 +539,39 @@
                         "pattern": "^[A-Z]{2}$",
                         "description": "ISO 3166 ALPHA-2 country code"
                       },
-                      "example": [
-                        "AT",
-                        "AU",
-                        "BE",
-                        "CA",
-                        "CH",
-                        "CZ",
-                        "DE",
-                        "DK",
-                        "ES",
-                        "FI",
-                        "FR",
-                        "GB",
-                        "GR",
-                        "HU",
-                        "IE",
-                        "IT",
-                        "JP",
-                        "LU",
-                        "MX",
-                        "NL",
-                        "NO",
-                        "NZ",
-                        "PL",
-                        "PT",
-                        "RO",
-                        "SE",
-                        "SG",
-                        "SI",
-                        "US",
-                        "ZA"
+                      "examples": [
+                        [
+                          "AT",
+                          "AU",
+                          "BE",
+                          "CA",
+                          "CH",
+                          "CZ",
+                          "DE",
+                          "DK",
+                          "ES",
+                          "FI",
+                          "FR",
+                          "GB",
+                          "GR",
+                          "HU",
+                          "IE",
+                          "IT",
+                          "JP",
+                          "LU",
+                          "MX",
+                          "NL",
+                          "NO",
+                          "NZ",
+                          "PL",
+                          "PT",
+                          "RO",
+                          "SE",
+                          "SG",
+                          "SI",
+                          "US",
+                          "ZA"
+                        ]
                       ]
                     }
                   }
@@ -610,24 +612,26 @@
                         },
                         "required": ["code"]
                       },
-                      "example": [
-                        { "code": "beauty-and-lifestyle" },
-                        { "code": "booksellers" },
-                        { "code": "department-stores" },
-                        { "code": "electricals" },
-                        { "code": "entertainment" },
-                        { "code": "experiences" },
-                        { "code": "fashion" },
-                        { "code": "food-and-drink" },
-                        { "code": "home-and-diy" },
-                        { "code": "jewellers" },
-                        { "code": "leisure-and-sports" },
-                        { "code": "mens-fashion" },
-                        { "code": "prepaid-card" },
-                        { "code": "supermarkets" },
-                        { "code": "toys-and-games" },
-                        { "code": "travel" },
-                        { "code": "womens-fashion" }
+                      "examples": [
+                        [
+                          { "code": "beauty-and-lifestyle" },
+                          { "code": "booksellers" },
+                          { "code": "department-stores" },
+                          { "code": "electricals" },
+                          { "code": "entertainment" },
+                          { "code": "experiences" },
+                          { "code": "fashion" },
+                          { "code": "food-and-drink" },
+                          { "code": "home-and-diy" },
+                          { "code": "jewellers" },
+                          { "code": "leisure-and-sports" },
+                          { "code": "mens-fashion" },
+                          { "code": "prepaid-card" },
+                          { "code": "supermarkets" },
+                          { "code": "toys-and-games" },
+                          { "code": "travel" },
+                          { "code": "womens-fashion" }
+                        ]
                       ]
                     }
                   }
@@ -726,7 +730,7 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "example": "A-123"
+          "examples": ["A-123"]
         }
       },
       "AfterCursor": {
@@ -735,7 +739,7 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "example": "A-789"
+          "examples": ["A-789"]
         }
       }
     },
@@ -749,19 +753,19 @@
             "title": "Type",
             "description": "An error code or type.",
             "type": "string",
-            "example": "not_found"
+            "examples": ["not_found"]
           },
           "message": {
             "title": "Message",
             "description": "A human readable summary of the error.",
             "type": "string",
-            "example": "The requested resource was not found"
+            "examples": ["The requested resource was not found"]
           },
           "help": {
             "title": "Help",
             "description": "Additional information that pertains to the error. `null` when there is nothing further to add.",
             "type": ["string", "null"],
-            "example": "Please check the resource ID and try again."
+            "examples": ["Please check the resource ID and try again."]
           }
         },
         "description": "Generic Runa API error response."
@@ -777,14 +781,14 @@
         "title": "Order ID",
         "description": "The ID of the order.",
         "type": "string",
-        "example": "O-01H5WQGHKCBB85MQFM68S9KJ5Q"
+        "examples": ["O-01H5WQGHKCBB85MQFM68S9KJ5Q"]
       },
       "OrderDescription": {
         "title": "Description",
         "description": "Free format text reference for the order. The order description will not be visible to the end user. You will see this description in the Runa web portal.\n\nThis field is optional and can be omitted if not needed.\nIf not provided, the field will be set to `null` in the response.",
         "type": ["string", "null"],
         "maxLength": 128,
-        "example": "Your own reference text"
+        "examples": ["Your own reference text"]
       },
       "OrderMetadata": {
         "title": "Metadata",
@@ -799,11 +803,13 @@
           "type": "string",
           "maxLength": 200
         },
-        "example": {
-          "internal_id": "12345",
-          "department": "marketing",
-          "campaign": "summer_2024"
-        }
+        "examples": [
+          {
+            "internal_id": "12345",
+            "department": "marketing",
+            "campaign": "summer_2024"
+          }
+        ]
       },
       "MonetaryAmount": {
         "title": "Monetary amount",
@@ -811,12 +817,12 @@
         "type": "string",
         "format": "decimal",
         "pattern": "^[0-9]+(\\.[0-9]{1,2})?$",
-        "example": "10.00"
+        "examples": ["10.00"]
       },
       "Balance": {
         "title": "Balance",
         "description": "The balance of the account.",
-        "example": "10.00",
+        "examples": ["10.00"],
         "$ref": "#/components/schemas/MonetaryAmount"
       },
       "Currency": {
@@ -824,32 +830,32 @@
         "format": "iso-4217",
         "pattern": "^[A-Z]{3}$",
         "description": "The currency of the account, represented by ISO 4217 currency codes. Check the [currencies](/reference/currencies) for a listing of supported currencies.",
-        "example": "USD"
+        "examples": ["USD"]
       },
       "OrderStatus": {
         "title": "Order status",
         "description": "The status of the order.",
         "type": "string",
         "enum": ["COMPLETED", "FAILED", "PROCESSING"],
-        "example": "PROCESSING"
+        "examples": ["PROCESSING"]
       },
       "DistributionEmailAddress": {
         "title": "Email Address",
         "description": "The email address of the end user to send the payout link to.",
-        "example": "fred@example.com",
+        "examples": ["fred@example.com"],
         "type": "string",
         "format": "email"
       },
       "PayoutSelectionTemplateId": {
         "title": "Payout selection template ID",
         "description": "The template ID for a Payout Selection Template.",
-        "example": "PT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
+        "examples": ["PT-01HPSF51G0ZWHJ3JTNWRH0WDYK"],
         "type": "string"
       },
       "RedemptionTemplateId": {
         "title": "User redemption template ID",
         "description": "The template ID for a User Redemption Template.",
-        "example": "DT-01HPSF51G0ZWHJ3JTNWRH0WDYK",
+        "examples": ["DT-01HPSF51G0ZWHJ3JTNWRH0WDYK"],
         "type": ["string", "null"]
       },
       "AccountPayment": {
@@ -873,7 +879,7 @@
           "id": {
             "title": "ID",
             "description": "The ID of the order item.",
-            "example": "E-NWPEKW4VL",
+            "examples": ["E-NWPEKW4VL"],
             "type": "string"
           },
           "distribution_method": {
@@ -923,13 +929,13 @@
           "face_value": {
             "title": "Face Value",
             "description": "The face value of the payout link.",
-            "example": "10.00",
+            "examples": ["10.00"],
             "$ref": "#/components/schemas/MonetaryAmount"
           },
           "price": {
             "title": "Price",
             "description": "The price paid for the payout link.",
-            "example": "10.00",
+            "examples": ["10.00"],
             "$ref": "#/components/schemas/MonetaryAmount"
           },
           "payout": {
@@ -992,13 +998,13 @@
           "total_price": {
             "title": "Total Price",
             "description": "The total price of the order. This _includes_ any applicable fees.",
-            "example": "10.00",
+            "examples": ["10.00"],
             "$ref": "#/components/schemas/MonetaryAmount"
           },
           "total_discount": {
             "title": "Total Discount",
             "description": "The total discount of the order.",
-            "example": "1.00",
+            "examples": ["1.00"],
             "$ref": "#/components/schemas/MonetaryAmount"
           }
         }
@@ -1151,7 +1157,7 @@
           "recipient_reference": {
             "title": "Recipient Reference",
             "description": "A customer provided reference to identify an individual recipient. It must be unique per recipient. When the same reference is used for a second order this will trigger a repeat payout. This is a free-form string limited to 255 characters. It can only contain alphanumeric characters, dashes, underscores, dots, and at-signs.",
-            "example": "abc123",
+            "examples": ["abc123"],
             "type": "string",
             "maxLength": 255,
             "pattern": "^[A-Za-z0-9-_@.]+$"
@@ -1192,7 +1198,7 @@
           "values": {
             "title": "Values",
             "description": "The codes for products selected for Payout Selection Template.",
-            "example": ["AMZ-US", "AIRBNB-US"],
+            "examples": [["AMZ-US", "AIRBNB-US"]],
             "minItems": 2,
             "type": "array",
             "items": {
@@ -1249,7 +1255,7 @@
           "face_value": {
             "title": "Face Value",
             "description": "Face value of the payout link. The currency of the face value is inferred from the product selection.\n\nWhat value is allowed depends on the product mode:\n- When ordering a `SINGLE` product this field follows the allowed values from the selected product.\n- If using `MULTIPLE` or `TEMPLATE` this value must be: equal or greater than the minimum face value of the products selected and be a whole number.",
-            "example": "10.00",
+            "examples": ["10.00"],
             "$ref": "#/components/schemas/MonetaryAmount"
           },
           "distribution_method": {
@@ -1327,13 +1333,13 @@
           "face_value": {
             "title": "Face Value",
             "description": "Face value of the payout link.",
-            "example": "10.00",
+            "examples": ["10.00"],
             "$ref": "#/components/schemas/MonetaryAmount"
           },
           "price": {
             "title": "Price",
             "description": "The price of the order item. This is before `discount_multiplier` is applied.",
-            "example": "10.00",
+            "examples": ["10.00"],
             "$ref": "#/components/schemas/MonetaryAmount"
           },
           "discount_multiplier": {
@@ -1373,7 +1379,7 @@
           "face_value": {
             "title": "Face Value",
             "description": "Face value of the payout link.",
-            "example": "10.00",
+            "examples": ["10.00"],
             "$ref": "#/components/schemas/MonetaryAmount"
           }
         },
@@ -1432,13 +1438,13 @@
           "total_discount": {
             "title": "Total Discount",
             "description": "Total discount on the entire order.",
-            "example": "0.50",
+            "examples": ["0.50"],
             "$ref": "#/components/schemas/MonetaryAmount"
           },
           "total_price": {
             "title": "Total Price",
             "description": "Total price of the entire order.",
-            "example": "9.50",
+            "examples": ["9.50"],
             "$ref": "#/components/schemas/MonetaryAmount"
           },
           "transaction_detail": {
@@ -1451,12 +1457,14 @@
         "title": "Transaction detail",
         "description": "A mapping of the subtotal of the order using the payout currency as a key.",
         "type": "object",
-        "example": {
-          "USD": {
-            "value": "10.00",
-            "fx": null
+        "examples": [
+          {
+            "USD": {
+              "value": "10.00",
+              "fx": null
+            }
           }
-        },
+        ],
         "propertyNames": {
           "$ref": "#/components/schemas/Currency"
         },
@@ -1472,7 +1480,7 @@
           "value": {
             "title": "Value",
             "description": "The total value purchased of a payout link currency.",
-            "example": "10.00",
+            "examples": ["10.00"],
             "$ref": "#/components/schemas/MonetaryAmount"
           },
           "fx": {
@@ -1495,13 +1503,13 @@
             "title": "FX Rate",
             "description": "The FX rate received for the transaction between the payout currency and payment currency.",
             "type": "string",
-            "example": "1.234"
+            "examples": ["1.234"]
           },
           "rate_symbol": {
             "title": "FX Rate symbol",
             "description": "The currency pair associated with the FX transaction.",
             "type": "string",
-            "example": "GBPUSD"
+            "examples": ["GBPUSD"]
           },
           "fee": {
             "title": "Fee",
@@ -1511,14 +1519,14 @@
               "value": {
                 "title": "Value",
                 "description": "The value of the fee.",
-                "example": "0.00",
+                "examples": ["0.00"],
                 "$ref": "#/components/schemas/MonetaryAmount"
               },
               "currency": {
                 "title": "Currency",
                 "description": "The currency of the fee.",
                 "type": "string",
-                "example": "USD"
+                "examples": ["USD"]
               }
             },
             "required": ["value", "currency"]
@@ -1533,7 +1541,7 @@
           "limit": {
             "title": "Limit",
             "description": "How many records the current page is limited to.",
-            "example": 100,
+            "examples": [100],
             "type": "integer"
           }
         }
@@ -1545,13 +1553,13 @@
           "after": {
             "title": "After",
             "description": "Cursor to query the next page.",
-            "example": "A-789",
+            "examples": ["A-789"],
             "type": "string"
           },
           "before": {
             "title": "Before",
             "description": "Cursor to query the previous page.",
-            "example": "A-123",
+            "examples": ["A-123"],
             "type": "string"
           }
         }
@@ -1587,7 +1595,7 @@
             "title": "Value",
             "description": "The code for the product the end user will get when redeeming their payout link.",
             "minLength": 1,
-            "example": "AMZ-US",
+            "examples": ["AMZ-US"],
             "type": "string"
           }
         },
@@ -1597,10 +1605,12 @@
         "title": "Single",
         "required": ["type", "value"],
         "type": "object",
-        "example": {
-          "type": "SINGLE",
-          "value": "AMZ-US"
-        },
+        "examples": [
+          {
+            "type": "SINGLE",
+            "value": "AMZ-US"
+          }
+        ],
         "properties": {
           "type": {
             "type": "string",
@@ -1610,7 +1620,7 @@
             "title": "Value",
             "description": "The code for the product the end user will get when redeeming their payout link.",
             "minLength": 1,
-            "example": "AMZ-US",
+            "examples": ["AMZ-US"],
             "type": "string"
           },
           "usage_config": {
@@ -1630,7 +1640,7 @@
             "description": "Identifier of a Runa-authored MCC-rules template applied to the issued card.\n\nOnly applicable to prepaid Visa cards. A single template is applied per card, with multiple rules that either allows or blocks transactions for a given merchant category bundled inside that one template.",
             "type": "string",
             "pattern": "^PSR-[0-9A-HJKMNP-TV-Z]{26}$",
-            "example": "PSR-XXXXXXXXXXXXXXXXXXXXXXXXXX"
+            "examples": ["PSR-XXXXXXXXXXXXXXXXXXXXXXXXXX"]
           }
         }
       },
@@ -1646,7 +1656,7 @@
           "values": {
             "title": "Values",
             "description": "The codes for the products the end user can choose from when redeeming their payout link. All products _must_ use the same currency.",
-            "example": ["AMZ-US", "AIRBNB-US"],
+            "examples": [["AMZ-US", "AIRBNB-US"]],
             "minItems": 2,
             "type": "array",
             "items": {
@@ -1679,7 +1689,7 @@
           "product_code": {
             "type": "string",
             "description": "The code of the product that was updated.",
-            "example": "XYZ-US"
+            "examples": ["XYZ-US"]
           },
           "old_state": {
             "description": "The state of the product before the update.",
@@ -1753,13 +1763,13 @@
             "title": "Type",
             "description": "The type of error encountered.",
             "type": "string",
-            "example": "value_error.number.not_ge"
+            "examples": ["value_error.number.not_ge"]
           },
           "message": {
             "title": "Message",
             "description": "A human readable summary of the error.",
             "type": "string",
-            "example": "ensure this value is greater than or equal to 1"
+            "examples": ["ensure this value is greater than or equal to 1"]
           },
           "location": {
             "title": "Location",
@@ -1768,7 +1778,7 @@
             "items": {
               "type": "string"
             },
-            "example": ["items", "0", "face_value"]
+            "examples": [["items", "0", "face_value"]]
           }
         },
         "description": "A single validation error. The type indicates the error type and the message provides a human readable summary of the error. The location provides a path to the key in the request body."
@@ -1782,19 +1792,21 @@
             "title": "Type",
             "description": "An error code or type.",
             "type": "string",
-            "example": "validation_error"
+            "examples": ["validation_error"]
           },
           "message": {
             "title": "Message",
             "description": "A human readable summary of the error.",
             "type": "string",
-            "example": "There were one or more problems processing your request, see details key."
+            "examples": [
+              "There were one or more problems processing your request, see details key."
+            ]
           },
           "help": {
             "title": "Help",
             "description": "Additional information that pertains to the error. `null` when there is nothing further to add.",
             "type": ["string", "null"],
-            "example": null
+            "examples": [null]
           },
           "details": {
             "title": "Details",
@@ -1814,12 +1826,12 @@
           "name": {
             "type": "string",
             "description": "The name of the product.",
-            "example": "Example Merchant"
+            "examples": ["Example Merchant"]
           },
           "code": {
             "type": "string",
             "description": "A unique code identifying the product. Use this code when placing an order. \n\n_For `subscription` products, this code identifies the top level product. You must use the `subscription_plan_code` instead when ordering._",
-            "example": "XYZ-US"
+            "examples": ["XYZ-US"]
           },
           "currency": {
             "description": "The currency of the product, represented by an ISO 4217 currency code. See [currencies](/reference/currencies) for a list of supported currencies.",
@@ -1829,7 +1841,7 @@
             "type": "string",
             "enum": ["LIVE", "TEMPORARILY_DISABLED", "TEMPORARILY_DEGRADED"],
             "description": "The current state of the product.",
-            "example": "LIVE"
+            "examples": ["LIVE"]
           },
           "is_orderable": { "$ref": "#/components/schemas/ProductIsOrderable" },
           "payout_type": {
@@ -1843,7 +1855,7 @@
               "type": "string"
             },
             "description": "List of the categories that the product belongs to. You can fetch the list of categories using the [`GET /product/categories` endpoint](/reference/2024-02-05/endpoint/products/categories).",
-            "example": ["food-and-drink", "entertainment"]
+            "examples": [["food-and-drink", "entertainment"]]
           },
           "countries_redeemable_in": {
             "type": "array",
@@ -1853,7 +1865,7 @@
               "description": "ISO 3166 ALPHA-2 country code"
             },
             "description": "Countries where the payout can be spent.",
-            "example": ["US"]
+            "examples": [["US"]]
           },
           "customer_service": {
             "$ref": "#/components/schemas/ProductCustomerService"
@@ -1865,7 +1877,7 @@
             "type": "string",
             "enum": ["stocked", "realtime"],
             "description": "The availability type of the product.",
-            "example": "realtime"
+            "examples": ["realtime"]
           },
           "gift_card": {
             "description": "Specific details about the gift card product, only populated when the `payout_type` is `gift_card`.",
@@ -1931,7 +1943,7 @@
             "type": ["string", "null"],
             "format": "uri",
             "description": "URL to check the gift card balance. This will be a provider specific URL that a consumer can use to check the balance of the gift card.",
-            "example": "https://merchant.example.com/balance-check"
+            "examples": ["https://merchant.example.com/balance-check"]
           },
           "content_resources": {
             "$ref": "#/components/schemas/ContentResources"
@@ -1943,13 +1955,13 @@
             "description": "Defines where the gift card can be redeemed. Options are `all` for both online and in-store, `in-store` for in-store only, and `online` for online only.",
             "type": "string",
             "enum": ["all", "online", "in-store"],
-            "example": "all"
+            "examples": ["all"]
           },
           "website_url": {
             "description": "The URL of the website for the product. This is the URL that a consumer can use to either redeem the payout or view details about where they can redeem the payout.",
             "type": ["string", "null"],
             "format": "uri",
-            "example": "https://merchant.example.com"
+            "examples": ["https://merchant.example.com"]
           },
           "barcode_format": {
             "type": ["string", "null"],
@@ -1965,13 +1977,13 @@
               null
             ],
             "description": "The barcode format of the product.",
-            "example": "code-128"
+            "examples": ["code-128"]
           },
           "e_code_usage_type": {
             "type": "string",
             "enum": ["undefined", "url-recommended", "url-only", "code"],
             "description": "The e-code usage type of the product.",
-            "example": "url-only"
+            "examples": ["url-only"]
           }
         }
       },
@@ -1982,27 +1994,27 @@
             "description": "The unit of time for the subscription plan. Currently `DAYS` and `MONTHS` are supported.",
             "type": "string",
             "enum": ["DAYS", "MONTHS"],
-            "example": "MONTHS"
+            "examples": ["MONTHS"]
           },
           "length": {
             "type": "integer",
             "description": "The length of the subscription plan using the `length_unit`.",
-            "example": 12
+            "examples": [12]
           },
           "name": {
             "type": "string",
             "description": "The name of the subscription plan.",
-            "example": "3 month subscription"
+            "examples": ["3 month subscription"]
           },
           "price": {
             "description": "The price of the subscription plan.",
-            "example": "10.00",
+            "examples": ["10.00"],
             "$ref": "#/components/schemas/MonetaryAmount"
           },
           "subscription_plan_code": {
             "description": "Use this code during order creation, rather than the top level `code`.",
             "type": "string",
-            "example": "XYZ-US-SUB-1"
+            "examples": ["XYZ-US-SUB-1"]
           }
         }
       },
@@ -2046,13 +2058,13 @@
           "phone_number": {
             "type": ["string", "null"],
             "description": "The customer service phone number.",
-            "example": "+1234567890"
+            "examples": ["+1234567890"]
           },
           "website_url": {
             "type": ["string", "null"],
             "format": "uri",
             "description": "The customer service website URL.",
-            "example": "https://merchant.example.com/customer-service"
+            "examples": ["https://merchant.example.com/customer-service"]
           }
         }
       },
@@ -2064,7 +2076,7 @@
             "type": "string",
             "enum": ["open", "fixed"],
             "description": "The type of denomination. Can be `open` or `fixed`. `open` is any amount between the minimum and maximum value. `fixed` is limited to those returned in the `available_list`.",
-            "example": "fixed"
+            "examples": ["fixed"]
           },
           "minimum_value": {
             "$ref": "#/components/schemas/ProductMinimumValue"
@@ -2076,7 +2088,7 @@
             "type": ["array", "null"],
             "items": { "$ref": "#/components/schemas/MonetaryAmount" },
             "description": "A list of available denominations for the product. Will be `null` if the `type` is `open`.",
-            "example": ["10.00", "20.00", "50.00", "100.00"]
+            "examples": [["10.00", "20.00", "50.00", "100.00"]]
           }
         }
       },
@@ -2086,12 +2098,12 @@
           "date_policy": {
             "type": ["string", "null"],
             "description": "Text description of the policy, suitable for displaying to the customer.",
-            "example": "Expires 2 years from issue date"
+            "examples": ["Expires 2 years from issue date"]
           },
           "in_months": {
             "type": "integer",
             "description": "Specifies the number of months until the gift expires.",
-            "example": 12
+            "examples": [12]
           },
           "type": {
             "type": "string",
@@ -2103,7 +2115,7 @@
               "indefinite",
               "do-not-show"
             ],
-            "example": "from-issue-date"
+            "examples": ["from-issue-date"]
           }
         }
       },
@@ -2115,29 +2127,31 @@
         "type": "string",
         "pattern": "^[0-9]+\\.[0-9]{1,4}$",
         "description": "The discount multiplier used when ordering. `0` means no discount and `0.1` means 10% discount. The discount is applied on the price of the order item before any fees are applied.",
-        "example": "0.05"
+        "examples": ["0.05"]
       },
       "ProductMinimumValue": {
         "description": "The minimum denomination value available for the product.",
-        "example": "10.00",
+        "examples": ["10.00"],
         "$ref": "#/components/schemas/MonetaryAmount"
       },
       "ProductMaximumValue": {
         "description": "The maximum denomination value available for the product.",
-        "example": "100.00",
+        "examples": ["100.00"],
         "$ref": "#/components/schemas/MonetaryAmount"
       },
       "ProductIconImageUrl": {
         "type": "string",
         "format": "uri",
         "description": "The URL of the icon image for the product. Includes a `v` query parameter that changes whenever the underlying image content changes - treat the full URL, including the query string, as the cache key and re-fetch when it changes.",
-        "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-icon.png?v=1690000000"
+        "examples": [
+          "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-icon.png?v=1690000000"
+        ]
       },
       "ProductPrimaryColor": {
         "type": "string",
         "pattern": "^#[0-9A-Fa-f]{6}$",
         "description": "The primary color of the product.",
-        "example": "#000000"
+        "examples": ["#000000"]
       },
       "ProductAssets": {
         "title": "Product assets",
@@ -2148,18 +2162,22 @@
             "type": ["string", "null"],
             "format": "uri",
             "description": "The URL of the card image for the product. Includes a `v` query parameter that changes whenever the underlying image content changes - treat the full URL, including the query string, as the cache key and re-fetch when it changes.",
-            "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-card.png?v=1690000000"
+            "examples": [
+              "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-card.png?v=1690000000"
+            ]
           },
           "icon_image_url": {
             "type": ["string", "null"],
             "format": "uri",
             "description": "The URL of the icon image for the product. Includes a `v` query parameter that changes whenever the underlying image content changes - treat the full URL, including the query string, as the cache key and re-fetch when it changes.",
-            "example": "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-icon.png?v=1690000000"
+            "examples": [
+              "https://gift.runa.io/static/product_assets/XYZ-US/XYZ-US-icon.png?v=1690000000"
+            ]
           },
           "primary_color": {
             "type": ["string", "null"],
             "pattern": "^#[0-9A-Fa-f]{6}$",
-            "example": "#000000"
+            "examples": ["#000000"]
           }
         }
       },
@@ -2167,7 +2185,7 @@
         "type": "string",
         "description": "What locale the content resources are in. This is an [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag) using an underscore to separate the language and country codes.",
         "pattern": "^[a-z]{2}_[A-Z]{2}$",
-        "example": "en_US"
+        "examples": ["en_US"]
       },
       "ContentResources": {
         "title": "Content resources",
@@ -2197,43 +2215,57 @@
             "type": "string",
             "format": "uri",
             "description": "A URL pointing to a markdown file that contains the description of the resource.",
-            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/description.md"
+            "examples": [
+              "https://d2abcdef.cloudfront.net/resources/XYZ-US/description.md"
+            ]
           },
           "disclaimer_markdown_url": {
             "type": ["string", "null"],
             "format": "uri",
             "description": "A URL pointing to a markdown file that contains the disclaimer information.",
-            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/disclaimer_markdown.md"
+            "examples": [
+              "https://d2abcdef.cloudfront.net/resources/XYZ-US/disclaimer_markdown.md"
+            ]
           },
           "refund_policy_markdown_url": {
             "type": ["string", "null"],
             "format": "uri",
             "description": "A URL pointing to a markdown file that outlines the refund policy, if applicable.",
-            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/refund_policy_markdown.md"
+            "examples": [
+              "https://d2abcdef.cloudfront.net/resources/XYZ-US/refund_policy_markdown.md"
+            ]
           },
           "reissuance_policy_markdown_url": {
             "type": ["string", "null"],
             "format": "uri",
             "description": "A URL pointing to a markdown file that details the reissuance policy for the resource.",
-            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/reissuance_policy_markdown.md"
+            "examples": [
+              "https://d2abcdef.cloudfront.net/resources/XYZ-US/reissuance_policy_markdown.md"
+            ]
           },
           "terms_buyer_markdown_url": {
             "type": ["string", "null"],
             "format": "uri",
             "description": "A URL pointing to a markdown file that contains the terms and conditions applicable to buyers.",
-            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/terms_buyer.md"
+            "examples": [
+              "https://d2abcdef.cloudfront.net/resources/XYZ-US/terms_buyer.md"
+            ]
           },
           "terms_consumer_markdown_url": {
             "type": ["string", "null"],
             "format": "uri",
             "description": "A URL pointing to a markdown file that contains the terms and conditions applicable to consumers.",
-            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/terms_consumer.md"
+            "examples": [
+              "https://d2abcdef.cloudfront.net/resources/XYZ-US/terms_consumer.md"
+            ]
           },
           "redemption_instructions_markdown_url": {
             "type": ["string", "null"],
             "format": "uri",
             "description": "A URL pointing to a markdown file that provides instructions for redeeming the resource.",
-            "example": "https://d2abcdef.cloudfront.net/resources/XYZ-US/redeem_markdown.md"
+            "examples": [
+              "https://d2abcdef.cloudfront.net/resources/XYZ-US/redeem_markdown.md"
+            ]
           },
           "locale": { "$ref": "#/components/schemas/ContentResourcesLocale" }
         }
