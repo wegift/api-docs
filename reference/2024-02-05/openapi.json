@@ -197,7 +197,14 @@
                           {
                             "$ref": "#/components/schemas/ProcessingOrder"
                           }
-                        ]
+                        ],
+                        "discriminator": {
+                          "propertyName": "status",
+                          "mapping": {
+                            "COMPLETED": "#/components/schemas/OrderSummary",
+                            "PROCESSING": "#/components/schemas/ProcessingOrder"
+                          }
+                        }
                       }
                     },
                     "pagination": {
@@ -317,7 +324,14 @@
                     {
                       "$ref": "#/components/schemas/ProcessingOrder"
                     }
-                  ]
+                  ],
+                  "discriminator": {
+                    "propertyName": "status",
+                    "mapping": {
+                      "COMPLETED": "#/components/schemas/Order",
+                      "PROCESSING": "#/components/schemas/ProcessingOrder"
+                    }
+                  }
                 }
               }
             }
@@ -644,7 +658,14 @@
                 "oneOf": [
                   { "$ref": "#/components/schemas/CompletedOrderWebhook" },
                   { "$ref": "#/components/schemas/FailedOrderWebhook" }
-                ]
+                ],
+                "discriminator": {
+                  "propertyName": "status",
+                  "mapping": {
+                    "COMPLETED": "#/components/schemas/CompletedOrderWebhook",
+                    "FAILED": "#/components/schemas/FailedOrderWebhook"
+                  }
+                }
               }
             }
           }
