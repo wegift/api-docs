@@ -1531,7 +1531,7 @@
               "value": {
                 "title": "Value",
                 "description": "The value of the fee.",
-                "examples": ["0.00"],
+                "examples": ["0.02"],
                 "$ref": "#/components/schemas/MonetaryAmount"
               },
               "currency": {
