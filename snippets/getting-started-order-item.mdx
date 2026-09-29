@@ -1,6 +1,6 @@
 <Columns cols={2}>
 <div>
-  <ParamField body="face_value" type="number" required>
+  <ParamField body="face_value" type="string" required>
     Indicate the face value of the payout link you wish to order. The currency will be based on the selected product. As the product is in USD this will be $10.
   </ParamField>
 
@@ -16,7 +16,7 @@
 <div>
   ```json
   {
-    "face_value": 10,
+    "face_value": "10.00",
     "distribution_method": {
       ...
     },
