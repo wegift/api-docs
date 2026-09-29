@@ -30,7 +30,7 @@ The URL does not require an API key. The same file is maintained in the public [
 
 ## Versioning of the specification
 
-There is one specification file per dated [API version](/best-practices/api-versioning). The version is part of the URL, so the file you pin today continues to describe the contract you integrated against. The `info.version` field inside the file is the API's major version, `2.0`, which generators typically use as the package version. The dated version lives in the URL and the `X-Api-Version` header.
+There is one specification file per dated [API version](/best-practices/api-versioning). The version is part of the URL, so the file you pin today continues to describe the contract you integrated against. The `info.version` field inside the file is the dated version, `2024-02-05`, which generators typically use as the package version.
 
 Backwards-compatible changes such as new optional fields, new endpoints and new enum values are added to the existing file. Breaking changes are only ever released as a new dated version with a new URL. The [API changelog](/changelog/api) records both kinds of change.
 
@@ -50,14 +50,15 @@ Backwards-compatible changes such as new optional fields, new endpoints and new 
   </Accordion>
   <Accordion title="Set the X-Api-Version header">
     The `X-Api-Version` header is declared as an optional parameter on each
-    operation. Always send it, with the value `2024-02-05`, so your integration
-    does not depend on the default version stored against your account.
+    operation, with `2024-02-05` as its only value and default. Most generators
+    do not send header defaults, so always set it yourself. Your integration
+    then does not depend on the default version stored against your account.
   </Accordion>
   <Accordion title="Responses differ by status code">
-    Some operations return different schemas for different success codes. For
-    example `POST /order` returns the full order for `200 OK` and a minimal
-    object for `202 Accepted` in async mode. Generated clients typically expose
-    these as a union type, so handle each case.
+    `POST /order` returns the full order for `200 OK` and a minimal object for
+    `202 Accepted` in async mode, which is the default. Both codes use the same
+    `OrderCreationResult` union, so branch on `status` (`COMPLETED` or
+    `PROCESSING`) rather than the HTTP status code.
   </Accordion>
   <Accordion title="Idempotency key is required for orders">
     `POST /order` declares `X-Idempotency-Key` as a required header. Generated
