@@ -1,0 +1,229 @@
+---
+title: "Generate a client"
+description: "Use the Runa OpenAPI specification to generate typed clients"
+icon: "code"
+---
+
+The [OpenAPI specification](/reference/2024-02-05/openapi) for the Runa API lets you generate a typed client, request and response models, or schema validators rather than hand-writing them. This page shows the tools we have tested with the specification, and the versions we tested. Other OpenAPI 3.1 tools may work, but support for 3.1 varies between generators, so check the output compiles and handles the responses described below.
+
+```
+https://api.runa.io/v2/openapi/2024-02-05.json
+```
+
+## Fetch and pin the specification
+
+Commit a copy of the specification to your repository rather than fetching it at build time. This keeps your builds reproducible and lets you review changes to the contract as part of your normal code review.
+
+```bash
+curl -o openapi/runa-2024-02-05.json https://api.runa.io/v2/openapi/2024-02-05.json
+```
+
+Re-fetch when you want to pick up [backwards-compatible additions](/best-practices/api-versioning#backwards-compatible-changes) and check the diff before regenerating.
+
+## Generate a client
+
+<Tabs>
+  <Tab title="TypeScript">
+    [openapi-typescript](https://openapi-ts.dev) generates types only, and [openapi-fetch](https://openapi-ts.dev/openapi-fetch/) is a small typed wrapper around `fetch` that uses them.
+
+    ```bash
+    npm install --save-dev openapi-typescript@7.13 typescript@^5
+    npm install openapi-fetch@0.17
+    npx openapi-typescript openapi/runa-2024-02-05.json -o src/runa/schema.d.ts
+    ```
+
+    openapi-typescript 7 does not support TypeScript 7, so keep `typescript` on version 5.
+
+    ```typescript
+    import createClient from "openapi-fetch";
+    import type { paths } from "./runa/schema.js";
+
+    const apiKey = process.env.RUNA_API_KEY;
+    if (!apiKey) {
+      throw new Error("RUNA_API_KEY is not set");
+    }
+
+    const runa = createClient<paths>({
+      baseUrl: "https://playground.runa.io/v2",
+      headers: {
+        "X-Api-Key": apiKey,
+        "X-Api-Version": "2024-02-05",
+      },
+    });
+
+    const { data, error } = await runa.GET("/product", {
+      params: { query: { countries_redeemable_in: ["GB"] } },
+    });
+    ```
+
+    Check the API key before creating the client. openapi-fetch silently omits a header whose value is `undefined`, so a missing key only shows up as an authentication error. The `.js` extension on the import is required with `"moduleResolution": "nodenext"`.
+
+  </Tab>
+  <Tab title="Python">
+    [openapi-python-client](https://github.com/openapi-generators/openapi-python-client) generates a package with typed models and sync and async clients.
+
+    ```bash
+    uvx openapi-python-client@0.29.1 generate --path openapi/runa-2024-02-05.json --output-path runa_client
+    pip install ./runa_client
+    ```
+
+    The generated package is named `runa_api_client`, derived from the specification's title.
+
+    ```python
+    import os
+
+    from runa_api_client import Client
+    from runa_api_client.api.products import list_products
+
+    client = Client(
+        base_url="https://playground.runa.io/v2",
+        headers={
+            "X-Api-Key": os.environ["RUNA_API_KEY"],
+            "X-Api-Version": "2024-02-05",
+        },
+    )
+
+    products = list_products.sync(client=client, countries_redeemable_in=["GB"])
+    ```
+
+    Use `Client` with the headers shown rather than `AuthenticatedClient`, which sends the key as a `Bearer` token in the `Authorization` header instead of `X-Api-Key`. Function names are derived from the operation IDs and module names from the tags, so check the generated `api` package for the exact names.
+
+  </Tab>
+  <Tab title="Go">
+    [oapi-codegen](https://github.com/oapi-codegen/oapi-codegen) generates models and a client that wraps `net/http`. Use version 2.8.0 or later, as earlier versions cannot read the specification.
+
+    Save this configuration as `oapi-codegen.yaml`. The `skip-prune` option keeps the webhook payload schemas, which the generated client refers to.
+
+    ```yaml
+    package: runa
+    generate:
+      models: true
+      client: true
+    output-options:
+      skip-prune: true
+    output: runa/client.gen.go
+    ```
+
+    ```bash
+    go get -tool github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.8.0
+    go tool oapi-codegen -config oapi-codegen.yaml openapi/runa-2024-02-05.json
+    ```
+
+    ```go
+    client, err := runa.NewClientWithResponses(
+        "https://playground.runa.io/v2",
+        runa.WithRequestEditorFn(func(ctx context.Context, req *http.Request) error {
+            req.Header.Set("X-Api-Key", os.Getenv("RUNA_API_KEY"))
+            req.Header.Set("X-Api-Version", "2024-02-05")
+            return nil
+        }),
+    )
+    ```
+
+    `NewClientWithResponses` returns typed response bodies, for example `JSON200` and `JSON202`, rather than a raw `*http.Response`.
+
+  </Tab>
+  <Tab title="Other languages">
+    [OpenAPI Generator](https://openapi-generator.tech) supports Java, C#, Kotlin, Ruby, PHP, Rust and many more. We have tested the Java generator, which needs JDK 17 or later and Maven or Gradle to build.
+
+    ```bash
+    OPENAPI_GENERATOR_VERSION=7.25.0 npx @openapitools/openapi-generator-cli generate \
+      -i openapi/runa-2024-02-05.json \
+      -g java \
+      -o runa-client \
+      --additional-properties=disallowAdditionalPropertiesIfNotPresent=false,useOneOfDiscriminatorLookup=true
+    ```
+
+    `disallowAdditionalPropertiesIfNotPresent=false` lets the client accept fields added to responses in [backwards-compatible changes](/best-practices/api-versioning#backwards-compatible-changes), and `useOneOfDiscriminatorLookup=true` selects the right order type from its `status`.
+
+    Monetary amounts such as `face_value` are generated as `BigDecimal` and serialised as JSON numbers. The API expects decimal strings, for example `"10.00"`, so configure your JSON serialiser to write `BigDecimal` as a string.
+
+    Other generators are listed in the [OpenAPI Generator documentation](https://openapi-generator.tech/docs/generators). Their support for OpenAPI 3.1 varies, so check the generated client compiles and handles the order responses described below.
+
+  </Tab>
+</Tabs>
+
+## Configure the generated client
+
+Generators produce a client that mirrors the specification. You still need to wire in the conventions of the Runa API.
+
+<Steps>
+  <Step title="Set the base URL explicitly">
+    The specification lists the playground server first, so generated clients
+    often default to it. Configure `https://playground.runa.io/v2` while
+    developing and `https://api.runa.io/v2` in production. Playground and
+    production use [different API keys](/getting-started/environments).
+  </Step>
+  <Step title="Send the authentication and version headers on every request">
+    Set `X-Api-Key` to your key and `X-Api-Version` to `2024-02-05`. Most
+    generators offer a default-headers or request-interceptor hook so you set
+    these once. The specification declares `2024-02-05` as the default for
+    `X-Api-Version`, but most generators do not send header defaults, so set it
+    yourself. See [authentication](/best-practices/authentication) and [API
+    versioning](/best-practices/api-versioning).
+  </Step>
+  <Step title="Supply an idempotency key when ordering">
+    `POST /order` requires the `X-Idempotency-Key` header. Generate a key per
+    logical order and reuse it on retries. See
+    [idempotency](/best-practices/idempotency).
+  </Step>
+  <Step title="Handle both order responses">
+    `POST /order` is asynchronous by default and returns `202 Accepted` with a
+    minimal order whose `status` is `PROCESSING`. With `X-Execution-Mode: sync`
+    it returns `200 OK` with the full order and a `status` of `COMPLETED`. Both
+    status codes use the same `OrderCreationResult` type, a union of the two
+    shapes, so branch on `status` rather than the HTTP status code.
+  </Step>
+  <Step title="Handle errors">
+    Most errors use the `APIErrorResponse` structure, but request validation
+    errors can return `422` with a `ValidationErrorResponse`. Handle both, and
+    fall back to the HTTP status code when a body does not match either. See
+    [handling errors](/best-practices/handling-errors).
+  </Step>
+  <Step title="Add retries and respect rate limits">
+    Generated clients rarely retry. Wrap calls with a retry policy that honours
+    the [rate limits](/best-practices/rate-limits) and only retries orders with
+    the same idempotency key.
+  </Step>
+</Steps>
+
+## Validate without generating a client
+
+If you prefer to keep your own HTTP layer, use the JSON Schemas under `components.schemas` to validate request bodies before sending them and to check responses in tests. Any JSON Schema validator that supports the 2020-12 draft works, for example [Ajv](https://ajv.js.org) for JavaScript or [jsonschema](https://python-jsonschema.readthedocs.io) for Python.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card
+    title="Use an API client"
+    icon="paper-plane"
+    href="/tooling/api-clients"
+    arrow
+  >
+    Import the specification into Postman, Insomnia or Bruno.
+  </Card>
+  <Card
+    title="OpenAPI specification"
+    icon="file-code"
+    href="/reference/2024-02-05/openapi"
+    arrow
+  >
+    The reference page for the specification URL and caveats.
+  </Card>
+  <Card
+    title="Use the Runa API with AI agents"
+    icon="robot"
+    href="/tooling/ai-agents"
+    arrow
+  >
+    Coding assistants and runtime agents.
+  </Card>
+  <Card
+    title="Before you go live"
+    icon="star"
+    href="/best-practices/before-you-go-live"
+    arrow
+  >
+    Reliability and security checks for your integration.
+  </Card>
+</CardGroup>
