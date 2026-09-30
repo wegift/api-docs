@@ -1,0 +1,98 @@
+---
+title: "Use an API client"
+description: "Import the Runa OpenAPI specification into Postman, Insomnia or Bruno"
+icon: "paper-plane"
+---
+
+Import the [OpenAPI specification](/reference/2024-02-05/openapi) into an API client such as [Postman](https://www.postman.com), [Insomnia](https://insomnia.rest) or [Bruno](https://www.usebruno.com) to get a ready-made collection with a request for every endpoint. It is the quickest way to explore the API without writing code, and to reproduce a request when you are debugging your integration.
+
+```
+https://api.runa.io/v2/openapi/2024-02-05.json
+```
+
+## Import the specification
+
+Each client can import an OpenAPI document from a URL or a file. Use the URL above, or a copy you have [pinned in your repository](/tooling/openapi-codegen#fetch-and-pin-the-specification) if you want the collection to match the version your code was generated from.
+
+<Tabs>
+  <Tab title="Postman">
+    Select **Import**, paste the specification URL and choose to import it as a
+    collection.
+  </Tab>
+  <Tab title="Insomnia">
+    Create a project, select **Import** and paste the specification URL.
+  </Tab>
+  <Tab title="Bruno">
+    Select **Import Collection**, choose **OpenAPI V3 Spec** and select the
+    specification URL or file.
+  </Tab>
+</Tabs>
+
+The exact menu names change between releases, so check your client's documentation if they differ.
+
+## Configure the collection
+
+<Steps>
+  <Step title="Use the playground">
+    The specification lists the playground server first, so imported requests
+    usually point at `https://playground.runa.io/v2`. Keep them there while you
+    explore. The [playground](/reference/2024-02-05/playground) accepts orders
+    without spending real money.
+  </Step>
+  <Step title="Store your API key as a secret variable">
+    Create an environment with a secret variable for a playground API key, and
+    reference it from the `X-Api-Key` header. Avoid putting the key directly in
+    the collection, so it is not exported or shared with it. See
+    [authentication](/best-practices/authentication).
+  </Step>
+  <Step title="Set the version header on the collection">
+    Set `X-Api-Version: 2024-02-05` as a collection-level header so every
+    request uses the version the specification describes. See [API
+    versioning](/best-practices/api-versioning).
+  </Step>
+  <Step title="Generate an idempotency key per order">
+    `POST /order` requires `X-Idempotency-Key`. Use your client's UUID
+    generator, for example the `$guid` dynamic variable in Postman, so each new
+    order gets a fresh key. Resending a request with the same key returns the
+    original order instead of placing a new one. See
+    [idempotency](/best-practices/idempotency).
+  </Step>
+</Steps>
+
+<Warning>
+  Only use a production API key in an API client when you need to, and remove it
+  afterwards. Requests made with a production key create real orders.
+</Warning>
+
+## Keep the collection up to date
+
+An imported collection is a snapshot. Re-import the specification to pick up [backwards-compatible additions](/best-practices/api-versioning#backwards-compatible-changes) such as new endpoints and fields.
+
+## Related
+
+<CardGroup cols={3}>
+  <Card
+    title="OpenAPI specification"
+    icon="file-code"
+    href="/reference/2024-02-05/openapi"
+    arrow
+  >
+    The reference page for the specification URL and caveats.
+  </Card>
+  <Card
+    title="Generate a client"
+    icon="code"
+    href="/tooling/openapi-codegen"
+    arrow
+  >
+    Typed clients and validators from the specification.
+  </Card>
+  <Card
+    title="Playground"
+    icon="flask"
+    href="/reference/2024-02-05/playground"
+    arrow
+  >
+    Test orders without spending real money.
+  </Card>
+</CardGroup>

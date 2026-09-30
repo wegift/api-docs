@@ -56,7 +56,11 @@
           },
           {
             "group": "Tooling",
-            "pages": ["tooling/openapi-codegen", "tooling/ai-agents"]
+            "pages": [
+              "tooling/api-clients",
+              "tooling/openapi-codegen",
+              "tooling/ai-agents"
+            ]
           },
           {
             "group": "Features",

@@ -191,13 +191,17 @@ Generators produce a client that mirrors the specification. You still need to wi
 
 If you prefer to keep your own HTTP layer, use the JSON Schemas under `components.schemas` to validate request bodies before sending them and to check responses in tests. Any JSON Schema validator that supports the 2020-12 draft works, for example [Ajv](https://ajv.js.org) for JavaScript or [jsonschema](https://python-jsonschema.readthedocs.io) for Python.
 
-## Import into an API client
-
-Postman, Insomnia and Bruno can all import the specification URL directly, giving you a ready-made collection for every endpoint. Set `X-Api-Key` and `X-Api-Version` as collection-level headers and use a playground key.
-
 ## Related
 
-<CardGroup cols={3}>
+<CardGroup cols={2}>
+  <Card
+    title="Use an API client"
+    icon="paper-plane"
+    href="/tooling/api-clients"
+    arrow
+  >
+    Import the specification into Postman, Insomnia or Bruno.
+  </Card>
   <Card
     title="OpenAPI specification"
     icon="file-code"
