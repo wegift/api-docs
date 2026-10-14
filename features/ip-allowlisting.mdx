@@ -1,0 +1,86 @@
+---
+title: "IP allowlisting"
+description: "Restrict access to your account to the IP addresses you trust"
+icon: "network-wired"
+---
+
+IP allowlisting lets you restrict access to your Runa account to a list of IP addresses that you control. Requests from IP addresses that aren't on your allowlist are treated as unknown, which helps protect your account if an API key is leaked or stolen.
+
+You manage your allowlist yourself in the Runa Web App, so you don't need to contact Runa support to make changes.
+
+## Before you start
+
+- **Only account owners can manage the allowlist.** Other users on your account can't view or change it.
+- **You may be asked to confirm multi-factor authentication (MFA).** If you last confirmed MFA more than 5 minutes ago, you are asked to confirm it again before you can make a change.
+- **Only individual IPv4 addresses are supported.** IPv6 addresses, CIDR ranges (for example `203.0.113.0/24`) and hostnames are not accepted.
+- **The allowlist applies to your whole account.** You can't scope entries to a specific API key or user.
+- **An empty allowlist has no effect.** If you have no addresses on your allowlist, requests from any IP address are accepted.
+
+## How changes take effect
+
+To protect you if someone gains access to your account, changes that would widen or loosen access don't apply straight away. Additions and removals of active addresses take effect **24 hours** after you make them. This gives you time to spot and undo a change you didn't expect.
+
+Each address on your allowlist is in one of these states:
+
+| State           | What it means                                                                                                                      |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Pending         | The address was added less than 24 hours ago. It isn't trusted yet. It becomes active automatically when the 24 hours have passed. |
+| Active          | The address is trusted.                                                                                                            |
+| Pending removal | The address was removed less than 24 hours ago. It's still trusted until the 24 hours have passed, then it's removed.              |
+
+You don't need to take any manual step to activate or remove an address once the 24 hours have passed.
+
+## Adding an IP address
+
+<Steps>
+  <Step title="Open the IP Allowlisting page">
+    Sign in to the [Runa Web App](https://app.runa.io) as an account owner and
+    select **IP Allowlisting** in the sidebar.
+  </Step>
+  <Step title="Enter the address">
+    Enter the IPv4 address, for example `203.0.113.42`. You can add an optional
+    label, such as `Production server 1`, to help you recognize the address
+    later.
+  </Step>
+  <Step title="Add it to your allowlist">
+    Select **Add to allowlist**. The address appears in the list as pending and
+    becomes active 24 hours later.
+  </Step>
+</Steps>
+
+Each IP address can appear on your allowlist only once.
+
+<Tip>
+  If you haven't added any addresses yet, a banner in the Runa Web App links you
+  to the IP Allowlisting page. It goes away once you add your first address.
+</Tip>
+
+## Cancelling a pending addition
+
+If you added an address by mistake, select **Remove** next to it while it's still pending. The address is removed **immediately**, because it was never trusted.
+
+## Removing an active IP address
+
+Select **Remove** next to an active address. It changes to pending removal and is still trusted for **24 hours**, after which it's removed.
+
+While an address is pending removal, you can't add the same address again.
+
+## Planning changes to your infrastructure
+
+Because new addresses take 24 hours to become active, plan ahead when your outbound IP addresses change.
+
+- **Add new addresses at least 24 hours before you need them**, for example before you move to a new hosting provider, data center, or NAT gateway.
+- **Remove old addresses only after your traffic has moved.** Removed addresses stay trusted for 24 hours, so you can remove them as soon as the migration is complete.
+- **Include every address your requests can come from.** If your servers make requests through a load balancer, proxy, or NAT gateway, add the public IP addresses that Runa sees, not your servers' private addresses.
+- **Use static IP addresses.** If your hosting provider can change your outbound IP addresses without notice, allowlisting can disrupt your integration.
+
+## Related pages
+
+<CardGroup cols={2}>
+  <Card title="Security" icon="shield" href="/best-practices/security">
+    Best practices for securing your integration and your API keys.
+  </Card>
+  <Card title="Authentication" icon="key" href="/best-practices/authentication">
+    How to generate and use API keys.
+  </Card>
+</CardGroup>
