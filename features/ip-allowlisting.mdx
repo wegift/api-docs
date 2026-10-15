@@ -1,12 +1,14 @@
 ---
 title: "IP allowlisting"
-description: "Restrict access to your account to the IP addresses you trust"
+description: "Restrict API access to your account to the IP addresses you trust"
 icon: "network-wired"
 ---
 
-IP allowlisting lets you restrict access to your Runa account to a list of IP addresses that you control. Requests from IP addresses that aren't on your allowlist are treated as unknown, which helps protect your account if an API key is leaked or stolen.
+IP allowlisting lets you restrict API access to your Runa account to a list of IP addresses that you control. API requests from IP addresses that aren't on your allowlist are treated as unknown, which helps protect your account if an API key is leaked or stolen.
 
 You manage your allowlist yourself in the Runa Web App, so you don't need to contact Runa support to make changes.
+
+<Note>IP allowlisting applies to **API requests only**.</Note>
 
 ## Before you start
 
@@ -14,7 +16,7 @@ You manage your allowlist yourself in the Runa Web App, so you don't need to con
 - **You may be asked to confirm multi-factor authentication (MFA).** If you last confirmed MFA more than 5 minutes ago, you are asked to confirm it again before you can make a change.
 - **Only individual IPv4 addresses are supported.** IPv6 addresses, CIDR ranges (for example `203.0.113.0/24`) and hostnames are not accepted.
 - **The allowlist applies to your whole account.** You can't scope entries to a specific API key or user.
-- **An empty allowlist has no effect.** If you have no addresses on your allowlist, requests from any IP address are accepted.
+- **An empty allowlist has no effect.** If you have no addresses on your allowlist, API requests from any IP address are accepted.
 
 ## How changes take effect
 
@@ -29,6 +31,12 @@ Each address on your allowlist is in one of these states:
 | Pending removal | The address was removed less than 24 hours ago. It's still trusted until the 24 hours have passed, then it's removed.              |
 
 You don't need to take any manual step to activate or remove an address once the 24 hours have passed.
+
+## Email notifications for allowlist changes
+
+Every change to your allowlist sends an email to the account owner and all admins on your account. This includes adding an address, removing an active address, and cancelling a pending addition.
+
+You can't turn these emails off.
 
 ## Adding an IP address
 
