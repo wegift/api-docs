@@ -14,7 +14,7 @@ description: "Create an API key to authenticate your requests"
 
   </Step>
   <Step title="Choose the environment">
-    You now need to choose the environment to create the API key in. For this guide we will use the **playground** environment.
+    You now need to choose the environment to create the API key in. For this guide we will use the **production** environment.
     <Frame caption="The environment modal is displayed when you click the 'Create new API key' button.">
     ![](/assets/screenshots/api-key-page-env-modal.png)
     </Frame>
@@ -26,9 +26,11 @@ description: "Create an API key to authenticate your requests"
     </Frame>
   </Step>
   <Step title="Choose the scopes">
-    Scopes control which endpoints the API key can call. Select only the scopes your integration needs. For example, a key that only places orders needs just `create:order`.
+    Scopes control which endpoints a production API key can call. Select only the scopes your integration needs. For example, a key that checks connectivity and places orders needs `read:ping` and `create:order`.
 
-    {/* TODO: add a screenshot of the scope selection, e.g. /assets/screenshots/api-key-page-scopes.png */}
+    <Frame caption="Select the scopes the API key needs.">
+    ![](/assets/screenshots/api-key-page-scopes.png)
+    </Frame>
 
     <Tip>
 
@@ -56,7 +58,7 @@ Review our [security best practices](/best-practices/security) for information o
 
 Once you have created an API key you can view it on the [API keys page](https://app.runa.io/api-keys). You can also revoke any keys from this page. You can read more in the [authentication guide](/best-practices/authentication).
 
-<Frame caption="The API keys page shows a list of all your API keys.">
+<Frame caption="The API keys page lists your keys and the scopes of each one.">
   ![](/assets/screenshots/api-key-page-success.png)
 </Frame>
 
@@ -75,7 +77,7 @@ X-Api-Key: YOUR_API_KEY
 You can verify that your API key is working correctly by making a request to the [ping endpoint](/reference/2024-02-05/endpoint/utility/ping). This is a simple health check endpoint that requires authentication but doesn't perform any other operations.
 
 ```bash
-curl -X GET https://playground.runa.io/v2/ping \
+curl -X GET https://api.runa.io/v2/ping \
   -H "X-Api-Key: YOUR_API_KEY"
 ```
 
@@ -92,7 +94,7 @@ If you receive an error, check that:
 - You've copied the entire API key correctly
 - You're using the correct environment URL (playground or production)
 - The API key hasn't been revoked
-- The API key has the `read:ping` scope. A key without the scope an endpoint requires gets a `403` error
+- The API key has the `read:ping` scope (a missing scope returns a `403`)
 
 <br />
 <Card
@@ -103,5 +105,8 @@ If you receive an error, check that:
 >
   Now that you have your API key, let's put it to use by making your first
   order. You'll learn about the different ordering modes available and choose
-  the one that best suits your needs.
+  the one that best suits your needs. The first order guide uses the playground
+  environment, so you'll need a playground key. Create one by choosing
+  **Playground key** in step 2. Playground keys don't have scopes, so there is
+  no scopes step.
 </Card>

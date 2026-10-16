@@ -43,7 +43,7 @@ You can have multiple keys for different environments or applications. You shoul
 
 ## Scopes
 
-Each API key has a set of scopes, chosen when you create the key. A scope allows the key to call a group of endpoints. A request to an endpoint whose scope the key doesn't have is rejected with a `403` [`forbidden` error](/reference/2024-02-05/errors).
+Each production API key has a set of scopes, chosen when you create the key. A scope allows the key to call a group of endpoints. A request to an endpoint whose scope the key doesn't have is rejected with a `403` [`forbidden` error](/reference/2024-02-05/errors). Playground keys don't have scopes and can call every endpoint.
 
 | Scope          | Endpoints                                                                                                                                                                                                                                                                     |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

@@ -8,7 +8,7 @@ description: "Changelog of all major API updates, new features, removals, and im
 
 ## API key scopes
 
-You can now choose scopes when you create an API key. Scopes limit which endpoints a key can call, so a key that is exposed can only be used for what its scopes allow. A request to an endpoint whose scope the key doesn't have is rejected with a `403` error.
+You can now choose scopes when you create a production API key. Scopes limit which endpoints a key can call, so a key that is exposed can only be used for what its scopes allow. A request to an endpoint whose scope the key doesn't have is rejected with a `403` error.
 
 API keys created before scopes were introduced have every scope, so no action is required. See [scopes](/best-practices/authentication#scopes) for the scope each endpoint requires.
 
