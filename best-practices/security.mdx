@@ -15,6 +15,7 @@ When you integrate with the Runa API, you are responsible for ensuring the secur
 ## Share access correctly
 
 - **Generate separate API keys for different environments, applications or users**. This allows you to revoke a key without affecting other integrations. If you need to give temporary access to a third party, create a new key for them and revoke it when they no longer need access.
+- **Give each API key only the scopes it needs**. A key with fewer [scopes](/best-practices/authentication#scopes) can do less harm if it is exposed. For example, a key used only for reporting doesn't need `create:order`.
 - **Do not share your API key over untrusted communication channels** such as email, SMS, or instant messaging applications. If you must share an API key, use encrypted technologies to share it. Ideally you should avoid sharing the key at all, instead provide access to the Runa portal where a new key can be generated.
 
 ## Limit access by IP address
