@@ -4,13 +4,15 @@ description: "Using webhooks to get real-time updates on product catalog changes
 icon: "webhook"
 ---
 
-Instead of polling the product catalog for changes, you can use the `product.update` webhook to get real-time update pushed to your system when a product is added, updated or removed from your catalog.
+Instead of polling the product catalog for changes, you can use the `product.update.v2` webhook to get real-time update pushed to your system when a product is added, updated or removed from your catalog.
 
-## How to use the `product.update` webhook
+## How to use the `product.update.v2` webhook
 
 An event is triggered when there is an update to a product in the catalog. If multiple products are updated at once, an event is triggered for each product. This can be a product being added, updated or removed from the catalog.
 
 Attempts to order a product that is no longer available or for a denomination that is no longer available will be rejected. If you subscribe to the webhook, you will receive an event for each product that is updated and can take action to avoid these rejections.
+
+Each event uses the [Standard Webhooks](https://www.standardwebhooks.com/) envelope: `type` is always `product.update.v2`, `timestamp` is when the update occurred and `data` holds the `product_code`, `old_state` and `new_state`.
 
 We won't cover the generic details of how to set up a webhook subscription, but you can read about that in the [webhook reference](/reference/webhooks).
 
@@ -26,13 +28,13 @@ We won't cover the generic details of how to set up a webhook subscription, but 
     subscription in your system.
   </Card>
   <Card
-    title="Product update webhook reference"
+    title="Product update v2 webhook reference"
     icon="money-check-pen"
-    href="/reference/2024-02-05/webhook/product.update"
+    href="/reference/2024-02-05/webhook/product.update.v2"
     horizontal
     arrow
   >
-    The specific details of the `product.update` webhook event
+    The specific details of the `product.update.v2` webhook event
   </Card>
 </CardGroup>
 
@@ -48,7 +50,7 @@ If two updates happen in quick succession, you may receive the events in the wro
 - When the product was actually made non-orderable, `is_orderable: false`.
 - The events arrived in the wrong order.
 
-Each event has a `timestamp` attached. You should store the `timestamp` and discard any events that are older than the last event you received. This will ensure that you always have the most up-to-date information about the product.
+Each event has a `timestamp` in the envelope. You should store the `timestamp` for each product and discard any events that are older than the last event you received for that product. This will ensure that you always have the most up-to-date information about the product.
 
 ### Product Availability `is_orderable`
 
@@ -57,30 +59,33 @@ Each event has a `timestamp` attached. You should store the `timestamp` and disc
 - _Action:_ Disable the product in your catalog or mark as "Unavailable"
 - _Reason:_ Orders for this product will be rejected by the ordering endpoint
 
-```json Example payload where a product becomes non-orderable {5,15} [expandable]
+```json Example payload where a product becomes non-orderable {8,18} [expandable]
 {
-  "product_code": "XYZ-US",
-  "old_state": {
-    "price_multiplier": "0.0098",
-    "is_orderable": true,
-    "denominations": {
-      "type": "fixed",
-      "available_list": ["10", "25", "50"],
-      "minimum_value": "10.0",
-      "maximum_value": "50.0"
+  "type": "product.update.v2",
+  "timestamp": "2025-08-26T18:39:27.006833Z",
+  "data": {
+    "product_code": "XYZ-US",
+    "old_state": {
+      "price_multiplier": "0.98",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["10", "25", "50"],
+        "minimum_value": "10.0",
+        "maximum_value": "50.0"
+      }
+    },
+    "new_state": {
+      "price_multiplier": "0.98",
+      "is_orderable": false,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["10", "25", "50"],
+        "minimum_value": "10.0",
+        "maximum_value": "50.0"
+      }
     }
-  },
-  "new_state": {
-    "price_multiplier": "0.0098",
-    "is_orderable": false,
-    "denominations": {
-      "type": "fixed",
-      "available_list": ["10", "25", "50"],
-      "minimum_value": "10.0",
-      "maximum_value": "50.0"
-    }
-  },
-  "timestamp": "2025-08-26T18:39:27.006833+00:00"
+  }
 }
 ```
 
@@ -89,64 +94,74 @@ Each event has a `timestamp` attached. You should store the `timestamp` and disc
 - _Action:_ Enable the product in your catalog
 - _Reason:_ Orders for this product can now be successfully processed
 
-```json Example payload where a product becomes orderable again {5,15} [expandable]
+```json Example payload where a product becomes orderable again {8,18} [expandable]
 {
-  "product_code": "XYZ-US",
-  "old_state": {
-    "price_multiplier": "0.0098",
-    "is_orderable": false,
-    "denominations": {
-      "type": "fixed",
-      "available_list": ["10", "25", "50"],
-      "minimum_value": "10.0",
-      "maximum_value": "50.0"
+  "type": "product.update.v2",
+  "timestamp": "2025-08-27T09:12:03.418290Z",
+  "data": {
+    "product_code": "XYZ-US",
+    "old_state": {
+      "price_multiplier": "0.98",
+      "is_orderable": false,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["10", "25", "50"],
+        "minimum_value": "10.0",
+        "maximum_value": "50.0"
+      }
+    },
+    "new_state": {
+      "price_multiplier": "0.98",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["10", "25", "50"],
+        "minimum_value": "10.0",
+        "maximum_value": "50.0"
+      }
     }
-  },
-  "new_state": {
-    "price_multiplier": "0.0098",
-    "is_orderable": true,
-    "denominations": {
-      "type": "fixed",
-      "available_list": ["10", "25", "50"],
-      "minimum_value": "10.0",
-      "maximum_value": "50.0"
-    }
-  },
-  "timestamp": "2025-08-26T18:39:27.006833+00:00"
+  }
 }
 ```
 
 ### Pricing Changes `price_multiplier`
+
+The `price_multiplier` is what you multiply the price of an order item by to get the price you pay, before any fees. It is 1 minus your discount, so a 10% discount gives a `price_multiplier` of `0.9`.
 
 #### When the price multiplier changes
 
 - _Action:_ Update the product pricing and discounts in your catalog
 - _Reason:_ The product's discount has changed
 
-```json Example payload where the price multiplier changes {4,14} [expandable]
+In this example the discount increases from 5% to 10%.
+
+```json Example payload where the price multiplier changes {7,17} [expandable]
 {
-  "product_code": "STARBUCKS-US",
-  "old_state": {
-    "price_multiplier": "0.0095",
-    "is_orderable": true,
-    "denominations": {
-      "type": "fixed",
-      "available_list": ["10", "25", "50"],
-      "minimum_value": "10.0",
-      "maximum_value": "50.0"
+  "type": "product.update.v2",
+  "timestamp": "2025-08-26T18:39:27.006833Z",
+  "data": {
+    "product_code": "STARBUCKS-US",
+    "old_state": {
+      "price_multiplier": "0.95",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["10", "25", "50"],
+        "minimum_value": "10.0",
+        "maximum_value": "50.0"
+      }
+    },
+    "new_state": {
+      "price_multiplier": "0.90",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["10", "25", "50"],
+        "minimum_value": "10.0",
+        "maximum_value": "50.0"
+      }
     }
-  },
-  "new_state": {
-    "price_multiplier": "0.0090",
-    "is_orderable": true,
-    "denominations": {
-      "type": "fixed",
-      "available_list": ["10", "25", "50"],
-      "minimum_value": "10.0",
-      "maximum_value": "50.0"
-    }
-  },
-  "timestamp": "2025-08-26T18:39:27.006833+00:00"
+  }
 }
 ```
 
@@ -162,30 +177,33 @@ The `denominations` object represents available values you can order for a produ
 - _Action:_ Update the product denominations in your catalog
 - _Reason:_ The product denominations have changed, orders for the removed denominations will be rejected
 
-```json Example payload where a denomination is removed {4,14} [expandable]
+```json Example payload where a denomination is removed {11,12,21,22} [expandable]
 {
-  "product_code": "XYZ-US",
-  "old_state": {
-    "price_multiplier": "0.0104",
-    "is_orderable": true,
-    "denominations": {
-      "type": "fixed",
-      "available_list": ["15", "25", "50", "100"],
-      "minimum_value": "15.0",
-      "maximum_value": "100.0"
+  "type": "product.update.v2",
+  "timestamp": "2025-08-26T18:39:27.006833Z",
+  "data": {
+    "product_code": "XYZ-US",
+    "old_state": {
+      "price_multiplier": "0.96",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["15", "25", "50", "100"],
+        "minimum_value": "15.0",
+        "maximum_value": "100.0"
+      }
+    },
+    "new_state": {
+      "price_multiplier": "0.96",
+      "is_orderable": true,
+      "denominations": {
+        "type": "fixed",
+        "available_list": ["25", "50", "100"],
+        "minimum_value": "25.0",
+        "maximum_value": "100.0"
+      }
     }
-  },
-  "new_state": {
-    "price_multiplier": "0.0104",
-    "is_orderable": true,
-    "denominations": {
-      "type": "fixed",
-      "available_list": ["25", "50", "100"],
-      "minimum_value": "25.0",
-      "maximum_value": "100.0"
-    }
-  },
-  "timestamp": "2025-08-26T18:39:27.006833+00:00"
+  }
 }
 ```
 
@@ -194,28 +212,31 @@ The `denominations` object represents available values you can order for a produ
 - _Action:_ Update the product denominations in your catalog
 - _Reason:_ The product `minimum_value` or `maximum_value` has changed, orders outside the new range will be rejected
 
-```json Example payload where minimum and maximum values change for an open denomination type {4,14} [expandable]
+```json Example payload where minimum and maximum values change for an open denomination type {11,12,20,21} [expandable]
 {
-  "product_code": "XYZ-US",
-  "old_state": {
-    "price_multiplier": "1.0",
-    "is_orderable": true,
-    "denominations": {
-      "type": "open",
-      "minimum_value": "5",
-      "maximum_value": "500"
+  "type": "product.update.v2",
+  "timestamp": "2024-04-10T17:11:26.601254Z",
+  "data": {
+    "product_code": "XYZ-US",
+    "old_state": {
+      "price_multiplier": "1.0",
+      "is_orderable": true,
+      "denominations": {
+        "type": "open",
+        "minimum_value": "5",
+        "maximum_value": "500"
+      }
+    },
+    "new_state": {
+      "price_multiplier": "1.0",
+      "is_orderable": true,
+      "denominations": {
+        "type": "open",
+        "minimum_value": "10",
+        "maximum_value": "300"
+      }
     }
-  },
-  "new_state": {
-    "price_multiplier": "1.0",
-    "is_orderable": true,
-    "denominations": {
-      "type": "open",
-      "minimum_value": "10",
-      "maximum_value": "300"
-    }
-  },
-  "timestamp": "2024-04-10T17:11:26.601254"
+  }
 }
 ```
 
