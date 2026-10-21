@@ -4,6 +4,12 @@ icon: "key"
 description: "Create an API key to authenticate your requests"
 ---
 
+<Tip>
+
+We recommend getting started in the **playground** environment. The playground lets you test your integration safely, and playground keys can call every endpoint. To create one, choose **Playground key** in step 2. When you're ready to go live, follow this guide again to create a production key.
+
+</Tip>
+
 <Steps>
   <Step title="Open the API keys page">
     Navigate to the [API section](https://app.runa.io/api-keys) within your account dashboard. Click the "Create new API key" button to generate a new API key.
@@ -27,6 +33,12 @@ description: "Create an API key to authenticate your requests"
   </Step>
   <Step title="Choose the scopes">
     Scopes control which endpoints a production API key can call. Select only the scopes your integration needs. For example, a key that checks connectivity and places orders needs `read:ping` and `create:order`.
+
+    <Note>
+
+Playground keys don't have scopes and can call every endpoint. If you're creating a playground key, there is no scopes step.
+
+</Note>
 
     <Frame caption="Select the scopes the API key needs.">
     ![](/assets/screenshots/api-key-page-scopes.png)

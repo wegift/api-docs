@@ -59,4 +59,6 @@ You can see the scopes of each key on the [API keys page](https://app.runa.io/ap
 
 ### Choosing scopes
 
-Give each key only the scopes it needs. If a key is exposed, it can then only be used for what those scopes allow. A key's scopes can't be changed after it is created, so to change them create a new key with the scopes you need and revoke the old one.
+We recommend following the [principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) and giving each key only the scopes it needs. If a key is exposed, it can then only be used for what those scopes allow. We also recommend creating a separate key for each use case, such as one key for placing orders and another for reporting, so that each key needs fewer scopes.
+
+A key's scopes can't be changed after it is created, so to change them create a new key with the scopes you need and revoke the old one.
