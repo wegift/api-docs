@@ -32,78 +32,22 @@ We currently support the following webhook events:
   <Card
     title="Order completion"
     icon="flag-checkered"
-    href="/reference/2024-02-05/webhook/order.completion.v2"
+    href="/reference/2024-02-05/webhook/order.completion"
     arrow
   >
-    The `order.completion.v2` webhook is triggered when an order has finished
+    The `order.completion` webhook is triggered when an order has finished
     processing.
   </Card>
   <Card
     title="Product update"
     icon="money-check-pen"
-    href="/reference/2024-02-05/webhook/product.update.v2"
+    href="/reference/2024-02-05/webhook/product.update"
     arrow
   >
-    The `product.update.v2` webhook is triggered when a product in the catalog
-    is updated.
+    The `product.update` webhook is triggered when a product in the catalog is
+    updated.
   </Card>
 </Columns>
-
-<Note>
-  The original
-  [`order.completion`](/reference/2024-02-05/webhook/order.completion) and
-  [`product.update`](/reference/2024-02-05/webhook/product.update) events are
-  deprecated. They are still sent, in parallel with the v2 events, and the
-  removal date will be announced in the [changelog](/changelog/api).
-</Note>
-
-## Event payloads
-
-The v2 events use the [Standard Webhooks](https://www.standardwebhooks.com/) envelope. Every payload has the same three top-level fields:
-
-- `type`: the event type, e.g. `product.update.v2`
-- `timestamp`: when the event occurred, as a UTC timestamp in RFC 3339 format
-- `data`: the event payload, which depends on the `type`
-
-```json Example product.update.v2 payload [expandable]
-{
-  "type": "product.update.v2",
-  "timestamp": "2024-04-10T17:11:26.601254Z",
-  "data": {
-    "product_code": "XYZ-US",
-    "old_state": {
-      "price_multiplier": "0.95",
-      "is_orderable": true,
-      "denominations": {
-        "type": "fixed",
-        "available_list": ["10", "25", "50"],
-        "minimum_value": "10.0",
-        "maximum_value": "50.0"
-      }
-    },
-    "new_state": {
-      "price_multiplier": "0.90",
-      "is_orderable": true,
-      "denominations": {
-        "type": "fixed",
-        "available_list": ["10", "25", "50"],
-        "minimum_value": "10.0",
-        "maximum_value": "50.0"
-      }
-    }
-  }
-}
-```
-
-Your handler should read `type` first and dispatch on it, then read the payload from `data`. Ignore any event types you don't handle; we may add new event types in the future.
-
-The deprecated v1 events are not wrapped in the envelope and carry no event type, so you can't tell them apart by payload alone.
-
-<Warning>
-  Endpoints with no event type filter (subscribed to all events) now receive the
-  v2 events alongside the v1 events. Either filter the endpoint to the event
-  types you handle, or dispatch on `type` and ignore anything else.
-</Warning>
 
 ## Adding an endpoint
 
@@ -121,7 +65,7 @@ The deprecated v1 events are not wrapped in the envelope and carry no event type
             ![Screenshot of the add new endpoint form](/assets/screenshots/webhooks-new-endpoint.png)
         </Frame>
 
-        Select the event types to receive. You can subscribe an endpoint to multiple v2 event types and dispatch on `type`. The deprecated v1 events carry no event type, so keep each v1 event type on its own dedicated endpoint. If you don't select any event types, the endpoint receives all events, both v1 and v2.
+        Select a single event type to receive. If you need to receive multiple event types, you can add multiple endpoints.
 
         <Note>
             If you don't have a URL or your service isn't quite ready to start receiving events just yet, just press the use Svix Play button to have a unique testing URL generated for you.

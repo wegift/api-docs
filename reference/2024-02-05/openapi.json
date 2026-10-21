@@ -654,58 +654,11 @@
     }
   },
   "webhooks": {
-    "order.completion.v2": {
-      "post": {
-        "summary": "Order completion v2",
-        "operationId": "orderCompletionV2Webhook",
-        "description": "Sent to your configured endpoint when an order finishes processing, whether it completed or failed. Delivered in the [Standard Webhooks](https://www.standardwebhooks.com/) envelope: dispatch on `type`, read the payload from `data` and use `timestamp` to order events. Supersedes `order.completion`. See [webhooks](/reference/webhooks) for how to configure and verify them.",
-        "security": [],
-        "requestBody": {
-          "description": "Order completion event. `data` will be one of the following schemas depending on the order status.",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/OrderCompletionV2Webhook"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
-          }
-        }
-      }
-    },
-    "product.update.v2": {
-      "post": {
-        "summary": "Product update v2",
-        "operationId": "productUpdateV2Webhook",
-        "description": "Sent to your configured endpoint when a product's orderability, price multiplier or denominations change. Delivered in the [Standard Webhooks](https://www.standardwebhooks.com/) envelope: dispatch on `type`, read the payload from `data` and use `timestamp` to order events. Supersedes `product.update`. See [webhooks](/reference/webhooks) for how to configure and verify them.",
-        "security": [],
-        "requestBody": {
-          "description": "Product update event",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ProductUpdateV2Webhook"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Return a 200 status to indicate that the data was received successfully"
-          }
-        }
-      }
-    },
     "order.completion": {
       "post": {
         "summary": "Order completion",
         "operationId": "orderCompletionWebhook",
-        "description": "Sent to your configured endpoint when an order finishes processing, whether it completed or failed. See [webhooks](/reference/webhooks) for how to configure and verify them.\n\n**Deprecated:** use [`order.completion.v2`](/reference/2024-02-05/webhook/order.completion.v2) instead.",
-        "deprecated": true,
+        "description": "Sent to your configured endpoint when an order finishes processing, whether it completed or failed. See [webhooks](/reference/webhooks) for how to configure and verify them.",
         "security": [],
         "requestBody": {
           "description": "Sent when an order finishes processing, the body object will be one of the following schemas depending on the order status.",
@@ -738,8 +691,7 @@
       "post": {
         "summary": "Product update",
         "operationId": "productUpdateWebhook",
-        "description": "Sent to your configured endpoint when a product's orderability or discount changes. See [webhooks](/reference/webhooks) for how to configure and verify them.\n\n**Deprecated:** use [`product.update.v2`](/reference/2024-02-05/webhook/product.update.v2) instead. Despite its name, `price_multiplier` in this event carries the discount, e.g. `0.1` for a 10% discount. `product.update.v2` reports the true price multiplier.",
-        "deprecated": true,
+        "description": "Sent to your configured endpoint when a product's orderability or discount changes. See [webhooks](/reference/webhooks) for how to configure and verify them.",
         "security": [],
         "requestBody": {
           "description": "Update on product status",
@@ -1137,73 +1089,6 @@
             "const": "FAILED"
           }
         }
-      },
-      "OrderCompletionV2Webhook": {
-        "title": "Order completion v2 webhook",
-        "type": "object",
-        "description": "[Standard Webhooks](https://www.standardwebhooks.com/) envelope for the `order.completion.v2` event.",
-        "required": ["type", "timestamp", "data"],
-        "properties": {
-          "type": {
-            "type": "string",
-            "const": "order.completion.v2",
-            "description": "The event type. Always `order.completion.v2` for this event."
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time",
-            "description": "UTC timestamp, in RFC 3339 format, when the event occurred.",
-            "examples": ["2024-01-03T14:25:07Z"]
-          },
-          "data": {
-            "title": "Data",
-            "description": "The order. Use `status` to tell completed and failed orders apart.",
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/CompletedOrderV2Webhook"
-              },
-              {
-                "$ref": "#/components/schemas/FailedOrderWebhook"
-              }
-            ],
-            "discriminator": {
-              "propertyName": "status",
-              "mapping": {
-                "COMPLETED": "#/components/schemas/CompletedOrderV2Webhook",
-                "FAILED": "#/components/schemas/FailedOrderWebhook"
-              }
-            }
-          }
-        }
-      },
-      "CompletedOrderV2Webhook": {
-        "title": "Completed order",
-        "type": "object",
-        "description": "The completed order. Same fields as the `order.completion` completed payload, without the deprecated `items` field. Use the [get order](/reference/2024-02-05/endpoint/orders/get) endpoint for item details.",
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/OrderSummary"
-          },
-          {
-            "required": ["completed_at", "transaction_detail"],
-            "properties": {
-              "status": {
-                "type": "string",
-                "enum": ["COMPLETED"],
-                "description": "Always `COMPLETED` for this schema."
-              },
-              "transaction_detail": {
-                "$ref": "#/components/schemas/TransactionDetail"
-              },
-              "execution_mode": {
-                "title": "Execution mode",
-                "type": ["string", "null"],
-                "description": "The execution mode the order was placed with, `sync` or `async`.",
-                "examples": ["async"]
-              }
-            }
-          }
-        ]
       },
       "Order": {
         "title": "Order",
@@ -1840,79 +1725,13 @@
         "required": ["price_multiplier", "is_orderable"],
         "properties": {
           "price_multiplier": {
-            "$ref": "#/components/schemas/ProductDiscountMultiplier",
-            "description": "Despite its name, this is the discount, not the price multiplier: `0` means no discount and `0.1` means 10% discount. `product.update.v2` reports the true price multiplier."
+            "$ref": "#/components/schemas/ProductDiscountMultiplier"
           },
           "is_orderable": { "$ref": "#/components/schemas/ProductIsOrderable" },
           "denominations": {
             "$ref": "#/components/schemas/ProductDenominations"
           }
         }
-      },
-      "ProductUpdateV2Webhook": {
-        "title": "Product update v2 webhook",
-        "type": "object",
-        "description": "[Standard Webhooks](https://www.standardwebhooks.com/) envelope for the `product.update.v2` event.",
-        "required": ["type", "timestamp", "data"],
-        "properties": {
-          "type": {
-            "type": "string",
-            "const": "product.update.v2",
-            "description": "The event type. Always `product.update.v2` for this event."
-          },
-          "timestamp": {
-            "type": "string",
-            "format": "date-time",
-            "description": "UTC timestamp, in RFC 3339 format, when the product was updated. Use this to discard events older than the last one you processed for the product.",
-            "examples": ["2024-04-10T17:11:26.601254Z"]
-          },
-          "data": {
-            "$ref": "#/components/schemas/ProductUpdateV2Data"
-          }
-        }
-      },
-      "ProductUpdateV2Data": {
-        "title": "Product update",
-        "type": "object",
-        "description": "The product change.",
-        "required": ["product_code", "new_state"],
-        "properties": {
-          "product_code": {
-            "type": "string",
-            "description": "The code of the product that was updated.",
-            "examples": ["XYZ-US"]
-          },
-          "old_state": {
-            "description": "The state of the product before the update. May be omitted, so don't rely on it being present.",
-            "$ref": "#/components/schemas/ProductUpdateV2State"
-          },
-          "new_state": {
-            "description": "The state of the product after the update.",
-            "$ref": "#/components/schemas/ProductUpdateV2State"
-          }
-        }
-      },
-      "ProductUpdateV2State": {
-        "title": "Product update state",
-        "description": "The state of the product either before or after the update.",
-        "type": "object",
-        "required": ["price_multiplier"],
-        "properties": {
-          "price_multiplier": {
-            "$ref": "#/components/schemas/ProductPriceMultiplier"
-          },
-          "is_orderable": {
-            "$ref": "#/components/schemas/ProductIsOrderable"
-          },
-          "denominations": {
-            "$ref": "#/components/schemas/ProductDenominations"
-          }
-        }
-      },
-      "ProductPriceMultiplier": {
-        "type": "string",
-        "description": "Multiply the price of the order item by this to get the price you pay, before any fees are applied. Equal to 1 minus your discount: `1.0` means no discount and `0.9` means 10% discount.",
-        "examples": ["0.95"]
       },
       "PayoutStatus": {
         "title": "Payout status",

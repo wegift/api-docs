@@ -3,42 +3,6 @@ title: "API Updates"
 icon: newspaper
 description: "Changelog of all major API updates, new features, removals, and improvements."
 ---
-
-<Update label="October 2026" tags={["Feature", "Webhooks"]}>
-
-## New v2 webhook events: `product.update.v2` and `order.completion.v2`
-
-Two new webhook events are now available and are sent in parallel with the existing events:
-
-- [`product.update.v2`](/reference/2024-02-05/webhook/product.update.v2) replaces `product.update`
-- [`order.completion.v2`](/reference/2024-02-05/webhook/order.completion.v2) replaces `order.completion`
-
-The v2 events use the [Standard Webhooks](https://www.standardwebhooks.com/) envelope: `type` identifies the event, `timestamp` is when it occurred and `data` holds the payload. You can now subscribe a single endpoint to multiple event types and dispatch on `type`.
-
-Other changes from v1:
-
-- `product.update.v2` reports the true `price_multiplier`, 1 minus your discount. `product.update` incorrectly reports the discount in this field, e.g. `0.1` for a 10% discount, where `product.update.v2` reports `0.9`. The `timestamp` has moved from the payload to the envelope.
-- `order.completion.v2` no longer includes the deprecated `items` field. Use the [get order](/reference/2024-02-05/endpoint/orders/get) endpoint if you need the order items.
-
-<Warning>
-  Endpoints with no event type filter (subscribed to all events) will receive
-  the v2 events alongside the v1 events. Filter the endpoint to the event types
-  you handle, or dispatch on `type` and ignore anything else.
-</Warning>
-
-### Deprecation of `product.update` and `order.completion`
-
-The v1 events are unchanged but deprecated. The removal date will be announced here. To migrate:
-
-1. Subscribe your endpoint to the v2 event.
-2. Read the payload from `data` and the `timestamp` from the envelope.
-3. For `product.update.v2`, treat `price_multiplier` as the true multiplier and remove any `1 - price_multiplier` conversion.
-4. Unsubscribe from the v1 event once you have migrated.
-
-See the [webhook reference](/reference/webhooks) and the [real-time catalog updates guide](/features/realtime-product-updates) for details.
-
-</Update>
-
 <Update label="August 2026" tags={["Feature", "Catalog"]}>
 
 ## Product asset URLs now include a version parameter
