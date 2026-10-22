@@ -4,15 +4,15 @@ description: "Using webhooks to get real-time updates on product catalog changes
 icon: "webhook"
 ---
 
-Instead of polling the product catalog for changes, you can use the `product.update.v2` webhook to get real-time update pushed to your system when a product is added, updated or removed from your catalog.
+Instead of polling the product catalog for changes, you can use the `product.updated` webhook to get real-time update pushed to your system when a product is added, updated or removed from your catalog.
 
-## How to use the `product.update.v2` webhook
+## How to use the `product.updated` webhook
 
 An event is triggered when there is an update to a product in the catalog. If multiple products are updated at once, an event is triggered for each product. This can be a product being added, updated or removed from the catalog.
 
 Attempts to order a product that is no longer available or for a denomination that is no longer available will be rejected. If you subscribe to the webhook, you will receive an event for each product that is updated and can take action to avoid these rejections.
 
-Each event uses the [Standard Webhooks](https://www.standardwebhooks.com/) envelope: `type` is always `product.update.v2`, `timestamp` is when the update occurred and `data` holds the `product_code`, `old_state` and `new_state`.
+Each event uses the [Standard Webhooks](https://www.standardwebhooks.com/) envelope: `type` is always `product.updated`, `timestamp` is when the update occurred and `data` holds the `product_code`, `old_state` and `new_state`.
 
 We won't cover the generic details of how to set up a webhook subscription, but you can read about that in the [webhook reference](/reference/webhooks).
 
@@ -28,13 +28,13 @@ We won't cover the generic details of how to set up a webhook subscription, but 
     subscription in your system.
   </Card>
   <Card
-    title="Product update v2 webhook reference"
+    title="Product updated webhook reference"
     icon="money-check-pen"
-    href="/reference/2024-02-05/webhook/product.update.v2"
+    href="/reference/2024-02-05/webhook/product.updated"
     horizontal
     arrow
   >
-    The specific details of the `product.update.v2` webhook event
+    The specific details of the `product.updated` webhook event
   </Card>
 </CardGroup>
 
@@ -61,7 +61,7 @@ Each event has a `timestamp` in the envelope. You should store the `timestamp` f
 
 ```json Example payload where a product becomes non-orderable {8,18} [expandable]
 {
-  "type": "product.update.v2",
+  "type": "product.updated",
   "timestamp": "2025-08-26T18:39:27.006833Z",
   "data": {
     "product_code": "XYZ-US",
@@ -96,7 +96,7 @@ Each event has a `timestamp` in the envelope. You should store the `timestamp` f
 
 ```json Example payload where a product becomes orderable again {8,18} [expandable]
 {
-  "type": "product.update.v2",
+  "type": "product.updated",
   "timestamp": "2025-08-27T09:12:03.418290Z",
   "data": {
     "product_code": "XYZ-US",
@@ -137,7 +137,7 @@ In this example the discount increases from 5% to 10%.
 
 ```json Example payload where the price multiplier changes {7,17} [expandable]
 {
-  "type": "product.update.v2",
+  "type": "product.updated",
   "timestamp": "2025-08-26T18:39:27.006833Z",
   "data": {
     "product_code": "STARBUCKS-US",
@@ -179,7 +179,7 @@ The `denominations` object represents available values you can order for a produ
 
 ```json Example payload where a denomination is removed {11,12,21,22} [expandable]
 {
-  "type": "product.update.v2",
+  "type": "product.updated",
   "timestamp": "2025-08-26T18:39:27.006833Z",
   "data": {
     "product_code": "XYZ-US",
@@ -214,7 +214,7 @@ The `denominations` object represents available values you can order for a produ
 
 ```json Example payload where minimum and maximum values change for an open denomination type {11,12,20,21} [expandable]
 {
-  "type": "product.update.v2",
+  "type": "product.updated",
   "timestamp": "2024-04-10T17:11:26.601254Z",
   "data": {
     "product_code": "XYZ-US",

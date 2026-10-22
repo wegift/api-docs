@@ -6,18 +6,18 @@ description: "Changelog of all major API updates, new features, removals, and im
 
 <Update label="October 2026" tags={["Feature", "Webhooks"]}>
 
-## New webhook events: `product.update.v2`, `order.completed` and `order.failed`
+## New webhook events: `product.updated`, `order.completed` and `order.failed`
 
 Three new webhook events are now available and are sent in parallel with the existing events:
 
-- [`product.update.v2`](/reference/2024-02-05/webhook/product.update.v2) replaces `product.update`
+- [`product.updated`](/reference/2024-02-05/webhook/product.updated) replaces `product.update`
 - [`order.completed`](/reference/2024-02-05/webhook/order.completed) and [`order.failed`](/reference/2024-02-05/webhook/order.failed) replace `order.completion`
 
 The new events use the [Standard Webhooks](https://www.standardwebhooks.com/) envelope: `type` identifies the event, `timestamp` is when it occurred and `data` holds the payload. You can now subscribe a single endpoint to multiple event types and dispatch on `type`.
 
 ### Changes from the deprecated events
 
-- `product.update.v2` reports the true `price_multiplier`, 1 minus your discount. `product.update` incorrectly reported the discount in this field, e.g. `0.1` for a 10% discount, where `product.update.v2` reports `0.9`. The `timestamp` has moved from the payload to the envelope.
+- `product.updated` reports the true `price_multiplier`, 1 minus your discount. `product.update` incorrectly reported the discount in this field, e.g. `0.1` for a 10% discount, where `product.updated` reports `0.9`. The `timestamp` has moved from the payload to the envelope.
 - `order.completion` is split into `order.completed` and `order.failed`, each with a single payload shape. Subscribe to the event types for the outcomes you want to receive, rather than branching on `status`.
 - `order.completed` no longer includes the deprecated `items` field. Use the [get order](/reference/2024-02-05/endpoint/orders/get) endpoint if you need the order items.
 
@@ -27,7 +27,7 @@ The deprecated events are unchanged. The removal date will be announced here. To
 
 1. Update your endpoint subscriptions to use the new events.
 2. Read the payload from `data` and the `timestamp` from the envelope.
-3. For `product.update.v2`, treat `price_multiplier` as the true multiplier and remove any `1 - price_multiplier` conversion.
+3. For `product.updated`, treat `price_multiplier` as the true multiplier and remove any `1 - price_multiplier` conversion.
 4. Unsubscribe from the deprecated event once you have migrated.
 
 See the [webhook reference](/reference/webhooks) and the [real-time catalog updates guide](/features/realtime-product-updates) for details.

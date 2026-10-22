@@ -6,9 +6,8 @@ openapi: "/reference/2024-02-05/openapi.json WEBHOOK product.update"
 
 <Warning>
   This event is deprecated, use
-  [`product.update.v2`](/reference/2024-02-05/webhook/product.update.v2)
-  instead. The removal date will be announced in the
-  [changelog](/changelog/api).
+  [`product.updated`](/reference/2024-02-05/webhook/product.updated) instead.
+  The removal date will be announced in the [changelog](/changelog/api).
 </Warning>
 
 <Card
@@ -35,6 +34,6 @@ Use the `product_code` to identify the product that was updated, then refer to t
 <Note>
   Despite its name, `price_multiplier` in this event carries your discount, not
   the price multiplier. For example, a 10% discount gives a `price_multiplier`
-  of `0.1`. `product.update.v2` fixes this and reports the true price
-  multiplier, `0.9` in this example.
+  of `0.1`. `product.updated` fixes this and reports the true price multiplier,
+  `0.9` in this example.
 </Note>

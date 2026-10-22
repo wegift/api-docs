@@ -700,10 +700,10 @@
         }
       }
     },
-    "product.update.v2": {
+    "product.updated": {
       "post": {
-        "summary": "Product update v2",
-        "operationId": "productUpdateV2Webhook",
+        "summary": "Product updated",
+        "operationId": "productUpdatedWebhook",
         "description": "Sent to your configured endpoint when a product's orderability, price multiplier or denominations change. Delivered in the [Standard Webhooks](https://www.standardwebhooks.com/) envelope: dispatch on `type`, read the payload from `data` and use `timestamp` to order events. Supersedes `product.update`. See [webhooks](/reference/webhooks) for how to configure and verify them.",
         "security": [],
         "requestBody": {
@@ -711,7 +711,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ProductUpdateV2Webhook"
+                "$ref": "#/components/schemas/ProductUpdatedWebhook"
               }
             }
           }
@@ -761,7 +761,7 @@
       "post": {
         "summary": "Product update",
         "operationId": "productUpdateWebhook",
-        "description": "Sent to your configured endpoint when a product's orderability or discount changes. See [webhooks](/reference/webhooks) for how to configure and verify them.\n\n**Deprecated:** use [`product.update.v2`](/reference/2024-02-05/webhook/product.update.v2) instead. Despite its name, `price_multiplier` in this event carries the discount, e.g. `0.1` for a 10% discount. `product.update.v2` reports the true price multiplier.",
+        "description": "Sent to your configured endpoint when a product's orderability or discount changes. See [webhooks](/reference/webhooks) for how to configure and verify them.\n\n**Deprecated:** use [`product.updated`](/reference/2024-02-05/webhook/product.updated) instead. Despite its name, `price_multiplier` in this event carries the discount, e.g. `0.1` for a 10% discount. `product.updated` reports the true price multiplier.",
         "deprecated": true,
         "security": [],
         "requestBody": {
@@ -1870,7 +1870,7 @@
         "properties": {
           "price_multiplier": {
             "$ref": "#/components/schemas/ProductDiscountMultiplier",
-            "description": "Despite its name, this is the discount, not the price multiplier: `0` means no discount and `0.1` means 10% discount. `product.update.v2` reports the true price multiplier."
+            "description": "Despite its name, this is the discount, not the price multiplier: `0` means no discount and `0.1` means 10% discount. `product.updated` reports the true price multiplier."
           },
           "is_orderable": { "$ref": "#/components/schemas/ProductIsOrderable" },
           "denominations": {
@@ -1878,16 +1878,16 @@
           }
         }
       },
-      "ProductUpdateV2Webhook": {
-        "title": "Product update v2 webhook",
+      "ProductUpdatedWebhook": {
+        "title": "Product updated webhook",
         "type": "object",
-        "description": "[Standard Webhooks](https://www.standardwebhooks.com/) envelope for the `product.update.v2` event.",
+        "description": "[Standard Webhooks](https://www.standardwebhooks.com/) envelope for the `product.updated` event.",
         "required": ["type", "timestamp", "data"],
         "properties": {
           "type": {
             "type": "string",
-            "const": "product.update.v2",
-            "description": "The event type. Always `product.update.v2` for this event."
+            "const": "product.updated",
+            "description": "The event type. Always `product.updated` for this event."
           },
           "timestamp": {
             "type": "string",
@@ -1896,11 +1896,11 @@
             "examples": ["2024-04-10T17:11:26.601254Z"]
           },
           "data": {
-            "$ref": "#/components/schemas/ProductUpdateV2Data"
+            "$ref": "#/components/schemas/ProductUpdatedData"
           }
         }
       },
-      "ProductUpdateV2Data": {
+      "ProductUpdatedData": {
         "title": "Product update",
         "type": "object",
         "description": "The product change.",
@@ -1913,15 +1913,15 @@
           },
           "old_state": {
             "description": "The state of the product before the update. May be omitted, so don't rely on it being present.",
-            "$ref": "#/components/schemas/ProductUpdateV2State"
+            "$ref": "#/components/schemas/ProductUpdatedState"
           },
           "new_state": {
             "description": "The state of the product after the update.",
-            "$ref": "#/components/schemas/ProductUpdateV2State"
+            "$ref": "#/components/schemas/ProductUpdatedState"
           }
         }
       },
-      "ProductUpdateV2State": {
+      "ProductUpdatedState": {
         "title": "Product update state",
         "description": "The state of the product either before or after the update.",
         "type": "object",
