@@ -79,9 +79,15 @@ You can restrict where a prepaid Visa card can be spent by attaching a Runa-auth
 
 ## Reloading a Prepaid Visa Card
 
-For Reload Cards, you can use the `RECIPIENT` distribution method to enable automatic top-ups. Specify a unique `recipient_reference` to identify the recipient. For subsequent orders, use the same `recipient_reference` and we will automatically reload the existing card.
+For Reload Cards, you can use the `RECIPIENT` distribution method to enable automatic top-ups. Specify a unique `recipient_reference` to identify the recipient. For subsequent orders, use the same `recipient_reference` to request an asynchronous reload of the existing card.
 
-```http title="Example Reload Card order" icon="globe" expandable
+The optional `send_email` boolean belongs inside `distribution_method` when its `type` is `RECIPIENT`. It defaults to `true`: omitting it or setting it to `true` retains email delivery. Set it to `false` on a first order or a subsequent reload to suppress recipient order-item emails, including delivery and missing-card fallback emails, top-up confirmations, and explicit resends. Both `email_address` and `recipient_reference` remain required to identify the recipient. The preference applies to each order item; include it on each order you want to keep silent.
+
+Automatic fulfilment continues when `send_email` is `false`. If no eligible card exists, suppressing the fallback email does not create a card, load a card, or confirm fulfilment. Card provisioning is a separate operation from ordering value. A separate provisioning endpoint is planned; this guide does not describe it as available or specify its route.
+
+Order completion and asynchronous card-load completion are different: a completed order alone does not confirm that the recipient's card has been loaded.
+
+```http title="Example Reload Card order with emails suppressed" icon="globe" expandable
 POST https://api.runa.io/v2/order
 Content-Type: application/json
 X-Api-Key: <your API key>
@@ -97,7 +103,8 @@ X-Api-Key: <your API key>
             "distribution_method": {
                 "type": "RECIPIENT",
                 "recipient_reference": "<your unique recipient identifier>",
-                "email_address": "<your recipient's email address>"
+                "email_address": "<your recipient's email address>",
+                "send_email": false
             },
             "products": {
                 "type": "SINGLE",
@@ -127,6 +134,6 @@ When a recipient opens the payout link for the first time, they will be guided t
 3. Set a card PIN
 4. View their Visa card details and start spending anywhere Visa is accepted
 
-For subsequent reloads, the card will be automatically topped up with the payout amount. If the recipient wishes to see their card details again, the confirmation email will contain a link where the card details will be securely presented upon authentication.
+For subsequent reloads, automatic fulfilment attempts to top up the card with the payout amount. When `send_email` is omitted or `true`, the confirmation email contains a link where card details are securely presented upon authentication. When `send_email` is `false`, no confirmation email is sent.
 
 Recipients can also view their transaction history, including balances, merchant details, and dates for each transaction.

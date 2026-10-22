@@ -1161,11 +1161,17 @@
       },
       "RecipientDistribution": {
         "title": "Recipient",
-        "description": "Recipient distribution. Currently this method is only supported for distributing payment type products. For subsequent orders to known recipients we will attempt to make a repeat payout.",
+        "description": "Recipient distribution. Currently this method is only supported for distributing payment type products. For subsequent orders to known recipients we will attempt to make a repeat payout. Email delivery is optional and does not change automatic fulfilment. Order completion does not confirm asynchronous card-load completion.",
         "required": ["type", "recipient_reference", "email_address"],
         "type": "object",
         "properties": {
           "type": { "type": "string", "const": "RECIPIENT" },
+          "send_email": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to send recipient order-item emails. Omit or set true to retain email delivery. Set false to suppress delivery (including missing-card fallback), top-up confirmation and explicit resend emails. email_address and recipient_reference remain required. Automatic fulfilment continues; suppressing a fallback email does not provision a card or confirm a card load.",
+            "examples": [false, true]
+          },
           "recipient_reference": {
             "title": "Recipient Reference",
             "description": "A customer provided reference to identify an individual recipient. It must be unique per recipient. When the same reference is used for a second order this will trigger a repeat payout. This is a free-form string limited to 255 characters. It can only contain alphanumeric characters, dashes, underscores, dots, and at-signs.",
