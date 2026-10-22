@@ -146,7 +146,8 @@
               {
                 "group": "Webhooks",
                 "pages": [
-                  "reference/2024-02-05/webhook/order.completion.v2",
+                  "reference/2024-02-05/webhook/order.completed",
+                  "reference/2024-02-05/webhook/order.failed",
                   "reference/2024-02-05/webhook/product.update.v2"
                 ]
               }

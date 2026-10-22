@@ -1,11 +1,12 @@
 ---
-title: "Order completion"
-description: "Order completion events are triggered when an order has completed processing."
-openapi: "/reference/2024-02-05/openapi.json WEBHOOK order.completion.v2"
+title: "Order completed"
+description: "Order completed events are triggered when an order completes."
+openapi: "/reference/2024-02-05/openapi.json WEBHOOK order.completed"
 ---
 
 <Info>
-  This event replaces the deprecated
+  Together with [`order.failed`](/reference/2024-02-05/webhook/order.failed),
+  this event replaces the deprecated
   [`order.completion`](/reference/2024-02-05/webhook/order.completion) event.
 </Info>
 
@@ -20,13 +21,10 @@ openapi: "/reference/2024-02-05/openapi.json WEBHOOK order.completion.v2"
   understand how they work.
 </Card>
 
-This event is essential when using the async ordering mode if you need to take action when an order has completed processing. It's also useful if you want to feed ordering data into your system.
+This event is essential when using the async ordering mode if you need to take action when an order has completed. It's also useful if you want to feed ordering data into your system.
 
-The event uses the [Standard Webhooks](https://www.standardwebhooks.com/) envelope. The event type is in `type`, always `order.completion.v2` for this event, so you can dispatch on it if your endpoint receives more than one event type. The order is in `data`, and `timestamp` indicates when the event occurred.
+The event uses the [Standard Webhooks](https://www.standardwebhooks.com/) envelope. The event type is in `type`, always `order.completed` for this event, so you can dispatch on it if your endpoint receives more than one event type. The order is in `data`, and `timestamp` indicates when the event occurred.
 
-The order payload depends on whether the order was processed successfully or not. You should use the `data.status` field to determine the type of payload you have received.
+Failed orders are sent as a separate [`order.failed`](/reference/2024-02-05/webhook/order.failed) event. Subscribe to the event types for the outcomes you want to receive; you don't need to check `data.status`.
 
-- Successfully completed orders will have a `status` of `COMPLETED`
-- Failed orders will have a `status` of `FAILED`
-
-The completed order event does not include the `items` field. Use the [get order](/reference/2024-02-05/endpoint/orders/get) endpoint if you need the order items.
+The event does not include the `items` field. Use the [get order](/reference/2024-02-05/endpoint/orders/get) endpoint if you need the order items.
