@@ -654,18 +654,41 @@
     }
   },
   "webhooks": {
-    "order.completion.v2": {
+    "order.completed": {
       "post": {
-        "summary": "Order completion v2",
-        "operationId": "orderCompletionV2Webhook",
-        "description": "Sent to your configured endpoint when an order finishes processing, whether it completed or failed. Delivered in the [Standard Webhooks](https://www.standardwebhooks.com/) envelope: dispatch on `type`, read the payload from `data` and use `timestamp` to order events. Supersedes `order.completion`. See [webhooks](/reference/webhooks) for how to configure and verify them.",
+        "summary": "Order completed",
+        "operationId": "orderCompletedWebhook",
+        "description": "Sent to your configured endpoint when an order completes. Delivered in the [Standard Webhooks](https://www.standardwebhooks.com/) envelope: dispatch on `type`, read the payload from `data` and use `timestamp` to order events. Together with `order.failed`, supersedes `order.completion`. See [webhooks](/reference/webhooks) for how to configure and verify them.",
         "security": [],
         "requestBody": {
-          "description": "Order completion event. `data` will be one of the following schemas depending on the order status.",
+          "description": "Order completed event",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/OrderCompletionV2Webhook"
+                "$ref": "#/components/schemas/OrderCompletedWebhook"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "order.failed": {
+      "post": {
+        "summary": "Order failed",
+        "operationId": "orderFailedWebhook",
+        "description": "Sent to your configured endpoint when an order fails. Delivered in the [Standard Webhooks](https://www.standardwebhooks.com/) envelope: dispatch on `type`, read the payload from `data` and use `timestamp` to order events. Together with `order.completed`, supersedes `order.completion`. See [webhooks](/reference/webhooks) for how to configure and verify them.",
+        "security": [],
+        "requestBody": {
+          "description": "Order failed event",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderFailedWebhook"
               }
             }
           }
@@ -704,7 +727,7 @@
       "post": {
         "summary": "Order completion",
         "operationId": "orderCompletionWebhook",
-        "description": "Sent to your configured endpoint when an order finishes processing, whether it completed or failed. See [webhooks](/reference/webhooks) for how to configure and verify them.\n\n**Deprecated:** use [`order.completion.v2`](/reference/2024-02-05/webhook/order.completion.v2) instead.",
+        "description": "Sent to your configured endpoint when an order finishes processing, whether it completed or failed. See [webhooks](/reference/webhooks) for how to configure and verify them.\n\n**Deprecated:** use [`order.completed`](/reference/2024-02-05/webhook/order.completed) and [`order.failed`](/reference/2024-02-05/webhook/order.failed) instead.",
         "deprecated": true,
         "security": [],
         "requestBody": {
@@ -1138,16 +1161,16 @@
           }
         }
       },
-      "OrderCompletionV2Webhook": {
-        "title": "Order completion v2 webhook",
+      "OrderCompletedWebhook": {
+        "title": "Order completed webhook",
         "type": "object",
-        "description": "[Standard Webhooks](https://www.standardwebhooks.com/) envelope for the `order.completion.v2` event.",
+        "description": "[Standard Webhooks](https://www.standardwebhooks.com/) envelope for the `order.completed` event.",
         "required": ["type", "timestamp", "data"],
         "properties": {
           "type": {
             "type": "string",
-            "const": "order.completion.v2",
-            "description": "The event type. Always `order.completion.v2` for this event."
+            "const": "order.completed",
+            "description": "The event type. Always `order.completed` for this event."
           },
           "timestamp": {
             "type": "string",
@@ -1156,27 +1179,33 @@
             "examples": ["2024-01-03T14:25:07Z"]
           },
           "data": {
-            "title": "Data",
-            "description": "The order. Use `status` to tell completed and failed orders apart.",
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/CompletedOrderV2Webhook"
-              },
-              {
-                "$ref": "#/components/schemas/FailedOrderWebhook"
-              }
-            ],
-            "discriminator": {
-              "propertyName": "status",
-              "mapping": {
-                "COMPLETED": "#/components/schemas/CompletedOrderV2Webhook",
-                "FAILED": "#/components/schemas/FailedOrderWebhook"
-              }
-            }
+            "$ref": "#/components/schemas/OrderCompletedData"
           }
         }
       },
-      "CompletedOrderV2Webhook": {
+      "OrderFailedWebhook": {
+        "title": "Order failed webhook",
+        "type": "object",
+        "description": "[Standard Webhooks](https://www.standardwebhooks.com/) envelope for the `order.failed` event.",
+        "required": ["type", "timestamp", "data"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "order.failed",
+            "description": "The event type. Always `order.failed` for this event."
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp, in RFC 3339 format, when the event occurred.",
+            "examples": ["2024-01-03T14:25:07Z"]
+          },
+          "data": {
+            "$ref": "#/components/schemas/FailedOrderWebhook"
+          }
+        }
+      },
+      "OrderCompletedData": {
         "title": "Completed order",
         "type": "object",
         "description": "The completed order. Same fields as the `order.completion` completed payload, without the deprecated `items` field. Use the [get order](/reference/2024-02-05/endpoint/orders/get) endpoint for item details.",
