@@ -4,6 +4,12 @@ description: "Product update events are triggered when there is an update to the
 openapi: "/reference/2024-02-05/openapi.json WEBHOOK product.update"
 ---
 
+<Warning>
+  This event is deprecated, use
+  [`product.updated`](/reference/2024-02-05/webhook/product.updated) instead.
+  The removal date will be announced in the [changelog](/changelog/api).
+</Warning>
+
 <Card
   title="How to implement real-time product updates"
   href="/features/realtime-product-updates"
@@ -24,3 +30,10 @@ Use the `product_code` to identify the product that was updated, then refer to t
   You should store the `timestamp` and discard any events that are older than
   the last event you received.
 </Info>
+
+<Note>
+  Despite its name, `price_multiplier` in this event carries your discount, not
+  the price multiplier. For example, a 10% discount gives a `price_multiplier`
+  of `0.1`. `product.updated` fixes this and reports the true price multiplier,
+  `0.9` in this example.
+</Note>

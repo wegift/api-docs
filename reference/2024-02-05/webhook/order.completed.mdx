@@ -1,0 +1,30 @@
+---
+title: "Order completed"
+description: "Order completed events are triggered when an order completes."
+openapi: "/reference/2024-02-05/openapi.json WEBHOOK order.completed"
+---
+
+<Info>
+  Together with [`order.failed`](/reference/2024-02-05/webhook/order.failed),
+  this event replaces the deprecated
+  [`order.completion`](/reference/2024-02-05/webhook/order.completion) event.
+</Info>
+
+<Card
+  title="Webhook overview"
+  href="/reference/webhooks"
+  icon="graduation-cap"
+  horizontal
+  arrow
+>
+  Webhooks work differently to the API endpoints. Take a read of our guide to
+  understand how they work.
+</Card>
+
+This event is essential when using the async ordering mode if you need to take action when an order has completed. It's also useful if you want to feed ordering data into your system.
+
+The event uses the [Standard Webhooks](https://www.standardwebhooks.com/) envelope. The event type is in `type`, always `order.completed` for this event, so you can dispatch on it if your endpoint receives more than one event type. The order is in `data`, and `timestamp` indicates when the event occurred.
+
+Failed orders are sent as a separate [`order.failed`](/reference/2024-02-05/webhook/order.failed) event. Subscribe to the event types for the outcomes you want to receive; you don't need to check `data.status`.
+
+The event does not include the `items` field. Use the [get order](/reference/2024-02-05/endpoint/orders/get) endpoint if you need the order items.
