@@ -206,7 +206,7 @@ Pop the `url` field into your browser to see the payout link. Congratulations, y
 
 ### Webhooks
 
-While you can fetch the order details after a short delay, in reality this would require you to poll the endpoint until the order is completed. This is not ideal and may lead to rate limiting issues. Instead we have the [order completion webhook](/reference/2024-02-05/webhook/order.completion.v2) available for you to use.
+While you can fetch the order details after a short delay, in reality this would require you to poll the endpoint until the order is completed. This is not ideal and may lead to rate limiting issues. Instead we have the [order completed](/reference/2024-02-05/webhook/order.completed) and [order failed](/reference/2024-02-05/webhook/order.failed) webhooks available for you to use.
 
 If you intend to use the async ordering mode you should take a look at the [webhooks](/reference/webhooks) section to see how to set one up. Unfortunately the playground environment does not support webhooks so you will need to use a real environment to test this out.
 

@@ -30,13 +30,20 @@ We currently support the following webhook events:
 
 <Columns cols={2}>
   <Card
-    title="Order completion"
+    title="Order completed"
     icon="flag-checkered"
-    href="/reference/2024-02-05/webhook/order.completion.v2"
+    href="/reference/2024-02-05/webhook/order.completed"
     arrow
   >
-    The `order.completion.v2` webhook is triggered when an order has finished
-    processing.
+    The `order.completed` webhook is triggered when an order completes.
+  </Card>
+  <Card
+    title="Order failed"
+    icon="circle-xmark"
+    href="/reference/2024-02-05/webhook/order.failed"
+    arrow
+  >
+    The `order.failed` webhook is triggered when an order fails.
   </Card>
   <Card
     title="Product update"
@@ -53,13 +60,13 @@ We currently support the following webhook events:
   The original
   [`order.completion`](/reference/2024-02-05/webhook/order.completion) and
   [`product.update`](/reference/2024-02-05/webhook/product.update) events are
-  deprecated. They are still sent, in parallel with the v2 events, and the
+  deprecated. They are still sent, in parallel with the new events, and the
   removal date will be announced in the [changelog](/changelog/api).
 </Note>
 
 ## Event payloads
 
-The v2 events use the [Standard Webhooks](https://www.standardwebhooks.com/) envelope. Every payload has the same three top-level fields:
+The new events use the [Standard Webhooks](https://www.standardwebhooks.com/) envelope. Every payload has the same three top-level fields:
 
 - `type`: the event type, e.g. `product.update.v2`
 - `timestamp`: when the event occurred, as a UTC timestamp in RFC 3339 format
@@ -97,12 +104,14 @@ The v2 events use the [Standard Webhooks](https://www.standardwebhooks.com/) env
 
 Your handler should read `type` first and dispatch on it, then read the payload from `data`. Ignore any event types you don't handle; we may add new event types in the future.
 
-The deprecated v1 events are not wrapped in the envelope and carry no event type, so you can't tell them apart by payload alone.
+Each order outcome has its own event type: `order.completed` and `order.failed`. Subscribe to the event types for the outcomes you want to receive, rather than branching on `data.status`.
+
+The deprecated events are not wrapped in the envelope and carry no event type, so you can't tell them apart by payload alone.
 
 <Warning>
   Endpoints with no event type filter (subscribed to all events) now receive the
-  v2 events alongside the v1 events. Either filter the endpoint to the event
-  types you handle, or dispatch on `type` and ignore anything else.
+  new events alongside the deprecated events. Either filter the endpoint to the
+  event types you handle, or dispatch on `type` and ignore anything else.
 </Warning>
 
 ## Adding an endpoint
@@ -121,7 +130,7 @@ The deprecated v1 events are not wrapped in the envelope and carry no event type
             ![Screenshot of the add new endpoint form](/assets/screenshots/webhooks-new-endpoint.png)
         </Frame>
 
-        Select the event types to receive. You can subscribe an endpoint to multiple v2 event types and dispatch on `type`. The deprecated v1 events carry no event type, so keep each v1 event type on its own dedicated endpoint. If you don't select any event types, the endpoint receives all events, both v1 and v2.
+        Select the event types to receive. You can subscribe an endpoint to multiple new event types and dispatch on `type`. The deprecated events carry no event type, so keep each deprecated event type on its own dedicated endpoint. If you don't select any event types, the endpoint receives all events, both deprecated and new.
 
         <Note>
             If you don't have a URL or your service isn't quite ready to start receiving events just yet, just press the use Svix Play button to have a unique testing URL generated for you.
