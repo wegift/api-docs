@@ -16,7 +16,7 @@ You can use this to aggregate products that belong to a country for ordering by 
 
 ## Retrieving your catalog
 
-We recommend that you query the [list endpoint](/reference/2024-02-05/endpoint/products/list) to retrieve full catalog details periodically and in any critical journeys where you [fetch the details of an individual product](/reference/2024-02-05/endpoint/products/get) by using the `code` query parameter to return the latest details of a product in a timely manner. You can also use the [product update webhook](/reference/2024-02-05/webhook/product.update) to be notified of changes to products.
+We recommend that you query the [list endpoint](/reference/2024-02-05/endpoint/products/list) to retrieve full catalog details periodically and in any critical journeys where you [fetch the details of an individual product](/reference/2024-02-05/endpoint/products/get) by using the `code` query parameter to return the latest details of a product in a timely manner. You can also use the [product update webhook](/reference/2024-02-05/webhook/product.update.v2) to be notified of changes to products.
 
 <CardGroup cols={2}>
   <Card
@@ -223,7 +223,7 @@ The response will include a `pagination` object with the following fields. You c
 
 ## Keeping your catalog in sync
 
-If you maintain a copy of the product catalog in your system you can use the [product update webhook](/reference/2024-02-05/webhook/product.update) to keep it synchronized and avoid order failures.
+If you maintain a copy of the product catalog in your system you can use the [product update webhook](/reference/2024-02-05/webhook/product.update.v2) to keep it synchronized and avoid order failures.
 
 <Card
   title="How to implement real-time product updates"
