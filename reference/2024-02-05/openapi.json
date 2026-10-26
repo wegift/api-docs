@@ -49,7 +49,8 @@
         "operationId": "ping",
         "tags": ["Utility"],
         "summary": "Ping endpoint",
-        "description": "Check your integration can connect to the Runa API",
+        "description": "Check your integration can connect to the Runa API\n\n**Required scope:** `read:ping`",
+        "security": [{ "ApiKeyAuth": ["read:ping"] }],
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
         "responses": {
           "200": {
@@ -84,7 +85,8 @@
         "operationId": "getBalance",
         "tags": ["Balance"],
         "summary": "Get account balance",
-        "description": "Retrieves the account balance. Returns the balance in a specified currency if the currency parameter is provided. If not, returns all balances greater than 0.",
+        "description": "Retrieves the account balance. Returns the balance in a specified currency if the currency parameter is provided. If not, returns all balances greater than 0.\n\n**Required scope:** `read:balance`",
+        "security": [{ "ApiKeyAuth": ["read:balance"] }],
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           { "$ref": "#/components/parameters/CurrencyForAccount" }
@@ -162,7 +164,8 @@
         "operationId": "listOrders",
         "tags": ["Orders"],
         "summary": "List orders",
-        "description": "Get a list of all of your orders",
+        "description": "Get a list of all of your orders\n\n**Required scope:** `read:order`",
+        "security": [{ "ApiKeyAuth": ["read:order"] }],
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           {
@@ -232,7 +235,8 @@
         "operationId": "createOrder",
         "tags": ["Orders"],
         "summary": "Create a new order.",
-        "description": "Creates a new order.",
+        "description": "Creates a new order.\n\n**Required scope:** `create:order`",
+        "security": [{ "ApiKeyAuth": ["create:order"] }],
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           {
@@ -302,7 +306,8 @@
         "operationId": "getOrder",
         "tags": ["Orders"],
         "summary": "Get order details",
-        "description": "Get the details and status of a specific order. Can be used for checking the status of an async order after it's been accepted.",
+        "description": "Get the details and status of a specific order. Can be used for checking the status of an async order after it's been accepted.\n\n**Required scope:** `read:order`",
+        "security": [{ "ApiKeyAuth": ["read:order"] }],
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           {
@@ -355,7 +360,8 @@
         "operationId": "estimateOrder",
         "tags": ["Orders"],
         "summary": "Estimate order",
-        "description": "Estimate price for the order.",
+        "description": "Estimate price for the order.\n\n**Required scope:** `read:order`",
+        "security": [{ "ApiKeyAuth": ["read:order"] }],
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
         "responses": {
           "200": {
@@ -391,7 +397,8 @@
       "get": {
         "operationId": "listProducts",
         "summary": "List products",
-        "description": "List all products in your catalog",
+        "description": "List all products in your catalog\n\n**Required scope:** `read:product`",
+        "security": [{ "ApiKeyAuth": ["read:product"] }],
         "tags": ["Products"],
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
@@ -480,7 +487,8 @@
         "operationId": "getProduct",
         "tags": ["Products"],
         "summary": "Get product details",
-        "description": "Retrieve a single product's details",
+        "description": "Retrieve a single product's details\n\n**Required scope:** `read:product`",
+        "security": [{ "ApiKeyAuth": ["read:product"] }],
         "parameters": [
           { "$ref": "#/components/parameters/X-Api-Version" },
           {
@@ -528,7 +536,8 @@
         "operationId": "listProductCountries",
         "tags": ["Products"],
         "summary": "List countries",
-        "description": "Get a list of countries where products are available",
+        "description": "Get a list of countries where products are available\n\n**Required scope:** `read:product`",
+        "security": [{ "ApiKeyAuth": ["read:product"] }],
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
         "responses": {
           "200": {
@@ -597,7 +606,8 @@
         "operationId": "listProductCategories",
         "tags": ["Products"],
         "summary": "List categories",
-        "description": "Get a list of all possible product categories",
+        "description": "Get a list of all possible product categories\n\n**Required scope:** `read:product`",
+        "security": [{ "ApiKeyAuth": ["read:product"] }],
         "parameters": [{ "$ref": "#/components/parameters/X-Api-Version" }],
         "responses": {
           "200": {

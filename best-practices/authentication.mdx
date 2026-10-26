@@ -40,3 +40,25 @@ There are two types of API key:
 ## Single or multiple keys
 
 You can have multiple keys for different environments or applications. You should create new key for each use case. This allows you to revoke a key without affecting other integrations. If a key is shared revoking it will affect all users of that key.
+
+## Scopes
+
+Each production API key has a set of scopes, chosen when you create the key. A scope allows the key to call a group of endpoints. A request to an endpoint whose scope the key doesn't have is rejected with a `403` [`forbidden` error](/reference/2024-02-05/errors). Playground keys don't have scopes and can call every endpoint.
+
+| Scope          | Endpoints                                                                                                                                                                                                                                                                     |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `read:ping`    | [Ping](/reference/2024-02-05/endpoint/utility/ping)                                                                                                                                                                                                                           |
+| `read:balance` | [Get account balance](/reference/2024-02-05/endpoint/balance/get)                                                                                                                                                                                                             |
+| `read:order`   | [List orders](/reference/2024-02-05/endpoint/orders/list), [Get order details](/reference/2024-02-05/endpoint/orders/get), [Estimate order](/reference/2024-02-05/endpoint/orders/estimate)                                                                                   |
+| `create:order` | [Create a new order](/reference/2024-02-05/endpoint/orders/create)                                                                                                                                                                                                            |
+| `read:product` | [List products](/reference/2024-02-05/endpoint/products/list), [Get product details](/reference/2024-02-05/endpoint/products/get), [List countries](/reference/2024-02-05/endpoint/products/countries), [List categories](/reference/2024-02-05/endpoint/products/categories) |
+
+The scope each endpoint requires is also shown on its page in the API reference.
+
+You can see the scopes of each key on the [API keys page](https://app.runa.io/api-keys). API keys created before scopes were introduced have every scope, so they keep working as before.
+
+### Choosing scopes
+
+We recommend following the [principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) and giving each key only the scopes it needs. If a key is exposed, it can then only be used for what those scopes allow. We also recommend creating a separate key for each use case, such as one key for placing orders and another for reporting, so that each key needs fewer scopes.
+
+A key's scopes can't be changed after it is created, so to change them create a new key with the scopes you need and revoke the old one.
