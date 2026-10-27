@@ -1,0 +1,89 @@
+---
+title: "Fulfilment API"
+description: "Issue gift cards and present their redemption details in your own experience"
+icon: "code"
+---
+
+<Info>
+  The Fulfilment API is not available by default. To enable it, contact your
+  Account Manager. It's available in Production only.
+</Info>
+
+The Fulfilment API issues the gift card for an order item and returns its redemption details (code, PIN, barcode or redemption URL), so you can present them inside your own customer experience instead of sending customers to the Runa redemption page.
+
+It replaces the [Redemption API](/features/redemption-api). It is authenticated with your API key, returns standard HTTP status codes and is served by the same infrastructure as the rest of the Runa API.
+
+## How it works
+
+1. Create an API key with the `create:fulfilment` scope. See [scopes](/best-practices/authentication#scopes).
+2. [Create an order](/reference/2024-02-05/endpoint/orders/create) as usual and read the order item IDs from `items[].id` (e.g. `E-01M5WAFEFJBN8ZRAHRR4ZWAKDW`).
+3. Call [Fulfil an order item](/reference/2024-02-05/endpoint/orders/fulfil) for each order item.
+
+```bash
+curl -X POST "https://api.runa.io/v2/order-item/E-01M5WAFEFJBN8ZRAHRR4ZWAKDW/fulfilment" \
+  -H "X-Api-Key: $RUNA_API_KEY" \
+  -H "X-Api-Version: 2024-02-05"
+```
+
+The order item must belong to your account, be part of a completed order and hold a single gift card product. Payment products and multi-product payouts can't be fulfilled through the API; their recipients redeem them through the payout link.
+
+## Response
+
+A successful call returns `200` with the card's redemption details. Fields that don't apply to the card are `null`.
+
+```json
+{
+  "code": "6280399992147003",
+  "pin": "25468113",
+  "expiry_date": "2029-04-16",
+  "barcode": { "format": "QR", "value": "6280399992147003" },
+  "url": null
+}
+```
+
+- Display whichever of `code`, `pin` and `barcode` are present. The brand decides which of them a card has, so render what is available rather than branching on the combination.
+- For cards redeemed online, send the customer to `url`. For these cards `code` can also contain the URL, so always use `url`.
+- `expiry_date` is `null` when the card doesn't expire.
+
+## Retries
+
+The call is synchronous and idempotent per order item. Calling it again for the same order item returns the card already issued and never issues a second one, so it's safe to retry after a timeout or a `5xx` error.
+
+## Errors
+
+Errors use the standard [error response](/reference/2024-02-05/errors) with a `type` you can branch on.
+
+| Status | `type`                                                       | What to do                                                                                              |
+| ------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `400`  | `bad_request`                                                | Check the order item ID has the form `E-…`.                                                             |
+| `401`  | `unauthorized`                                               | Send a valid API key in the `X-Api-Key` header.                                                         |
+| `403`  | `forbidden`                                                  | Use a key with the `create:fulfilment` scope, or ask your Account Manager to enable the Fulfilment API. |
+| `404`  | `not_found`                                                  | The order item doesn't exist on your account, or it has been cancelled.                                 |
+| `409`  | `payout_expired`, `payout_cancelled` or `product_not_active` | The card can't be issued in its current state. For an expired payout, place a new order.                |
+| `422`  | `unsupported`                                                | The order item can't be fulfilled through the API. The recipient can redeem it through the payout link. |
+| `424`  | `provider_fulfilment_error`                                  | The provider couldn't issue the card. Nothing was charged; retry in a few minutes.                      |
+| `429`  | `rate_limit`                                                 | Retry after the number of seconds in the `Retry-After` header, when present.                            |
+| `500`  | `internal_server_error`                                      | Nothing was charged; retry later. If it persists, contact ordersupport@runa.io.                         |
+
+## Migrating from the Redemption API
+
+|                | Redemption API                                     | Fulfilment API                                         |
+| -------------- | -------------------------------------------------- | ------------------------------------------------------ |
+| Request        | `GET {payout.url}?format=json`                     | `POST /v2/order-item/{order_item_id}/fulfilment`       |
+| Authentication | The payout URL is the credential                   | API key with the `create:fulfilment` scope             |
+| Identifier     | The payout URL                                     | The order item ID from `items[].id`                    |
+| Errors         | HTTP `200` with `status: "ERROR"` and an `RE` code | HTTP status code with a `type` (see [Errors](#errors)) |
+
+Response fields:
+
+| Redemption API (`?format=json`)        | Fulfilment API                 | Notes                                                                               |
+| -------------------------------------- | ------------------------------ | ----------------------------------------------------------------------------------- |
+| `status`, `error_code`, `error_string` | HTTP status, `type`, `message` | Errors are no longer returned with a `200`.                                         |
+| `e_code.code`                          | `code`                         | Same value.                                                                         |
+| `e_code.pin`                           | `pin`                          | Same value.                                                                         |
+| `e_code.barcode_format`                | `barcode.format`               |                                                                                     |
+| `e_code.barcode_string`                | `barcode.value`                | `barcode` is `null` when the card has no barcode.                                   |
+| `e_code.expiry_date`                   | `expiry_date`                  | `null` replaces the `3000-01-01` value for cards that don't expire.                 |
+| `e_code.url`                           | `url`                          | Only set for cards redeemed online; it's no longer the payout link.                 |
+| `e_code.type`                          | –                              | Use `url` for cards redeemed online and `code`, `pin` and `barcode` for the others. |
+| `e_code.amount`, `order_id`            | –                              | You already have them from the order.                                               |
