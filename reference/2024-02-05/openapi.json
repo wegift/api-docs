@@ -450,7 +450,38 @@
           },
           "400": { "$ref": "#/components/responses/BadRequest" },
           "401": { "$ref": "#/components/responses/Unauthorized" },
-          "403": { "$ref": "#/components/responses/Forbidden" },
+          "403": {
+            "description": "The API key doesn't have the `create:fulfilment` scope, or your account isn't enabled for the Fulfilment API. A missing scope is rejected by the API gateway, so its body has a `Message` field instead of an error `type`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    { "$ref": "#/components/schemas/ApiErrorResponse" },
+                    {
+                      "type": "object",
+                      "properties": { "Message": { "type": "string" } },
+                      "required": ["Message"]
+                    }
+                  ]
+                },
+                "examples": {
+                  "missing_scope": {
+                    "summary": "API key without the create:fulfilment scope",
+                    "value": {
+                      "Message": "User is not authorized to access this resource with an explicit deny in an identity-based policy"
+                    }
+                  },
+                  "not_enabled": {
+                    "summary": "Account not enabled for the Fulfilment API",
+                    "value": {
+                      "type": "forbidden",
+                      "message": "The account is not enabled for fulfilment"
+                    }
+                  }
+                }
+              }
+            }
+          },
           "404": {
             "description": "No order item with this ID exists on your account, or the order item has been cancelled.",
             "content": {
@@ -514,7 +545,7 @@
             }
           },
           "424": {
-            "description": "The provider couldn't issue the card. Nothing was charged; retry in a few minutes.",
+            "description": "The provider couldn't issue the card. Retry in a few minutes.",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
@@ -531,30 +562,40 @@
             }
           },
           "429": {
-            "description": "Too many requests, or another request for the same order item is in progress. Retry after the number of seconds in the `Retry-After` header, when present.",
+            "description": "Another request for the same order item is in progress, or you exceeded the request rate. Retry after the number of seconds in the `Retry-After` header when it's present; otherwise back off before retrying. A rate limit is applied by the API gateway, so its body has only a `message`.",
             "headers": {
               "Retry-After": {
-                "description": "Seconds to wait before retrying.",
+                "description": "Seconds to wait before retrying. Only sent with a `rate_limit` error.",
                 "schema": { "type": "integer" }
               }
             },
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
+                "schema": {
+                  "oneOf": [
+                    { "$ref": "#/components/schemas/ApiErrorResponse" },
+                    { "$ref": "#/components/schemas/GatewayErrorResponse" }
+                  ]
+                },
                 "examples": {
                   "rate_limit": {
+                    "summary": "Another request for the order item is in progress",
                     "value": {
                       "type": "rate_limit",
                       "message": "Too many requests",
                       "help": "Retry after the number of seconds in the Retry-After header."
                     }
+                  },
+                  "throttled": {
+                    "summary": "Request rate exceeded",
+                    "value": { "message": "Too Many Requests" }
                   }
                 }
               }
             }
           },
           "500": {
-            "description": "The card couldn't be issued. Nothing was charged; retry later.",
+            "description": "The card couldn't be issued. Retry the same call: if the card was issued in the meantime, it's returned.",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
@@ -567,6 +608,28 @@
                     }
                   }
                 }
+              }
+            }
+          },
+          "502": {
+            "description": "An unexpected error occurred. Retry the same call. The body comes from the API gateway and has only a `message`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayErrorResponse"
+                },
+                "example": { "message": "Internal server error" }
+              }
+            }
+          },
+          "504": {
+            "description": "The request took longer than 29 seconds, usually because the provider is slow. The card may still be issued: retry the same call to get it. The body comes from the API gateway and has only a `message`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GatewayErrorResponse"
+                },
+                "example": { "message": "Endpoint request timed out" }
               }
             }
           }
@@ -940,6 +1003,19 @@
       }
     },
     "schemas": {
+      "GatewayErrorResponse": {
+        "title": "Gateway error",
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "A human readable summary of the error.",
+            "examples": ["Endpoint request timed out"]
+          }
+        },
+        "description": "Error returned by the API gateway before the request reaches the endpoint, or when the endpoint doesn't answer in time."
+      },
       "FulfilmentDetails": {
         "title": "Fulfilment details",
         "type": "object",
