@@ -17,11 +17,11 @@ It replaces the [Redemption API](/features/redemption-api). It is authenticated 
 ## How it works
 
 1. Create an API key with the `create:fulfilment` scope. See [scopes](/best-practices/authentication#scopes).
-2. [Create an order](/reference/2024-02-05/endpoint/orders/create) as usual and read the order item IDs from `items[].id` (e.g. `E-01M5WAFEFJBN8ZRAHRR4ZWAKDW`).
+2. [Create an order](/reference/2024-02-05/endpoint/orders/create) as usual and read the order item IDs from `items[].id` (e.g. `E-01P2K5GWRECHT908FY184ZZ9VG`).
 3. Call [Fulfil an order item](/reference/2024-02-05/endpoint/orders/fulfil) for each order item.
 
 ```bash
-curl -X POST "https://api.runa.io/v2/order-item/E-01M5WAFEFJBN8ZRAHRR4ZWAKDW/fulfilment" \
+curl -X POST "https://api.runa.io/v2/order-item/E-01P2K5GWRECHT908FY184ZZ9VG/fulfilment" \
   -H "X-Api-Key: $RUNA_API_KEY" \
   -H "X-Api-Version: 2024-02-05"
 ```

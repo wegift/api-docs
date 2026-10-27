@@ -411,7 +411,7 @@
             "schema": { "type": "string", "pattern": "^E-[0-9A-Z]+$" },
             "in": "path",
             "description": "The ID of the order item, as returned in `items[].id` when you create or get an order.",
-            "example": "E-01M5WAFEFJBN8ZRAHRR4ZWAKDW"
+            "example": "E-01P2K5GWRECHT908FY184ZZ9VG"
           }
         ],
         "responses": {
