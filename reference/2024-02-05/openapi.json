@@ -623,7 +623,7 @@
             }
           },
           "504": {
-            "description": "The request took longer than 29 seconds, usually because the provider is slow. The card may still be issued: retry the same call to get it. The body comes from the API gateway and has only a `message`.",
+            "description": "The request timed out. The card may still be issued: retry the same call to get it. The body comes from the API gateway and has only a `message`.",
             "content": {
               "application/json": {
                 "schema": {
