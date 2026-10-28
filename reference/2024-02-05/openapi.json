@@ -451,24 +451,17 @@
           "400": { "$ref": "#/components/responses/BadRequest" },
           "401": { "$ref": "#/components/responses/Unauthorized" },
           "403": {
-            "description": "The API key doesn't have the `create:fulfilment` scope, or your account isn't enabled for the Fulfilment API. A missing scope is rejected by the API gateway, so its body has a `Message` field instead of an error `type`.",
+            "description": "The API key doesn't have the `create:fulfilment` scope, or your account isn't enabled for the Fulfilment API.",
             "content": {
               "application/json": {
-                "schema": {
-                  "oneOf": [
-                    { "$ref": "#/components/schemas/ApiErrorResponse" },
-                    {
-                      "type": "object",
-                      "properties": { "Message": { "type": "string" } },
-                      "required": ["Message"]
-                    }
-                  ]
-                },
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
                 "examples": {
                   "missing_scope": {
                     "summary": "API key without the create:fulfilment scope",
                     "value": {
-                      "Message": "User is not authorized to access this resource with an explicit deny in an identity-based policy"
+                      "type": "forbidden",
+                      "message": "You don't have permission to access the requested resource",
+                      "help": "Please check the path you are trying to access is correct and you have permission to access it. Also ensure you are using the correct API key in the 'X-Api-Key' header."
                     }
                   },
                   "not_enabled": {
@@ -562,21 +555,16 @@
             }
           },
           "429": {
-            "description": "Another request for the same order item is in progress, or you exceeded the request rate. Retry after the number of seconds in the `Retry-After` header when it's present; otherwise back off before retrying. A rate limit is applied by the API gateway, so its body has only a `message`.",
+            "description": "Another request for the same order item is in progress, or you exceeded the request rate. Retry after the number of seconds in the `Retry-After` header when it's present; otherwise back off before retrying.",
             "headers": {
               "Retry-After": {
-                "description": "Seconds to wait before retrying. Only sent with a `rate_limit` error.",
+                "description": "Seconds to wait before retrying. Only sent when another request for the same order item is in progress.",
                 "schema": { "type": "integer" }
               }
             },
             "content": {
               "application/json": {
-                "schema": {
-                  "oneOf": [
-                    { "$ref": "#/components/schemas/ApiErrorResponse" },
-                    { "$ref": "#/components/schemas/GatewayErrorResponse" }
-                  ]
-                },
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
                 "examples": {
                   "rate_limit": {
                     "summary": "Another request for the order item is in progress",
@@ -588,7 +576,11 @@
                   },
                   "throttled": {
                     "summary": "Request rate exceeded",
-                    "value": { "message": "Too Many Requests" }
+                    "value": {
+                      "type": "rate_limit",
+                      "message": "You've exceeded the rate limit, please wait a short period and try again.",
+                      "help": "See https://developer.runa.io/rate-limits for details."
+                    }
                   }
                 }
               }
@@ -612,24 +604,28 @@
             }
           },
           "502": {
-            "description": "An unexpected error occurred. Retry the same call. The body comes from the API gateway and has only a `message`.",
+            "description": "An unexpected error occurred. Retry the same call.",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GatewayErrorResponse"
-                },
-                "example": { "message": "Internal server error" }
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
+                "example": {
+                  "type": "internal_server_error",
+                  "message": "An internal server error occurred",
+                  "help": "Please try again, or contact ordersupport@runa.io for assistance."
+                }
               }
             }
           },
           "504": {
-            "description": "The request timed out. The card may still be issued: retry the same call to get it. The body comes from the API gateway and has only a `message`.",
+            "description": "The request timed out. The card may still be issued: retry the same call to get it.",
             "content": {
               "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GatewayErrorResponse"
-                },
-                "example": { "message": "Endpoint request timed out" }
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
+                "example": {
+                  "type": "timeout",
+                  "message": "The request timed out",
+                  "help": "We were unable to process your request in time. This is a temporary issue, please try again. If the problem persists please contact ordersupport@runa.io"
+                }
               }
             }
           }
@@ -1003,19 +999,6 @@
       }
     },
     "schemas": {
-      "GatewayErrorResponse": {
-        "title": "Gateway error",
-        "type": "object",
-        "required": ["message"],
-        "properties": {
-          "message": {
-            "type": "string",
-            "description": "A human readable summary of the error.",
-            "examples": ["Endpoint request timed out"]
-          }
-        },
-        "description": "Error returned by the API gateway before the request reaches the endpoint, or when the endpoint doesn't answer in time."
-      },
       "FulfilmentDetails": {
         "title": "Fulfilment details",
         "type": "object",
@@ -1023,7 +1006,7 @@
         "properties": {
           "code": {
             "type": ["string", "null"],
-            "description": "The gift card code, exactly as issued. For cards redeemed by URL, use `url`: `code` can also contain the URL.",
+            "description": "The gift card code, exactly as issued, or `null` for cards redeemed online: use `url` for those.",
             "examples": ["6280399992147003"]
           },
           "pin": {
