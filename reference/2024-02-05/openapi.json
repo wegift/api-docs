@@ -555,7 +555,7 @@
             }
           },
           "429": {
-            "description": "Another request for the same order item is in progress, or you exceeded the request rate. Retry after the number of seconds in the `Retry-After` header when it's present; otherwise back off before retrying.",
+            "description": "Another request for the same order item is in progress, or the API key exceeded its rate limit of 20 requests every 10 seconds. Retry after the number of seconds in the `Retry-After` header when it's present; otherwise wait 10 seconds before retrying.",
             "headers": {
               "Retry-After": {
                 "description": "Seconds to wait before retrying. Only sent when another request for the same order item is in progress.",
@@ -575,10 +575,10 @@
                     }
                   },
                   "throttled": {
-                    "summary": "Request rate exceeded",
+                    "summary": "More than 20 requests in 10 seconds with the same API key",
                     "value": {
                       "type": "rate_limit",
-                      "message": "You've exceeded the rate limit, please wait a short period and try again.",
+                      "message": "You've exceeded the rate limit, please wait 10 seconds and try again.",
                       "help": "See https://developer.runa.io/rate-limits for details."
                     }
                   }

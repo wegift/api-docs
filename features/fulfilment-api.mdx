@@ -12,7 +12,7 @@ icon: "code"
 
 The Fulfilment API issues the gift card for an order item and returns its redemption details (code, PIN, barcode or redemption URL), so you can present them inside your own customer experience instead of sending customers to the Runa redemption page.
 
-It replaces the [Redemption API](/features/redemption-api). It is authenticated with your API key, returns standard HTTP status codes and is served by the same infrastructure as the rest of the Runa API.
+It replaces the [Redemption API](/features/redemption-api). It is authenticated with your API key and returns standard HTTP status codes.
 
 ## How it works
 
@@ -50,23 +50,27 @@ A successful call returns `200` with the card's redemption details. Fields that 
 
 The call is synchronous and idempotent per order item. Calling it again for the same order item returns the card already issued and never issues a second one, so it's safe to retry after a timeout or a `5xx` error.
 
+## Rate limits
+
+Each API key can make up to 20 requests every 10 seconds to the Fulfilment API. Requests over the limit get a `429` `rate_limit` error: wait 10 seconds before retrying. Requests rejected with a `401` or `403` don't count towards the limit.
+
 ## Errors
 
 Errors use the standard [error response](/reference/2024-02-05/errors) with a `type` you can branch on.
 
-| Status | `type`                                                       | What to do                                                                                                                |
-| ------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| `400`  | `bad_request`                                                | Check the order item ID has the form `E-…`.                                                                               |
-| `401`  | `unauthorized`                                               | Send a valid API key in the `X-Api-Key` header.                                                                           |
-| `403`  | `forbidden`                                                  | Use a key with the `create:fulfilment` scope, or ask your Account Manager to enable the Fulfilment API.                   |
-| `404`  | `not_found`                                                  | The order item doesn't exist on your account, or it has been cancelled.                                                   |
-| `409`  | `payout_expired`, `payout_cancelled` or `product_not_active` | The card can't be issued in its current state. For an expired payout, place a new order.                                  |
-| `422`  | `unsupported`                                                | The order item can't be fulfilled through the API. The recipient can redeem it through the payout link.                   |
-| `424`  | `provider_fulfilment_error`                                  | The provider couldn't issue the card. Retry in a few minutes.                                                             |
-| `429`  | `rate_limit`                                                 | Retry after the number of seconds in the `Retry-After` header when it's present; otherwise back off before retrying.      |
-| `500`  | `internal_server_error`                                      | Retry the same call: if the card was issued in the meantime, it's returned. If it persists, contact ordersupport@runa.io. |
-| `502`  | `internal_server_error`                                      | An unexpected error occurred. Retry the same call.                                                                        |
-| `504`  | `timeout`                                                    | The request timed out. The card may still be issued: retry the same call to get it.                                       |
+| Status | `type`                                                       | What to do                                                                                                                                   |
+| ------ | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| `400`  | `bad_request`                                                | Check the order item ID has the form `E-…`.                                                                                                  |
+| `401`  | `unauthorized`                                               | Send a valid API key in the `X-Api-Key` header.                                                                                              |
+| `403`  | `forbidden`                                                  | Use a key with the `create:fulfilment` scope, or ask your Account Manager to enable the Fulfilment API.                                      |
+| `404`  | `not_found`                                                  | The order item doesn't exist on your account, or it has been cancelled.                                                                      |
+| `409`  | `payout_expired`, `payout_cancelled` or `product_not_active` | The card can't be issued in its current state. For an expired payout, place a new order.                                                     |
+| `422`  | `unsupported`                                                | The order item can't be fulfilled through the API. The recipient can redeem it through the payout link.                                      |
+| `424`  | `provider_fulfilment_error`                                  | The provider couldn't issue the card. Retry in a few minutes.                                                                                |
+| `429`  | `rate_limit`                                                 | Retry after the number of seconds in the `Retry-After` header when it's present; otherwise wait 10 seconds. See [Rate limits](#rate-limits). |
+| `500`  | `internal_server_error`                                      | Retry the same call: if the card was issued in the meantime, it's returned. If it persists, contact ordersupport@runa.io.                    |
+| `502`  | `internal_server_error`                                      | An unexpected error occurred. Retry the same call.                                                                                           |
+| `504`  | `timeout`                                                    | The request timed out. The card may still be issued: retry the same call to get it.                                                          |
 
 ## Migrating from the Redemption API
 
