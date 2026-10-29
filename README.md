@@ -37,10 +37,18 @@ From [content types](https://mintlify.com/guides/content-types)
 
 ## Development
 
+If you use Devbox, the right Node.js and pnpm versions will be installed for you automatically, followed by Node.js modules installation.
+
 Install JS packages with `pnpm install` then run
 
 ```
 pnpm dev
+```
+
+or
+
+```
+devbox run server
 ```
 
 A local server will then serve the docs at http://localhost:3000

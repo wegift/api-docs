@@ -52,12 +52,11 @@ html {
 }
 
 /* Add gradient to header button */
-#navbar a[href="https://app.runa.io"] .bg-primary-dark
-{
+#navbar a[href="https://app.runa.io"] .bg-primary-dark {
   background: linear-gradient(20deg, #00ffa3, #93ff82, #eefc51) border-box;
 }
-#navbar a[href="https://app.runa.io"] .text-white, #navbar a[href="https://app.runa.io"] svg
-{
+#navbar a[href="https://app.runa.io"] .text-white,
+#navbar a[href="https://app.runa.io"] svg {
   color: black;
 }
 
@@ -84,4 +83,26 @@ html {
 }
 #navigation-items .dark\:bg-primary-light\/10:is(.dark *) {
   background-color: rgb(var(--primary-light) / 0.2);
+}
+
+.hero-button {
+  background:
+    linear-gradient(black, black) padding-box,
+    linear-gradient(to top right, #00ffa3, #93ff82, #eefc51) border-box;
+  border-radius: 50em;
+  border: 2px solid transparent;
+  border-radius: 3rem;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all 0.3s ease-in-out;
+}
+
+.hero-button:hover {
+  background:
+    linear-gradient(black, black) padding-box,
+    linear-gradient(to right, white, white) border-box;
 }
