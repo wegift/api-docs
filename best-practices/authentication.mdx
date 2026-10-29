@@ -62,3 +62,50 @@ You can see the scopes of each key on the [API keys page](https://app.runa.io/ap
 We recommend following the [principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege) and giving each key only the scopes it needs. If a key is exposed, it can then only be used for what those scopes allow. We also recommend creating a separate key for each use case, such as one key for placing orders and another for reporting, so that each key needs fewer scopes.
 
 A key's scopes can't be changed after it is created, so to change them create a new key with the scopes you need and revoke the old one.
+
+## Expiration
+
+You choose when an API key expires when you create it. An expired key can no longer be used, so a key that is lost or forgotten stops working on its own. Expiration applies to both production and playground keys.
+
+### Expiry options
+
+When you create a key you can choose:
+
+- **12 months** (the default). The key expires 12 months from today's date in UTC. For example, a key created on 29 October 2026 expires on 29 October 2027.
+- **No expiration**. The key never expires. We recommend choosing an expiry, so you'll see a warning if you choose this option.
+
+The create page shows the exact date the key will expire before you create it.
+
+API keys created before expiration was introduced don't have an expiry date, so they keep working as before. We recommend replacing them with keys that expire.
+
+### When a key expires
+
+Keys expire at **00:00 UTC** on their expiry date. A key that expires on 29 October 2027 works until 23:59:59 UTC on 28 October 2027. Depending on your time zone, this may be the evening of the previous day. For example, 00:00 UTC is 20:00 EDT the previous day in New York.
+
+From that moment, every request made with the key is rejected with a `403` [`forbidden` error](/reference/2024-02-05/errors), the same as a revoked key. An expired key can't be renewed, so replace it before it expires.
+
+<Tip>
+
+A key that is missing a [scope](#scopes) also gets a `403`. If a key is rejected on every endpoint, check on the [API keys page](https://app.runa.io/api-keys) whether it has expired or been revoked. If it is rejected on only some endpoints, it is missing the scopes those endpoints require.
+
+</Tip>
+
+### Checking a key's status
+
+The [API keys page](https://app.runa.io/api-keys) shows each key's expiry date in UTC and how long is left:
+
+- Keys with 30 days or fewer left are highlighted, and a banner is shown when any key has 60 days or fewer left.
+- Keys that never expire show **No expiration**.
+- Expired keys show the status **Expired**.
+
+<Frame caption="The API keys page shows when each key expires and highlights keys that expire soon.">
+  ![](/assets/screenshots/api-key-page-expires-column.png)
+</Frame>
+
+### Replacing a key
+
+A key's expiry can't be changed after it is created. To keep your integration working, replace the key before it expires:
+
+1. [Create a new API key](/getting-started/api-key) with the same scopes as the old key.
+2. Update your integration to use the new key, and check it works by calling the [ping endpoint](/reference/2024-02-05/endpoint/utility/ping).
+3. Revoke the old key on the [API keys page](https://app.runa.io/api-keys).

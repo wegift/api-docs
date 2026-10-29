@@ -6,6 +6,18 @@ description: "Changelog of all major API updates, new features, removals, and im
 
 <Update label="October 2026" tags={["Feature", "Authentication"]}>
 
+## API key expiration
+
+You can now choose when an API key expires when you create it: 12 months (the default) or no expiration. Keys expire at 00:00 UTC on their expiry date, and requests made with an expired key are rejected with a `403` error. Expiration applies to both production and playground keys.
+
+You can see each key's expiry date on the [API keys page](https://app.runa.io/api-keys). A key's expiry can't be changed, so replace the key before it expires.
+
+API keys created before expiration was introduced don't expire, so no action is required. We recommend replacing them with keys that expire. See [expiration](/best-practices/authentication#expiration) for more details.
+
+</Update>
+
+<Update label="October 2026" tags={["Feature", "Authentication"]}>
+
 ## API key scopes
 
 You can now choose scopes when you create a production API key. Scopes limit which endpoints a key can call, so a key that is exposed can only be used for what its scopes allow. A request to an endpoint whose scope the key doesn't have is rejected with a `403` error.
