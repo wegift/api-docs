@@ -393,6 +393,245 @@
         }
       }
     },
+    "/order-item/{order_item_id}/fulfilment": {
+      "post": {
+        "operationId": "createFulfilment",
+        "tags": ["Orders"],
+        "summary": "Fulfil an order item",
+        "description": "Issue the gift card for an order item and return its redemption details, so you can present them in your own experience.\n\nThe call is synchronous and idempotent: calling it again for the same order item returns the card already issued and never issues a second one, so it's safe to retry after a timeout.\n\nThe order item must belong to your account, be part of a completed order and hold a single gift card product. Payment products and multi-product payouts can't be fulfilled through this endpoint; their recipients redeem them through the payout link.\n\nThis endpoint isn't enabled by default. To enable it, contact your Account Manager.\n\n**Required scope:** `create:fulfilment`",
+        "security": [{ "ApiKeyAuth": ["create:fulfilment"] }],
+        "servers": [
+          { "url": "https://api.runa.io/v2", "description": "Production" }
+        ],
+        "parameters": [
+          { "$ref": "#/components/parameters/X-Api-Version" },
+          {
+            "required": true,
+            "name": "order_item_id",
+            "schema": { "type": "string", "pattern": "^E-[0-9A-Z]+$" },
+            "in": "path",
+            "description": "The ID of the order item, as returned in `items[].id` when you create or get an order.",
+            "example": "E-01P2K5GWRECHT908FY184ZZ9VG"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The gift card's redemption details.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FulfilmentDetails" },
+                "examples": {
+                  "code": {
+                    "summary": "Card redeemed with a code",
+                    "value": {
+                      "code": "6280399992147003",
+                      "pin": "25468113",
+                      "expiry_date": "2029-04-16",
+                      "barcode": {
+                        "format": "QR",
+                        "value": "6280399992147003"
+                      },
+                      "url": null
+                    }
+                  },
+                  "url": {
+                    "summary": "Card redeemed by URL",
+                    "value": {
+                      "code": null,
+                      "pin": null,
+                      "expiry_date": null,
+                      "barcode": null,
+                      "url": "https://redeem.example.com/r/ABCD-EFGH-IJKL"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "403": {
+            "description": "The API key doesn't have the `create:fulfilment` scope, or your account isn't enabled for the Fulfilment API.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
+                "examples": {
+                  "missing_scope": {
+                    "summary": "API key without the create:fulfilment scope",
+                    "value": {
+                      "type": "forbidden",
+                      "message": "You don't have permission to access the requested resource",
+                      "help": "Please check the path you are trying to access is correct and you have permission to access it. Also ensure you are using the correct API key in the 'X-Api-Key' header."
+                    }
+                  },
+                  "not_enabled": {
+                    "summary": "Account not enabled for the Fulfilment API",
+                    "value": {
+                      "type": "forbidden",
+                      "message": "The account is not enabled for fulfilment"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No order item with this ID exists on your account, or the order item has been cancelled.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
+                "examples": {
+                  "not_found": {
+                    "value": {
+                      "type": "not_found",
+                      "message": "Order item not found"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The payout can't be fulfilled in its current state.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
+                "examples": {
+                  "payout_expired": {
+                    "value": {
+                      "type": "payout_expired",
+                      "message": "The payout has expired",
+                      "help": "Place a new order."
+                    }
+                  },
+                  "payout_cancelled": {
+                    "value": {
+                      "type": "payout_cancelled",
+                      "message": "The payout has been cancelled"
+                    }
+                  },
+                  "product_not_active": {
+                    "value": {
+                      "type": "product_not_active",
+                      "message": "The product is no longer active"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "The order item can't be fulfilled through the API. Payment products and multi-product payouts are redeemed through the payout link.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
+                "examples": {
+                  "unsupported": {
+                    "value": {
+                      "type": "unsupported",
+                      "message": "This payout cannot be fulfilled through the API",
+                      "help": "The recipient can redeem it through the payout link."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "424": {
+            "description": "The provider couldn't issue the card. Retry in a few minutes.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
+                "examples": {
+                  "provider_fulfilment_error": {
+                    "value": {
+                      "type": "provider_fulfilment_error",
+                      "message": "The provider could not issue the card",
+                      "help": "Retry in a few minutes."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Another request for the same order item is in progress, or the API key exceeded its rate limit of 20 requests every 10 seconds. Retry after the number of seconds in the `Retry-After` header when it's present; otherwise wait 10 seconds before retrying.",
+            "headers": {
+              "Retry-After": {
+                "description": "Seconds to wait before retrying. Only sent when another request for the same order item is in progress.",
+                "schema": { "type": "integer" }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
+                "examples": {
+                  "rate_limit": {
+                    "summary": "Another request for the order item is in progress",
+                    "value": {
+                      "type": "rate_limit",
+                      "message": "Too many requests",
+                      "help": "Retry after the number of seconds in the Retry-After header."
+                    }
+                  },
+                  "throttled": {
+                    "summary": "More than 20 requests in 10 seconds with the same API key",
+                    "value": {
+                      "type": "rate_limit",
+                      "message": "You've exceeded the rate limit, please wait 10 seconds and try again.",
+                      "help": "See https://developer.runa.io/rate-limits for details."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "The card couldn't be issued. Retry the same call: if the card was issued in the meantime, it's returned.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
+                "examples": {
+                  "internal_server_error": {
+                    "value": {
+                      "type": "internal_server_error",
+                      "message": "The card could not be issued",
+                      "help": "Retry later, or contact ordersupport@runa.io."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "An unexpected error occurred. Retry the same call.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
+                "example": {
+                  "type": "internal_server_error",
+                  "message": "An internal server error occurred",
+                  "help": "Please try again, or contact ordersupport@runa.io for assistance."
+                }
+              }
+            }
+          },
+          "504": {
+            "description": "The request timed out. The card may still be issued: retry the same call to get it.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ApiErrorResponse" },
+                "example": {
+                  "type": "timeout",
+                  "message": "The request timed out",
+                  "help": "We were unable to process your request in time. This is a temporary issue, please try again. If the problem persists please contact ordersupport@runa.io"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/product": {
       "get": {
         "operationId": "listProducts",
@@ -760,6 +999,60 @@
       }
     },
     "schemas": {
+      "FulfilmentDetails": {
+        "title": "Fulfilment details",
+        "type": "object",
+        "required": ["code", "pin", "expiry_date", "barcode", "url"],
+        "properties": {
+          "code": {
+            "type": ["string", "null"],
+            "description": "The gift card code, exactly as issued, or `null` for cards redeemed online: use `url` for those.",
+            "examples": ["6280399992147003"]
+          },
+          "pin": {
+            "type": ["string", "null"],
+            "description": "The PIN or security code, when the card has one.",
+            "examples": ["25468113"]
+          },
+          "expiry_date": {
+            "type": ["string", "null"],
+            "format": "date",
+            "description": "The last day the card can be used, as `YYYY-MM-DD`, or `null` if it doesn't expire.",
+            "examples": ["2029-04-16"]
+          },
+          "barcode": {
+            "oneOf": [
+              { "$ref": "#/components/schemas/FulfilmentBarcode" },
+              { "type": "null" }
+            ],
+            "description": "The barcode to present in store, when the card has one."
+          },
+          "url": {
+            "type": ["string", "null"],
+            "format": "uri",
+            "description": "The URL where the card is redeemed, when it's redeemed online.",
+            "examples": ["https://redeem.example.com/r/ABCD-EFGH-IJKL"]
+          }
+        },
+        "description": "A gift card's redemption details. Fields that don't apply to the card are `null`. Display whichever of `code`, `pin` and `barcode` are present, or send the recipient to `url`."
+      },
+      "FulfilmentBarcode": {
+        "title": "Fulfilment barcode",
+        "type": "object",
+        "required": ["format", "value"],
+        "properties": {
+          "format": {
+            "type": "string",
+            "description": "The barcode symbology, for example `QR` or `CODE_128`.",
+            "examples": ["QR"]
+          },
+          "value": {
+            "type": "string",
+            "description": "The value to encode in the barcode.",
+            "examples": ["6280399992147003"]
+          }
+        }
+      },
       "ApiErrorResponse": {
         "title": "Error",
         "required": ["type", "message"],
