@@ -4,6 +4,35 @@ icon: newspaper
 description: "Changelog of all major API updates, new features, removals, and improvements."
 ---
 
+<Update label="Upcoming: 16 November 2026" tags={["Upcoming", "Rate limits"]}>
+
+## Rate limits per second on every endpoint
+
+From 16 November 2026, rate limits are measured per second instead of per minute, and apply to every endpoint, not just create order.
+
+| | Today | From 16 November 2026 |
+| --- | --- | --- |
+| How the limit is measured | Per minute | Per second |
+| Create order limit | 300 requests per minute | 5 requests per second |
+| Other endpoints | Not rate-limited | 5 requests per second each |
+| Limit shared across | Your customer account | Your customer account (no change) |
+| Limit applied | Create order only | Separately to each endpoint |
+
+Your overall create order capacity stays the same, but requests must be spread evenly instead of sent in bursts. For example, if you send 20 create order requests in one second, only 5 are accepted and the other 15 receive a `429 Too Many Requests` response.
+
+Limits apply at the customer account level, so all API keys and services using the same account share the limit for each endpoint. Failed requests also count towards the limit.
+
+Before 16 November, check that your integration:
+
+- Sends no more than 5 requests per second to any one endpoint, including batch and scheduled jobs.
+- Paces high-volume calls to other endpoints, such as polling order status in a loop.
+- Accounts for every API key and service using the same account sharing one limit per endpoint.
+- Handles `429` responses on every endpoint and retries after a short wait.
+
+See [rate limits](/best-practices/rate-limits) for how to handle `429` responses.
+
+</Update>
+
 <Update label="October 2026" tags={["Feature", "Authentication"]}>
 
 ## API key expiration

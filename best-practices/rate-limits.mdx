@@ -11,6 +11,12 @@ API requests to create orders are subject to rate limiting. If the rate is excee
   that fail due to errors. This rate limit may change in the future.
 </Card>
 
+<Warning>
+  From 16 November 2026, every endpoint is limited to **5 requests per second**,
+  shared across your customer account. See the
+  [API changelog](/changelog/api) for details.
+</Warning>
+
 ## Handling rate limits
 
 If you receive a `429 Too Many Requests` response you should wait a short period before retrying the request. We recommend waiting at least 5 seconds before retrying the request. If you continue to receive the same response you should wait longer before retrying.
