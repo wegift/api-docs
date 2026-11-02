@@ -6,110 +6,114 @@ mode: custom
 
 import styles from "./welcome.css";
 
-<div style={{
-  minHeight: "85vh",
+<div
+  style={{
+minHeight: "85vh",
+display: "flex",
+flexDirection: "column",
+alignItems: "center",
+justifyContent: "flex-start",
+}}
+>
+  {/* Logo and Title */}
+
+  <div
+    style={{ 
+  display: "flex", 
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "black",
+  backgroundImage: "url(https://brand-assets.runa.io/api-hero-background.png)",
+  backgroundPosition: "top",
+  backgroundSize: "contain",
+  backgroundRepeat: "no-repeat",
+  width: "100%", padding: "4rem 0",
+  boxShadow: "0 0 20px 2px rgba(0, 0, 0, 0.4)",
+  }}
+    className="dark"
+  >
+    <div
+      style={{
+  background: "rgba(0,0,0,0.2)",
+  backdropFilter: "blur(6px) saturate(70%)",
+  padding: "1rem 2rem",
+  borderRadius: 16,
   display: "flex",
   flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "flex-start",
-}}>
-  {/* Logo and Title */}
-  <div style={{ 
-    display: "flex", 
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "black",
-    backgroundImage: "url(https://brand-assets.runa.io/api-hero-background.png)",
-    backgroundPosition: "top",
-    backgroundSize: "contain",
-    backgroundRepeat: "no-repeat",
-    width: "100%", padding: "4rem 0",
-    boxShadow: "0 0 20px 2px rgba(0, 0, 0, 0.4)",
-    }} className='dark'>
-  <div style={{
-    background: "rgba(0,0,0,0.2)",
-    backdropFilter: "blur(6px) saturate(70%)",
-    padding: "1rem 2rem",
-    borderRadius: 16,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-    }}>
-    <img src="https://brand-assets.runa.io/runa-developer-hub-white.svg" alt="Runa logo" style={{pointerEvents: "none", maxHeight: "96px"}} />
-    <h2 
-      style={{
-        margin: "1.25rem 0 0.25rem 0",
-        fontSize: "1.25rem",
-        fontWeight: 800,
-        textAlign: "center",
-        color: "#fff"
-      }}
+  alignItems: "center"
+  }}
     >
-      Start building smarter payouts
-    </h2>
-    <p
-      style={{
-        margin: "0 0 1.5rem 0",
-        fontSize: "1rem",
-        fontWeight: 500,
-        textAlign: "center",
-        color: "#aaa",
-      }}
-    >
-    Get up and running with the Runa API - global, flexible, built for scale
-    </p>
-    <a
-      href="/introduction"
-      className='hero-button'
-    >
-      Explore our documentation
-    </a>
+      <img src="https://brand-assets.runa.io/runa-developer-hub-white.svg" alt="Runa logo" style={{pointerEvents: "none", maxHeight: "96px"}} />
+
+      <h2
+        style={{
+      margin: "1.25rem 0 0.25rem 0",
+      fontSize: "1.25rem",
+      fontWeight: 800,
+      textAlign: "center",
+      color: "#fff"
+    }}
+      >
+        Start building smarter payouts
+      </h2>
+
+      <p
+        style={{
+      margin: "0 0 1.5rem 0",
+      fontSize: "1rem",
+      fontWeight: 500,
+      textAlign: "center",
+      color: "#aaa",
+    }}
+      >
+        Get up and running with the Runa API - global, flexible, built for scale
+      </p>
+
+      <a href="/introduction" className="hero-button">
+        Explore our documentation
+      </a>
     </div>
   </div>
 
-{/* Tools and Guides */}
+  {/* Tools and Guides */}
 
-  <div style={{
-    flexGrow: 3,
-    width: "100%",
-    maxWidth: "90vw",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center"
-  }} className='pt-12 lg:pt-24 pb-6 lg:pb-24'>
-  <div style={{
-        maxWidth: 1100,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  }}>
-    <h2 style={{ fontSize: "1.5rem", fontWeight: 600, marginBottom: "2rem" }} className='text-black dark:text-white'>
-      Get started with our tools and guides
-    </h2>
-    <CardGroup cols={3} rows={2}>
-  <Card
-    title="Get started"
-    icon="flag-swallowtail"
-    href="/getting-started"
+  <div
+    style={{
+  flexGrow: 3,
+  width: "100%",
+  maxWidth: "90vw",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center"
+}}
+    className="pt-12 lg:pt-24 pb-6 lg:pb-24"
   >
-    Make your first API call in minutes
-  </Card>
-  <Card
-    title="API Guides"
-    icon="book"
-    href="/introduction"
-  >
-    Walkthroughs for building payout flows with Runa
-  </Card>
-  <Card
-    title="API Reference"
-    icon="gear"
-    href="/reference"
-  >
-    Detailed reference documentation for every endpoint, request, and response
-  </Card>
-</CardGroup>
-</div>
+    <div
+      style={{
+      maxWidth: 1100,
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+}}
+    >
+      <h2 style={{ fontSize: "1.5rem", fontWeight: 600, marginBottom: "2rem" }} className="text-black dark:text-white">
+        Get started with our tools and guides
+      </h2>
+
+      <CardGroup cols={3} rows={2}>
+        <Card title="Get started" icon="flag-swallowtail" href="/getting-started">
+          Make your first API call in minutes
+        </Card>
+
+        <Card title="API Guides" icon="book" href="/introduction">
+          Walkthroughs for building payout flows with Runa
+        </Card>
+
+        <Card title="API Reference" icon="gear" href="/reference">
+          Detailed reference documentation for every endpoint, request, and response
+        </Card>
+      </CardGroup>
+    </div>
   </div>
 </div>
