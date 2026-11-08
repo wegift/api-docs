@@ -1,0 +1,102 @@
+---
+title: "Using AI agents"
+description: "Give agents what they need to work with the Runa API"
+icon: "robot"
+---
+
+The Runa API and this documentation are published in formats that AI tools can read directly. Use them to build your integration faster with a coding assistant, or to let an agent call the API on your behalf.
+
+## Resources for AI tools
+
+| Resource              | URL                                              | Use it for                                                                |
+| --------------------- | ------------------------------------------------ | ------------------------------------------------------------------------- |
+| OpenAPI specification | `https://api.runa.io/v2/openapi/2024-02-05.json` | Exact request and response contracts, generating tool definitions         |
+| Documentation index   | `https://developer.runa.io/llms.txt`             | A short index of every page so an agent can find and fetch what it needs  |
+| Full documentation    | `https://developer.runa.io/llms-full.txt`        | The whole site as one Markdown file for tools with a large context window |
+| Any page as Markdown  | Append `.md` to a page URL                       | Fetching a single guide without HTML noise                                |
+
+Every page also has a context menu in the top right with **Copy page**, **Open in ChatGPT** and **Open in Claude**, so you can drop the page you are reading into a conversation.
+
+## Coding assistants
+
+Assistants such as Claude Code, Cursor and GitHub Copilot produce far better results when they can read the contract rather than guess it. Give them the specification and the documentation index up front.
+
+<Steps>
+  <Step title="Pin the specification in your repository">
+    ```bash
+    curl -o openapi/runa-2024-02-05.json https://api.runa.io/v2/openapi/2024-02-05.json
+    ```
+    A local copy is faster for the assistant to read than fetching the URL each time, and it is versioned alongside your code.
+  </Step>
+  <Step title="Add a project note for the assistant">
+    Add the following to your project's assistant instructions file, such as `CLAUDE.md`, `AGENTS.md` or `.cursor/rules`.
+
+    ```markdown
+    ## Runa API
+
+    - Contract: openapi/runa-2024-02-05.json (source: https://api.runa.io/v2/openapi/2024-02-05.json)
+    - Docs index: https://developer.runa.io/llms.txt. Fetch a page and append .md for Markdown.
+    - Base URLs: playground https://playground.runa.io/v2, production https://api.runa.io/v2
+    - Auth: X-Api-Key header. Read the key from the environment, never hard-code it.
+    - Always send X-Api-Version: 2024-02-05
+    - POST /order requires X-Idempotency-Key. Reuse the same key on retries.
+    - Orders default to async (202 Accepted). Use X-Execution-Mode: sync only for single-item orders.
+    - Money fields such as face_value are decimal strings, e.g. "10.00", not numbers.
+    - Develop against the playground with a playground key (prefix xx). Production keys start wg.
+    ```
+
+  </Step>
+  <Step title="Generate a typed client first">
+    Ask the assistant to run one of the generators on the [codegen page](/tooling/openapi-codegen). Working through a typed client means the compiler, not the assistant, checks field names and required headers.
+  </Step>
+</Steps>
+
+## Agents that call the API at runtime
+
+If you are building an agent that places orders or looks up products as part of its own workflow, the specification can be turned into tool definitions rather than written by hand.
+
+- **Tool definitions from the spec.** Each operation's `requestBody` and `parameters` are JSON Schema and map directly onto the input schema of a tool for the Anthropic, OpenAI or Gemini tool-use APIs. Frameworks such as LangChain, the Vercel AI SDK and Pydantic AI include OpenAPI loaders that do this for you.
+- **Give the agent the docs as a tool.** Let the agent fetch `https://developer.runa.io/llms.txt` and follow links to individual pages when it needs guidance beyond the contract, for example on [choosing an execution mode](/getting-started/first-order/which-mode).
+- **Keep the agent on the playground until you trust it.** The [playground](/reference/2024-02-05/playground) accepts every order without spending real money.
+
+## Safety guidance
+
+<Warning>
+  Treat an agent like any other automated client with access to funds.
+</Warning>
+
+- **Never paste a production API key into a prompt.** Keys pasted into a chat may be stored in conversation history. Provide keys through the environment and reference them by name.
+- **Use a playground key while developing** and only switch to production once the agent's behaviour is verified. See [security](/best-practices/security) for handling keys.
+- **Enable IP restrictions** on production keys so a leaked key cannot be used from elsewhere.
+- **Set idempotency keys deterministically** from the agent's own task identifier, so a retry loop cannot place the same order twice. See [idempotency](/best-practices/idempotency).
+- **Bound what the agent can order.** Validate face values, quantities and product codes in your own code before the request is sent, and use [estimates](/features/estimate) to confirm cost first.
+- **Respect rate limits.** Agents retry enthusiastically. Apply backoff per the [rate limits](/best-practices/rate-limits) page.
+
+## Related
+
+<CardGroup cols={3}>
+  <Card
+    title="OpenAPI specification"
+    icon="file-code"
+    href="/reference/2024-02-05/openapi"
+    arrow
+  >
+    The reference page for the specification URL and caveats.
+  </Card>
+  <Card
+    title="Generate a client"
+    icon="code"
+    href="/tooling/openapi-codegen"
+    arrow
+  >
+    Typed clients and validators from the specification.
+  </Card>
+  <Card
+    title="Authentication"
+    icon="key"
+    href="/best-practices/authentication"
+    arrow
+  >
+    Creating and handling API keys.
+  </Card>
+</CardGroup>
