@@ -1,0 +1,20 @@
+---
+title: "Order completed"
+description: "Order completed events are triggered when an order completes."
+openapi: "/reference/2024-02-05/openapi.json WEBHOOK order.completed"
+---
+
+<Card
+  title="Webhook overview"
+  href="/reference/webhooks"
+  icon="graduation-cap"
+  horizontal
+  arrow
+>
+  Webhooks work differently to the API endpoints. Take a read of our guide to
+  understand how they work.
+</Card>
+
+This event is sent when an order finishes processing successfully. Together with [`order.failed`](/reference/2024-02-05/webhook/order.failed), it replaces [`order.completion`](/reference/2024-02-05/webhook/order.completion).
+
+The order is in `data`, in the same shape as the completed `order.completion` payload.

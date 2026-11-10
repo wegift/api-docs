@@ -30,6 +30,32 @@ We currently support the following webhook events:
 
 <Columns cols={2}>
   <Card
+    title="Order completed"
+    icon="flag-checkered"
+    href="/reference/2024-02-05/webhook/order.completed"
+    arrow
+  >
+    The `order.completed` webhook is triggered when an order completes.
+  </Card>
+  <Card
+    title="Order failed"
+    icon="circle-xmark"
+    href="/reference/2024-02-05/webhook/order.failed"
+    arrow
+  >
+    The `order.failed` webhook is triggered when an order fails, with the reason
+    it failed.
+  </Card>
+  <Card
+    title="Payout blocked"
+    icon="ban"
+    href="/reference/2024-02-05/webhook/payout.blocked"
+    arrow
+  >
+    The `payout.blocked` webhook is triggered when Runa's fraud checks block the
+    redemption of a payout link.
+  </Card>
+  <Card
     title="Order completion"
     icon="flag-checkered"
     href="/reference/2024-02-05/webhook/order.completion"
@@ -48,6 +74,24 @@ We currently support the following webhook events:
     updated.
   </Card>
 </Columns>
+
+### Event format
+
+`order.completed`, `order.failed` and `payout.blocked` use the [Standard Webhooks](https://www.standardwebhooks.com/) format: the event type is in `type`, when it happened is in `timestamp`, and the event's details are in `data`.
+
+```json
+{
+  "type": "order.failed",
+  "timestamp": "2024-01-03T14:25:07Z",
+  "data": {
+    "id": "O-01HK7VK8C3WM1MQ916GEXJGQ6P",
+    "status": "FAILED",
+    "reason": "fraud"
+  }
+}
+```
+
+`order.completion` and `product.update` send their details at the top level, without `type`, `timestamp` or `data`.
 
 ## Adding an endpoint
 

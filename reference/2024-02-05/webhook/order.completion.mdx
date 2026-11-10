@@ -21,3 +21,10 @@ The webhook payload depends on whether the order was processed successfully or n
 
 - Successfully completed orders will have a `status` of `COMPLETED`
 - Failed orders will have a `status` of `FAILED`
+
+<Note>
+  New integrations should use
+  [`order.completed`](/reference/2024-02-05/webhook/order.completed) and
+  [`order.failed`](/reference/2024-02-05/webhook/order.failed) instead.
+  `order.failed` also tells you why the order failed.
+</Note>

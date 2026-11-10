@@ -4,6 +4,20 @@ icon: newspaper
 description: "Changelog of all major API updates, new features, removals, and improvements."
 ---
 
+<Update label="November 2026" tags={["Feature", "Webhooks"]}>
+
+## New order and payout webhooks
+
+Three new webhook events:
+
+- [`order.completed`](/reference/2024-02-05/webhook/order.completed): an order completed.
+- [`order.failed`](/reference/2024-02-05/webhook/order.failed): an order failed, with a `reason` of `fraud` or `generic`.
+- [`payout.blocked`](/reference/2024-02-05/webhook/payout.blocked): Runa's fraud checks blocked the redemption of a payout link, and `cancelled` says whether the link was cancelled.
+
+They use the [Standard Webhooks](/reference/webhooks#event-format) format. `order.completed` and `order.failed` replace `order.completion`, which keeps working as before. To receive the new events, add an endpoint for them in your webhook portal.
+
+</Update>
+
 <Update label="Upcoming: 16 November 2026" tags={["Upcoming", "Rate limits"]}>
 
 ## Rate limits per second on every endpoint

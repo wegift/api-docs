@@ -903,6 +903,75 @@
     }
   },
   "webhooks": {
+    "order.completed": {
+      "post": {
+        "summary": "Order completed",
+        "operationId": "orderCompletedWebhook",
+        "description": "Sent to your configured endpoint when an order completes. See [webhooks](/reference/webhooks) for how to configure and verify them.",
+        "security": [],
+        "requestBody": {
+          "description": "The completed order",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderCompletedWebhook"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "order.failed": {
+      "post": {
+        "summary": "Order failed",
+        "operationId": "orderFailedWebhook",
+        "description": "Sent to your configured endpoint when an order fails, with the reason it failed. See [webhooks](/reference/webhooks) for how to configure and verify them.",
+        "security": [],
+        "requestBody": {
+          "description": "The failed order",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderFailedWebhook"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "payout.blocked": {
+      "post": {
+        "summary": "Payout blocked",
+        "operationId": "payoutBlockedWebhook",
+        "description": "Sent to your configured endpoint when Runa's fraud checks block the redemption of a payout link. See [webhooks](/reference/webhooks) for how to configure and verify them.",
+        "security": [],
+        "requestBody": {
+          "description": "The blocked payout",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PayoutBlockedWebhook"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
     "order.completion": {
       "post": {
         "summary": "Order completion",
@@ -999,6 +1068,116 @@
       }
     },
     "schemas": {
+      "OrderCompletedWebhook": {
+        "type": "object",
+        "description": "Standard Webhooks envelope sent when an order completes. The order is in `data`.",
+        "required": ["type", "timestamp", "data"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "order.completed",
+            "description": "Always `order.completed` for this event."
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the order completed (RFC 3339, UTC).",
+            "examples": ["2024-01-03T14:25:07Z"]
+          },
+          "data": {
+            "$ref": "#/components/schemas/CompletedOrderWebhook"
+          }
+        }
+      },
+      "OrderFailedWebhook": {
+        "type": "object",
+        "description": "Standard Webhooks envelope sent when an order fails. The order is in `data`.",
+        "required": ["type", "timestamp", "data"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "order.failed",
+            "description": "Always `order.failed` for this event."
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the order failed (RFC 3339, UTC).",
+            "examples": ["2024-01-03T14:25:07Z"]
+          },
+          "data": {
+            "$ref": "#/components/schemas/OrderFailedWebhookData"
+          }
+        }
+      },
+      "OrderFailedWebhookData": {
+        "title": "Failed order",
+        "type": "object",
+        "required": ["id", "status", "reason"],
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/OrderId"
+          },
+          "status": {
+            "type": "string",
+            "const": "FAILED",
+            "description": "Always `FAILED` for this event."
+          },
+          "reason": {
+            "type": "string",
+            "enum": ["fraud", "generic"],
+            "examples": ["fraud"],
+            "description": "Why the order failed. `fraud` when Runa's fraud checks blocked it, `generic` for any other failure."
+          }
+        }
+      },
+      "PayoutBlockedWebhook": {
+        "type": "object",
+        "description": "Standard Webhooks envelope sent when Runa's fraud checks block the redemption of a payout link. The blocked payout is in `data`.",
+        "required": ["type", "timestamp", "data"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "payout.blocked",
+            "description": "Always `payout.blocked` for this event."
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the payout was blocked (RFC 3339, UTC).",
+            "examples": ["2026-10-23T10:15:00Z"]
+          },
+          "data": {
+            "$ref": "#/components/schemas/PayoutBlockedWebhookData"
+          }
+        }
+      },
+      "PayoutBlockedWebhookData": {
+        "title": "Blocked payout",
+        "type": "object",
+        "required": ["order_item_id", "order_id", "assessment_id", "cancelled"],
+        "properties": {
+          "order_item_id": {
+            "type": "string",
+            "description": "The order item whose payout link was blocked.",
+            "examples": ["E-01HK7VK8C3WM1MQ916GEXJGQ6Q"]
+          },
+          "order_id": {
+            "$ref": "#/components/schemas/OrderId"
+          },
+          "assessment_id": {
+            "type": "string",
+            "pattern": "^asm_[0-9A-Z]+$",
+            "description": "The fraud assessment that blocked the redemption. Quote it when you contact Runa about the payout.",
+            "examples": ["asm_461BC429E43344DBA6EF5A91F98DDE7E"]
+          },
+          "cancelled": {
+            "type": "boolean",
+            "description": "Whether Runa cancelled the payout link. When `false`, the link is still active but its redemptions keep being blocked.",
+            "examples": [true]
+          }
+        }
+      },
       "FulfilmentDetails": {
         "title": "Fulfilment details",
         "type": "object",
