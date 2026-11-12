@@ -14,7 +14,7 @@ Three new webhook events:
 - [`order.failed`](/reference/2024-02-05/webhook/order.failed): an order failed, with a `reason` of `fraud` or `generic`.
 - [`payout.blocked`](/reference/2024-02-05/webhook/payout.blocked): Runa's fraud checks blocked the redemption of a payout link, and `cancelled` says whether the link was cancelled.
 
-They use the [Standard Webhooks](/reference/webhooks#event-format) format. `order.completed` and `order.failed` replace `order.completion`, which keeps working as before. To receive the new events, add an endpoint for them in your webhook portal.
+They use the [Standard Webhooks](/reference/webhooks#event-format) format. `order.completed` and `order.failed` replace `order.completion`, which keeps working as before. To receive the new events, open your webhook portal and either add them to the event types of an existing endpoint or add a new endpoint for them.
 
 </Update>
 
