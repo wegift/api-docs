@@ -1,0 +1,25 @@
+---
+title: "Payout blocked"
+description: "Payout blocked events are triggered when Runa's fraud checks block the redemption of a payout link."
+openapi: "/reference/2024-02-05/openapi.json WEBHOOK payout.blocked"
+---
+
+<Card
+  title="Webhook overview"
+  href="/reference/webhooks"
+  icon="graduation-cap"
+  horizontal
+  arrow
+>
+  Webhooks work differently to the API endpoints. Take a read of our guide to
+  understand how they work.
+</Card>
+
+This event is sent when Runa's fraud checks block a recipient from redeeming a payout link. The link's value is not released.
+
+Runa also tries to cancel the link. `cancelled` says whether it did:
+
+- `true`: the link is cancelled.
+- `false`: the link is still active, but its redemptions keep being blocked.
+
+Quote the `assessment_id` when you contact us about the payout.

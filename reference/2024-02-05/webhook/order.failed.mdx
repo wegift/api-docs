@@ -1,0 +1,23 @@
+---
+title: "Order failed"
+description: "Order failed events are triggered when an order fails."
+openapi: "/reference/2024-02-05/openapi.json WEBHOOK order.failed"
+---
+
+<Card
+  title="Webhook overview"
+  href="/reference/webhooks"
+  icon="graduation-cap"
+  horizontal
+  arrow
+>
+  Webhooks work differently to the API endpoints. Take a read of our guide to
+  understand how they work.
+</Card>
+
+This event is sent when an order fails. Together with [`order.completed`](/reference/2024-02-05/webhook/order.completed), it replaces [`order.completion`](/reference/2024-02-05/webhook/order.completion).
+
+Use `reason` to decide what to do next:
+
+- `fraud`: Runa's fraud checks blocked the order.
+- `generic`: the order failed for any other reason.
